@@ -17,6 +17,7 @@ const PageCart = Loadable(lazy(() => import('pages/admin/cart/CartManagement')))
 const AddBook = Loadable(lazy(() => import('pages/admin/book/addbook/AddBook')));
 const PageStaff = Loadable(lazy(() => import('pages/admin/staff/StaffManagement')));
 const PageCategory = Loadable(lazy(() => import('pages/admin/category/CategoryManagement')));
+const PageProfile = Loadable(lazy(() => import('pages/admin/profile/Profile')));
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/admin/extra-pages/sample-page')));
 
@@ -90,9 +91,18 @@ const MainRoutes = {
     {
       path: 'category-management',
       element: <PageCategory />
+    },
+    {
+      path: 'profile',
+      element: <PageProfile />
     }
   ]
 };
+// ✅ Tạo một route riêng cho "profile" để nó không nằm trong Dashboard
+// const ProfileRoute = {
+//   path: "/profile",
+//   element: <PageProfile />
+// };
 const AdminRoutes = createBrowserRouter([MainRoutes]);
 
 export default AdminRoutes;
