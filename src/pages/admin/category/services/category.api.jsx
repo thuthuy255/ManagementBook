@@ -18,5 +18,6 @@ export const updateCategory = (body) => {
 
 export const deleteCategory = (body) => {
   const url = `/category/delete`;
-  return axiosClient.post(url, body);
+  console.log(url);
+  return axiosClient.delete(url, body);
 };

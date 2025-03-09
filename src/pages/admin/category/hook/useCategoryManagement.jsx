@@ -2,12 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Grid, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { showToast } from 'components/notification/CustomToast';
-import { formatPrice } from 'utils/format';
 import { formatDate } from 'utils/format/FormatDate';
 import { createCategory, deleteCategory, getAllCategory, updateCategory } from '../services/category.api';
 import { Box } from '@mui/system';
+import ButtonAction from 'components/table/buttonAction/ButtonAction';
 
 const useCategoryManagement = () => {
   const [category, setCategory] = useState([]);
@@ -15,11 +15,13 @@ const useCategoryManagement = () => {
     modal: false,
     loading: false,
     modalAdd: false,
-    modalDelete: false
+    modalDelete: false,
+    loadingConfirm: false
   });
+
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleToggleModalConfirm = useCallback(() => {
+  const handleToggleModalDelete = useCallback(() => {
     setStateComponent((prev) => ({
       ...prev,
       modalDelete: !prev.modalDelete
@@ -48,19 +50,39 @@ const useCategoryManagement = () => {
     }));
   }, []);
 
+  const handleToggleLoadingDelete = useCallback(() => {
+    setStateComponent((prev) => ({
+      ...prev,
+      loadingConfirm: !prev.loadingConfirm
+    }));
+  }, []);
   // Chọn sách để chỉnh sửa
   const handleEdit = (book) => {
     setSelectedItem(book);
     handleToggleModalEdit();
   };
 
-  const handleDeleteCateogory = useCallback((book) => {
-    deleteCategory()
+  const handleDelete = (item) => {
+    setSelectedItem(item);
+    handleToggleModalDelete();
+  };
+
+  const handleDeleteCateogory = useCallback(() => {
+    console.log('Log', selectedItem);
+    if (!selectedItem) {
+      showToast('Không lấy được id  ', 'error');
+      return;
+    }
+    handleToggleLoadingDelete();
+    const body = {
+      ArticleID: selectedItem?.id
+    };
+    deleteCategory(body)
       .then((response) => {
         if (response.err === 0) {
           handleListTable();
           showToast('Xóa thành công danh mục', 'success');
-          handleToggleModalConfirm();
+          handleToggleModalDelete();
         } else {
           showToast(response.mess, 'error');
         }
@@ -69,8 +91,10 @@ const useCategoryManagement = () => {
         console.error('Lỗi đăng ký:', error);
         showToast('Có lỗi xảy ra: ' + error, 'error');
       })
-      .finally(() => {});
-  }, []);
+      .finally(() => {
+        handleToggleLoadingDelete();
+      });
+  }, [selectedItem]);
 
   // Lấy danh sách sách từ API
   const handleListTable = () => {
@@ -141,10 +165,7 @@ const useCategoryManagement = () => {
   useEffect(() => {
     handleListTable();
   }, []);
-
-  // Cấu hình cột cho bảng
   const columns = [
-    // { field: 'id', headerName: 'Mã danh mục', headerAlign: 'center', align: 'center', cellClassName: 'center-cell' },
     {
       field: 'type',
       headerName: 'Loại danh mục',
@@ -162,9 +183,9 @@ const useCategoryManagement = () => {
       flex: 1,
       headerAlign: 'center',
       align: 'center',
-      height: '300px',
+      height: '200px',
       renderCell: (params) => {
-        return <img src={params.value} alt="Ảnh sản phẩm" width={100} height={100} />;
+        return <img src={params.value} alt="Ảnh sản phẩm" width={70} height={70} />;
       }
     },
     {
@@ -189,14 +210,15 @@ const useCategoryManagement = () => {
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', padding: '5px' }}>
-          <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error" size="small" onClick={() => handleCloseModal(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
-        </div>
+        <ButtonAction item={params?.row} onEdit={handleEdit} onDelete={handleDelete} />
+        // <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', padding: '5px' }}>
+        //   <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
+        //     <EditIcon />
+        //   </IconButton>
+        //   <IconButton color="error" size="small" onClick={() => handleCloseModal(params.row.id)}>
+        //     <DeleteIcon />
+        //   </IconButton>
+        // </div>
       )
     }
   ];
@@ -211,7 +233,9 @@ const useCategoryManagement = () => {
     columns,
     handleToggleModalAdd,
     handleSubmitAdd,
-    handleSubmitUpdate
+    handleSubmitUpdate,
+    handleDeleteCateogory,
+    handleToggleModalDelete
   };
 };
 
