@@ -1,0 +1,28 @@
+@use 'sass:color'; // Import thư viện color
+
+$primary-color: #007bff;
+$primary-color-lighter: color.adjust($primary-color, $lightness: 15%);
+
+:root {
+  --primary-color: #{$primary-color};
+  --primary-color-lighter: #{$primary-color-lighter};
+  --text-color: #000;
+}
+/* Làm thanh cuộn nhỏ hơn trên toàn trang */
+::-webkit-scrollbar {
+  width: 6px; /* Độ rộng thanh cuộn */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: color.adjust($primary-color, $lightness: 40%); /* Màu thanh cuộn */
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Màu khi hover */
+}
+.MuiDataGrid-cell {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}

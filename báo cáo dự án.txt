@@ -1,0 +1,4 @@
+- Giao diện quên mật khẩu
+- Config api axios (Đã xong)
+- Config redux (Đã xong)
+- Làm thêm giao diện quản lý 
