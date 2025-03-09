@@ -1,17 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import CommonFormWithImages from 'components/form/CommonFormWithImages';
-import { createCategory, updateCategory } from '../services/category.api';
 import { convertImageUrlsToFiles } from 'utils/fileUtils';
 
 export default function UpdateCategory({ selectedBook, handleToggleModalBook, handleSubmit }) {
-  console.log(selectedBook);
   const [initialValues, setInitialValues] = useState({
     type: selectedBook.type || '',
     images: [],
     id: selectedBook.id
   });
-  console.log(initialValues);
   const loadImageFile = useCallback(async () => {
     const imageFiles = await convertImageUrlsToFiles(selectedBook.img);
     setInitialValues((prev) => ({ ...prev, images: imageFiles }));

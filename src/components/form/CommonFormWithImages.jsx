@@ -13,7 +13,6 @@ export default function CommonFormWithImages({
   handleCancel,
   multiple = false // Thêm option chọn nhiều hoặc 1 ảnh
 }) {
-  console.log(initialValues);
   const fileInputRef = useRef(null);
 
   const handleFileInputClick = () => {

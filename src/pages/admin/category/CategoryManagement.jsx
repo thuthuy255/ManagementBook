@@ -5,23 +5,23 @@ import { Button, Grid, Modal } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import UpdateCategory from './updateCategory/UpdateCategory';
 import AddCategory from './addCategory/AddCategory';
+import ModalConfirm from 'components/modal/ModalConfirm';
 export default function CategoryManagement() {
   const {
     category,
-    selectedItem,
-    handleEdit,
     stateComponent,
-    handleListTable,
+    selectedItem,
     handleToggleModalEdit,
     columns,
     handleToggleModalAdd,
     handleSubmitAdd,
-    handleSubmitUpdate
+    handleSubmitUpdate,
+    handleDeleteCateogory,
+    handleToggleModalDelete
   } = useCategoryManagement();
   return (
     <div>
       <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
-        <span style={{ fontSize: '18px', fontWeight: 'bold' }}>Quản lý danh mục</span>
         <Button
           size="small"
           variant="contained"
@@ -44,6 +44,12 @@ export default function CategoryManagement() {
           <AddCategory handleToggleModal={handleToggleModalAdd} handleSubmit={handleSubmitAdd} />
         </div>
       </Modal>
+      <ModalConfirm
+        open={stateComponent.modalDelete}
+        loading={stateComponent.loadingConfirm}
+        onClose={handleToggleModalDelete}
+        onConfirm={handleDeleteCateogory}
+      />
     </div>
   );
 }
