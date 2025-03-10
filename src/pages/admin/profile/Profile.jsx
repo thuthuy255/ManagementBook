@@ -10,11 +10,14 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import MapIcon from '@mui/icons-material/Map';
 import CreateIcon from '@mui/icons-material/Create';
 import * as Yup from 'yup';
+import { useSelector } from 'react-redux';
+import { InfoUserState } from 'features/slices/user.slice';
 
 export default function Profile() {
     const initialAvatar = "https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-1/464101933_1589786078272232_287137893144228374_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=1d2534&_nc_eui2=AeFZ_F4zxmKCgXkHtnzM65KuTZS2vXvykOVNlLa9e_KQ5W3tmi74wWkCOrXbcUjO2U_zMRjbKLnJbDRcQC0AvYom&_nc_ohc=fntF45CyjwoQ7kNvgGAS3oJ&_nc_oc=AdjDVcDqezTvMJC-iPckFI8_oIdle2kd3kIyJL2D8GUiooruud6pGDGffvYfg8TTx9k&_nc_zt=24&_nc_ht=scontent.fhan20-1.fna&_nc_gid=AbrzYHpfX9HXEkl5D1Xz90n&oh=00_AYEx_Qw1bOzv_ic1HnccGEMa8XZOQEhdPwT6edtFMJEGug&oe=67D2F90F";
 
     const [avatar, setAvatar] = useState(initialAvatar);
+    const infoUser = useSelector(InfoUserState);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -32,33 +35,32 @@ export default function Profile() {
                     alignItems: "center",
                     justifyContent: "center",
                     textAlign: "center",
-                    height: "100%",
                     borderRadius: 5,
 
                 }}>
                     <Box pb={8} pt={8}>
                         <Box p={2} component="img"
-                            src="https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-1/464101933_1589786078272232_287137893144228374_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=1d2534&_nc_eui2=AeFZ_F4zxmKCgXkHtnzM65KuTZS2vXvykOVNlLa9e_KQ5W3tmi74wWkCOrXbcUjO2U_zMRjbKLnJbDRcQC0AvYom&_nc_ohc=fntF45CyjwoQ7kNvgGAS3oJ&_nc_oc=AdjDVcDqezTvMJC-iPckFI8_oIdle2kd3kIyJL2D8GUiooruud6pGDGffvYfg8TTx9k&_nc_zt=24&_nc_ht=scontent.fhan20-1.fna&_nc_gid=AbrzYHpfX9HXEkl5D1Xz90n&oh=00_AYEx_Qw1bOzv_ic1HnccGEMa8XZOQEhdPwT6edtFMJEGug&oe=67D2F90F"
+                            src={infoUser.avatar || avatar}
                             alt="Example"
-                            sx={{ width: 300, height: 300 }}>
+                            sx={{ width: 200, height: 200 }}>
                         </Box>
                         <Box>
                             <Box>
-                                <Typography variant="h3" >Vũ Tiến Khoái </Typography>
-                                <Typography gutterBottom sx={{ color: '#007AE1', fontSize: '20px', marginBottom: '20px' }}>Admin </Typography>
+                                <Typography variant="h3" >{infoUser?.name} </Typography>
+                                <Typography gutterBottom sx={{ color: '#007AE1', fontSize: '20px', marginBottom: '20px' }}>{infoUser?.role}  </Typography>
                             </Box>
                             <Container  >
                                 <Box display="flex" gap={1}>
                                     <MailOutlineIcon />
-                                    <Typography gutterBottom sx={{ color: '#6C757D', fontSize: '15px', marginBottom: '20px' }}>Khoaivu2k3@gmail.com</Typography>
+                                    <Typography gutterBottom sx={{ color: '#6C757D', fontSize: '15px', marginBottom: '20px' }}>{infoUser?.email} </Typography>
                                 </Box>
                                 <Box display="flex" gap={1}>
                                     <PhoneIcon />
-                                    <Typography gutterBottom sx={{ color: '#6C757D', fontSize: '15px', marginBottom: '20px' }}>0324684521</Typography>
+                                    <Typography gutterBottom sx={{ color: '#6C757D', fontSize: '15px', marginBottom: '20px' }}>{infoUser?.phone || "Chưa cập nhật"} </Typography>
                                 </Box>
                                 <Box display="flex" gap={1}>
                                     <MapIcon />
-                                    <Typography variant="span" sx={{ color: '#6C757D', fontSize: '15px', marginBottom: '20px' }}>Kim Lũ, Sóc Sơn, Hà Nội</Typography>
+                                    <Typography variant="span" sx={{ color: '#6C757D', fontSize: '15px', marginBottom: '20px' }}>{infoUser?.address || "Chưa cập nhật"} </Typography>
                                 </Box>
                             </Container>
                         </Box>
@@ -66,9 +68,9 @@ export default function Profile() {
                     </Box>
 
                 </Grid>
-                <Grid item md={7} bgcolor="white" p={4}  >
+                <Grid item md={7} bgcolor="white" p={4} sx={{ borderRadius: 5 }}  >
                     <Box bgcolor="white" pb={3}>
-                        <Typography variant="h4" gutterBottom sx={{ color: '#007AE1', fontSize: '25px' }}>Personal Details</Typography>
+                        <Typography variant="h4" gutterBottom sx={{ color: '#007AE1', fontSize: '25px' }}>Thông tin cá nhân</Typography>
                     </Box>
                     <Formik
                         initialValues={{
@@ -95,7 +97,7 @@ export default function Profile() {
                                         <Box sx={{ position: "relative", display: "inline-block" }}>
                                             <Box
                                                 component="img"
-                                                src={avatar}
+                                                src={infoUser.avatar || avatar}
                                                 alt="Avatar"
                                                 sx={{ width: 170, height: 170, borderRadius: "50%", border: "2px solid #ddd" }}
 
@@ -134,7 +136,7 @@ export default function Profile() {
                                             <OutlinedInput
                                                 id="email-login"
                                                 type="email"
-                                                value={values.name}
+                                                value={infoUser.name}
                                                 name="name"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
@@ -151,7 +153,7 @@ export default function Profile() {
                                             <OutlinedInput
                                                 id="email-login"
                                                 type="email"
-                                                value={values.email}
+                                                value={infoUser.email}
                                                 name="email"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
@@ -167,7 +169,7 @@ export default function Profile() {
                                             <OutlinedInput
                                                 id="email-login"
                                                 type="email"
-                                                value={values.phone}
+                                                value={infoUser.phoneNumber}
                                                 name="phone"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
@@ -184,7 +186,7 @@ export default function Profile() {
                                             <OutlinedInput
                                                 id="email-login"
                                                 type="email"
-                                                value={values.address}
+                                                value={infoUser.address}
                                                 name="address"
                                                 onBlur={handleBlur}
                                                 onChange={handleChange}
@@ -205,9 +207,9 @@ export default function Profile() {
                                                 name="role"
                                                 fullWidth
                                                 error={Boolean(touched.email && errors.email)}
+                                                disabled={true}
                                             />
                                         </Stack>
-
                                     </Grid>
                                 </Grid>
                             </form>
