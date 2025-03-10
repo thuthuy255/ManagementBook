@@ -98,6 +98,7 @@ export default function Profile() {
                                                 src={avatar}
                                                 alt="Avatar"
                                                 sx={{ width: 170, height: 170, borderRadius: "50%", border: "2px solid #ddd" }}
+
                                             />
                                             {/* Nút upload ảnh */}
                                             <IconButton
