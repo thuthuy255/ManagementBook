@@ -26,7 +26,7 @@ export default function Profile() {
     return (
         <Container maxWidth='sx' sx={{ marginTop: '20px' }}>
             <Grid container gap={10}   >
-                <Grid item md={3} bgcolor="white" p={4} sx={{
+                <Grid item md={3} xs={12} bgcolor="white" p={4} sx={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
