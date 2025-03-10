@@ -1,8 +1,8 @@
 import { axiosClient } from 'services/axiosConfig';
-import { stringifyQuery } from 'utils/StringHelper';
+import { stringtifyQuery } from 'utils/StringHelper';
 
 export const GetAllUser = (params) => {
-  const query = stringifyQuery(params);
+  const query = stringtifyQuery(params);
   const url = `/user/info?${query}`;
   return axiosClient.get(url);
 };

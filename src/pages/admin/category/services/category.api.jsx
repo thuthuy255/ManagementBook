@@ -1,23 +1,22 @@
 import { axiosClient, axiosClientFile } from 'services/axiosConfig';
+import { stringtifyQuery } from 'utils/StringHelper';
 
-export const getAllCategory = () => {
-  const url = `/category`;
+export const getAllCategory = (params) => {
+  const query = stringtifyQuery(params);
+  const url = `/category?${query}`;
   return axiosClient.get(url);
 };
 export const createCategory = (body) => {
-  console.log(body);
   const url = `/category/create`;
   return axiosClientFile.post(url, body);
 };
 
 export const updateCategory = (body) => {
-  console.log(body);
   const url = `/category/update`;
   return axiosClientFile.post(url, body);
 };
 
 export const deleteCategory = (body) => {
   const url = `/category/delete`;
-  console.log(url);
   return axiosClient.delete(url, body);
 };

@@ -67,15 +67,19 @@ const useCategoryManagement = () => {
     handleToggleModalDelete();
   };
 
+  const handleSearchTable = useCallback((value) => {
+    handleListTable(value);
+  }, []);
+
   const handleDeleteCateogory = useCallback(() => {
-    console.log('Log', selectedItem);
+    console.log('Xóa phần tử này:', selectedItem?.id);
     if (!selectedItem) {
       showToast('Không lấy được id  ', 'error');
       return;
     }
     handleToggleLoadingDelete();
     const body = {
-      ArticleID: selectedItem?.id
+      CategoryID: selectedItem?.id
     };
     deleteCategory(body)
       .then((response) => {
@@ -97,9 +101,13 @@ const useCategoryManagement = () => {
   }, [selectedItem]);
 
   // Lấy danh sách sách từ API
-  const handleListTable = () => {
+  const handleListTable = useCallback((type) => {
     handleToggleLoading();
-    getAllCategory()
+    getAllCategory({
+      ...(type && { type }),
+      page: 1,
+      limit: 5
+    })
       .then((response) => {
         if (response.err === 0) {
           setCategory(response?.data?.rows);
@@ -114,7 +122,7 @@ const useCategoryManagement = () => {
       .finally(() => {
         handleToggleLoading();
       });
-  };
+  }, []);
 
   const handleSubmitAdd = async (values) => {
     try {
@@ -163,7 +171,7 @@ const useCategoryManagement = () => {
     }
   };
   useEffect(() => {
-    handleListTable();
+    handleSearchTable();
   }, []);
   const columns = [
     {
@@ -209,17 +217,7 @@ const useCategoryManagement = () => {
       flex: 1,
       headerAlign: 'center',
       align: 'center',
-      renderCell: (params) => (
-        <ButtonAction item={params?.row} onEdit={handleEdit} onDelete={handleDelete} />
-        // <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', padding: '5px' }}>
-        //   <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
-        //     <EditIcon />
-        //   </IconButton>
-        //   <IconButton color="error" size="small" onClick={() => handleCloseModal(params.row.id)}>
-        //     <DeleteIcon />
-        //   </IconButton>
-        // </div>
-      )
+      renderCell: (params) => <ButtonAction item={params?.row} onEdit={handleEdit} onDelete={handleDelete} />
     }
   ];
 
@@ -235,7 +233,8 @@ const useCategoryManagement = () => {
     handleSubmitAdd,
     handleSubmitUpdate,
     handleDeleteCateogory,
-    handleToggleModalDelete
+    handleToggleModalDelete,
+    handleSearchTable
   };
 };
 
