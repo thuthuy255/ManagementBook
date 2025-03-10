@@ -33,21 +33,19 @@ export default function Breadcrumbs({ navigation, title, ...others }) {
   };
 
   useEffect(() => {
-    if (location.pathname === "/profile") {
+    if (location.pathname === '/profile') {
       // Nếu đang ở trang Profile, tắt active menu
       setMain(null);
-      setItem({ title: "Profile", breadcrumbs: true }); // Thêm tiêu đề Breadcrumbs
+      setItem({ title: 'Profile', breadcrumbs: true }); // Thêm tiêu đề Breadcrumbs
     } else {
       // Duyệt menu bình thường để tìm mục active
       navigation?.items?.forEach((menu) => {
-        if (menu.type === "group") {
+        if (menu.type === 'group') {
           getCollapse(menu);
         }
       });
     }
   }, [location.pathname, navigation]);
-
-
 
   // only used for component demo breadcrumbs
   if (location.pathname === '/breadcrumbs') {
@@ -87,16 +85,17 @@ export default function Breadcrumbs({ navigation, title, ...others }) {
                 <Typography component={Link} to="/" color="textSecondary" variant="h6" sx={{ textDecoration: 'none' }}>
                   Trang chủ
                 </Typography>
-                {item && item.title === "Profile" ? (
-                  <Typography variant="subtitle1" color="textPrimary">Profile</Typography>
+                {item && item.title === 'Profile' ? (
+                  <Typography variant="subtitle1" color="textPrimary">
+                    Profile
+                  </Typography>
                 ) : (
-                  <>
+                  <div>
                     {mainContent}
                     {itemContent}
-                  </>
+                  </div>
                 )}
               </MuiBreadcrumbs>
-
             </Grid>
             {title && <Grid item sx={{ mt: 2 }}></Grid>}
           </Grid>

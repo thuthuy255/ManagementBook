@@ -15,14 +15,14 @@ function ListPageBook() {
     );
   }
   return (
-    <>
+    <div>
       <StyledDataGrid rows={books} columns={columns} paginationModel={{ page: 0, pageSize: 5 }} />
       <Modal open={stateComponent.modal} onClose={handleToggleModalBook}>
         <div>
           <UpdateBook selectedBook={selectedBook} handleToggleModalBook={handleToggleModalBook} />
         </div>
       </Modal>
-    </>
+    </div>
   );
 }
 
