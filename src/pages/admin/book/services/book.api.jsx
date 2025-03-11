@@ -1,6 +1,6 @@
-import { axiosClientNoAuth } from "services/axiosConfig";
+import { axiosClientNoAuth } from 'services/axiosConfig';
 
 export const ListBook = () => {
-    const url = `/product`;
-    return axiosClientNoAuth.get(url);
+  const url = `/product`;
+  return axiosClientNoAuth.get(url);
 };
