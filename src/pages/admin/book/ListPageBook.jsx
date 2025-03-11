@@ -4,9 +4,10 @@ import StyledDataGrid from 'components/table/StyledDataGrid';
 import UpdateBook from './updateBook/UpdateBook';
 import useBookList from './hook/useListBook';
 import Loading from 'components/loading/Loading';
+import HeaderTable from 'components/table/headerTable/HeaderTable';
 
 function ListPageBook() {
-  const { books, selectedBook, handleEdit, stateComponent, handleListBook, handleToggleModalBook, columns } = useBookList();
+  const { books, selectedBook, handleEdit, stateComponent, handleToggleModalBook, columns, handleSearchTable } = useBookList();
   if (stateComponent.loading) {
     return (
       <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
