@@ -170,74 +170,7 @@ const useBannerManagement = () => {
     handleSearchTable();
   }, []);
   // Cấu hình cột cho bảng
-  const columns = [
-    // { field: 'id', headerName: 'Mã danh mục', headerAlign: 'center', align: 'center', cellClassName: 'center-cell' },
-    {
-      field: 'name',
-      headerName: 'Tên Banner',
-      flex: 1,
-      headerAlign: 'center',
-      width: '100px',
-      align: 'center',
-      cellClassName: 'center-cell'
-    },
-    {
-      field: 'img',
-      headerName: 'Ảnh',
-      sortable: false,
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-      height: '300px',
-      renderCell: (params) => {
-        return <img src={params.value} alt="Ảnh sản phẩm" width={100} height={100} />;
-      }
-    },
-    {
-      field: 'active',
-      headerName: 'Hiển thị',
-      sortable: false,
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
 
-      renderCell: (params) => {
-        return <span>{params?.value == '1' ? 'Hiển thị' : 'Không hiển thị'}</span>;
-      }
-    },
-    {
-      field: 'createdAt',
-      headerName: 'Ngày tạo',
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: (params) => {
-        return (
-          <Box container justifyContent={'center'} alignItems={'center'}>
-            <p>{formatDate(params.value)}</p>
-          </Box>
-        );
-      }
-    },
-    {
-      field: 'actions',
-      headerName: 'Hành động',
-      sortable: false,
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: (params) => (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', padding: '5px' }}>
-          <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error" size="small" onClick={() => handleCloseModal(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
-        </div>
-      )
-    }
-  ];
 
   return {
     banner,
