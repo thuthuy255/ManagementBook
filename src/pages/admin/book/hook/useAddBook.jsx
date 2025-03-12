@@ -3,10 +3,13 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { showToast } from 'components/notification/CustomToast';
 import { getAllCategory } from 'pages/admin/category/services/category.api';
+import { useNavigate } from 'react-router';
+import { CreateBook } from '../services/book.api';
 
 export default function useAddBook() {
   const [categoryBook, setCategoryBook] = useState([]);
-
+  const [loading, setLoading] = useState(false);
+  const naviagte = useNavigate();
   // Gọi API lấy danh sách thể loại sách
   useEffect(() => {
     const fetchCategories = async () => {
@@ -26,8 +29,33 @@ export default function useAddBook() {
 
   // Hàm xử lý submit form
   const handleSubmitForm = useCallback(async (values) => {
-    console.log('Dữ liệu gửi lên:', values);
-    showToast('Thêm sách thành công!', 'success');
+    console.log(values);
+    const formData = new FormData();
+    formData.append('author', values.author);
+    formData.append('name', values.name);
+    formData.append('description', values.description);
+    formData.append('publisher', values.publisher);
+    formData.append('qty', values.qty);
+    formData.append('img_src', values.img_src);
+    formData.append('type', values.type);
+    formData.forEach((value, key) => {
+      console.log(key, value);
+    });
+    setLoading(true);
+    try {
+      const response = await CreateBook(formData);
+      if (response && response?.err === 0) {
+        showToast(response?.mess, 'success');
+        naviagte('/book-management');
+      } else {
+        showToast(response?.mess, 'warning');
+      }
+    } catch (error) {
+      console.error('Đã có lỗi xảy ra', error);
+      showToast('Có lỗi xảy ra', 'error');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   // Formik config
@@ -55,5 +83,5 @@ export default function useAddBook() {
     onSubmit: handleSubmitForm
   });
 
-  return { formik, categoryBook };
+  return { formik, categoryBook, loading };
 }
