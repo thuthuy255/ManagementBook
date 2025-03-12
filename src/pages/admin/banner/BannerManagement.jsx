@@ -1,6 +1,5 @@
 import StyledDataGrid from 'components/table/StyledDataGrid';
 import React, { useCallback } from 'react';
-import useBannerManagement from './hook/useBannerManagement';
 import { Box, Grid } from '@mui/material';
 import Loading from 'components/loading/Loading';
 import HeaderTable from 'components/table/headerTable/HeaderTable';
