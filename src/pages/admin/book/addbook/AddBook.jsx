@@ -22,9 +22,10 @@ import { getAllCategory } from 'pages/admin/category/services/category.api';
 import InputSelect from 'components/input/InputSelect';
 import ImageUploader from 'components/uploadImage/ImageUploader';
 import useAddBook from '../hook/useAddBook';
+import Loading from 'components/loading/Loading';
 
 export default function AddBook() {
-  const { formik, categoryBook } = useAddBook();
+  const { formik, categoryBook, loading } = useAddBook();
 
   return (
     <Container maxWidth={false} disableGutters style={{ height: 'calc(100vh - 200px)' }}>
@@ -32,9 +33,14 @@ export default function AddBook() {
         <Typography variant="h4" gutterBottom mb={0}>
           Thêm sản phẩm
         </Typography>
-        <Button type="submit" variant="contained" color="primary" onClick={formik.handleSubmit}>
-          Xác nhận
-        </Button>
+
+        {loading ? (
+          <Loading />
+        ) : (
+          <Button type="submit" variant="contained" color="primary" onClick={formik.handleSubmit}>
+            Xác nhận
+          </Button>
+        )}
       </Grid>
 
       <Grid container sx={{ flex: 1, minHeight: 0 }}>
