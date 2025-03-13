@@ -37,7 +37,7 @@ export default function DashboardLayout() {
         <Box>
           <Breadcrumbs navigation={navigation} title />
         </Box>
-        <Box paddingBottom={'60px'} sx={{ overflowY: 'auto' }}>
+        <Box paddingBottom={'60px'} sx={{ overflowY: 'auto', flexGrow: 1 }} >
           <Outlet />
         </Box>
       </Box>

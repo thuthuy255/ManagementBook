@@ -6,12 +6,7 @@ import { showToast } from 'components/notification/CustomToast';
 import { formatPrice } from 'utils/format';
 import { GetAllArticles } from '../services/Post.api';
 import { formatJson } from 'utils/format/FormatJson';
-
-// Hàm định dạng ngày
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('vi-VN');
-};
-
+import { formatDate } from 'utils/format/FormatDate';
 const usePostList = () => {
   const [posts, setPosts] = useState([]);
   const [stateComponent, setStateComponent] = useState({
