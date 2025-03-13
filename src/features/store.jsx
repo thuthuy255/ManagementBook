@@ -1,11 +1,13 @@
-// store.js
 import { configureStore } from '@reduxjs/toolkit';
 import appReducer from './slices/app.slice';
 import userReducer from './slices/user.slice';
+import loadingReducer from './slices/loading.slice'; // Đảm bảo đúng đường dẫn
+
 const store = configureStore({
   reducer: {
-    app: appReducer, // Thêm appSlice vào store,,
-    user: userReducer
+    app: appReducer,
+    user: userReducer,
+    loading: loadingReducer // ✅ Kiểm tra có cái này chưa?
   }
 });
 

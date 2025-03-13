@@ -12,6 +12,7 @@ import useAuthToken from 'hook/useAuthToken';
 import { showToast } from 'components/notification/CustomToast';
 import { GetInfoUser } from 'services/user.api';
 import { setUserState } from 'features/slices/user.slice';
+import GlobalLoading from 'components/loading/GlobalLoading ';
 
 // ==============================|| APP - THEME, ROUTER, LOCAL ||============================== //
 
@@ -54,6 +55,7 @@ export default function App() {
       <ScrollTop>
         <RouterProvider router={routes} />
         <ToastContainer />
+        <GlobalLoading />
       </ScrollTop>
     </ThemeCustomization>
   );

@@ -17,6 +17,7 @@ export const updateCategory = (body) => {
 };
 
 export const deleteCategory = (body) => {
+  console.log('xin chào', body);
   const url = `/category/delete`;
-  return axiosClient.delete(url, body);
+  return axiosClient.delete(url, { data: body });
 };

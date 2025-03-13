@@ -1,8 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { IconButton } from '@mui/material';
 import { showToast } from 'components/notification/CustomToast';
 import { formatDate } from 'utils/format/FormatDate';
 import { createCategory, deleteCategory, getAllCategory, updateCategory } from '../services/category.api';
@@ -71,62 +67,60 @@ const useCategoryManagement = () => {
     handleListTable(value);
   }, []);
 
-  const handleDeleteCateogory = useCallback(() => {
-    console.log('Xóa phần tử này:', selectedItem?.id);
+  const handleDeleteCateogory = useCallback(async () => {
     if (!selectedItem) {
-      showToast('Không lấy được id  ', 'error');
+      showToast('Không lấy được id', 'error');
       return;
     }
+
     handleToggleLoadingDelete();
-    const body = {
-      CategoryID: selectedItem?.id
-    };
-    deleteCategory(body)
-      .then((response) => {
-        if (response.err === 0) {
-          handleListTable();
-          showToast('Xóa thành công danh mục', 'success');
-          handleToggleModalDelete();
-        } else {
-          showToast(response.mess, 'error');
-        }
-      })
-      .catch((error) => {
-        console.error('Lỗi đăng ký:', error);
-        showToast('Có lỗi xảy ra: ' + error, 'error');
-      })
-      .finally(() => {
-        handleToggleLoadingDelete();
-      });
-  }, [selectedItem]);
+
+    try {
+      const body = { categoryID: `${selectedItem?.id}` };
+      const response = await deleteCategory(body);
+
+      console.log('Xin chào body', response);
+
+      if (response.err === 0) {
+        await handleListTable();
+        showToast('Xóa thành công danh mục', 'success');
+        handleToggleModalDelete();
+      } else {
+        showToast(response.mess, 'error');
+      }
+    } catch (error) {
+      console.error('Lỗi đăng ký:', error);
+      showToast('Có lỗi xảy ra: ' + error, 'error');
+    } finally {
+      handleToggleLoadingDelete();
+    }
+  }, [selectedItem, handleToggleLoadingDelete]);
 
   // Lấy danh sách sách từ API
-  const handleListTable = useCallback((type) => {
+  const handleListTable = useCallback(async (type) => {
     handleToggleLoading();
-    getAllCategory({
-      ...(type && { type }),
-      page: 1,
-      limit: 5
-    })
-      .then((response) => {
-        if (response.err === 0) {
-          setCategory(response?.data?.rows);
-        } else {
-          showToast(response.mess, 'error');
-        }
-      })
-      .catch((error) => {
-        console.error('Lỗi đăng ký:', error);
-        showToast('Có lỗi xảy ra: ' + error, 'error');
-      })
-      .finally(() => {
-        handleToggleLoading();
+    try {
+      const response = await getAllCategory({
+        ...(type && { type }),
+        page: 1,
+        limit: 5
       });
+
+      if (response.err === 0) {
+        setCategory(response?.data?.rows);
+      } else {
+        showToast(response.mess, 'error');
+      }
+    } catch (error) {
+      console.error('Lỗi lấy danh mục:', error);
+      showToast('Có lỗi xảy ra: ' + error, 'error');
+    } finally {
+      handleToggleLoading();
+    }
   }, []);
 
   const handleSubmitAdd = async (values) => {
     try {
-      console.log('Dữ liệu form:', values);
       const formData = new FormData();
       formData.append('type', values.type);
       if (values.images.length > 0) {
@@ -137,10 +131,10 @@ const useCategoryManagement = () => {
         showToast('Đã có lỗi xảy ra ' + response?.mess, 'warning');
         return;
       }
-      showToast('Thêm thành công danh mục', 'success');
       handleListTable();
+      showToast('Thêm thành công danh mục', 'success');
+
       handleToggleModalAdd();
-      console.log('Response:', response.data);
     } catch (error) {
       console.error('Lỗi khi tạo danh mục:', error);
       showToast('Có lỗi xảy ra: ' + error, 'error');

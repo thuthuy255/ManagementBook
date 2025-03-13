@@ -1,119 +1,134 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Container, Button, Typography, Grid } from '@mui/material';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
-import CustomTextField from 'components/input/CustomTextField';
-import { showToast } from 'components/notification/CustomToast';
-import { getAllCategory } from 'pages/admin/category/services/category.api';
-import InputSelect from 'components/input/InputSelect';
-import ImageUploader from 'components/uploadImage/ImageUploader';
-
-export default function AddBook() {
-  const [categoryBook, setCategoryBook] = useState([]);
-
-  const handleGetListCategory = useCallback(async () => {
-    try {
-      const response = await getAllCategory();
-      if (!response || response?.err !== 0) {
-        showToast(response?.mess, 'warning');
-        return;
-      }
-      setCategoryBook(response?.data?.rows);
-    } catch (error) {
-      showToast('Có lỗi xảy ra' + error, 'error');
-    }
-  }, []);
-
-  const handleCreateProducts = useCallback(async (values) => {
-    console.log('Đây là dữ liệu của bạn');
-  }, []);
-
-  useEffect(() => {
-    handleGetListCategory();
-  }, []);
-
+import { Box, Button, Card, CardMedia, Grid, TextField, IconButton } from '@mui/material';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import React, { useRef } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
+export default function CommonFormWithImages({
+  title,
+  formFields,
+  initialValues,
+  validationSchema,
+  handleSubmit,
+  handleCancel,
+  multiple = false // Thêm option chọn nhiều hoặc 1 ảnh
+}) {
+  const fileInputRef = useRef(null);
+  const handleFileInputClick = () => {
+    fileInputRef.current?.click();
+  };
   return (
-    <Container maxWidth={false} disableGutters style={{ height: 'calc(100vh - 200px)' }}>
-      <Formik
-        initialValues={{
-          name: '',
-          price: '',
-          description: '',
-          author: '',
-          publisher: '',
-          qty: '',
-          type: '',
-          img_src: []
-        }}
-        validationSchema={Yup.object({
-          name: Yup.string().required('Tên sản phẩm không được để trống'),
-          price: Yup.number().typeError('Giá phải là số').required('Giá không được để trống'),
-          description: Yup.string(),
-          author: Yup.string().required('Tác giả không được để trống'),
-          publisher: Yup.string(),
-          qty: Yup.number().typeError('Số lượng phải là số').required('Số lượng không được để trống'),
-          type: Yup.string().required('Loại không được để trống'),
-          img_src: Yup.array().required('Ảnh sản phẩm là bắt buộc')
-        })}
-        onSubmit={handleCreateProducts}
-      >
-        {({ values, handleChange, handleBlur, setFieldValue }) => (
-          <Form>
-            <Grid container display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-              <Typography variant="h4" gutterBottom mb={0}>
-                Thêm sản phẩm
-              </Typography>
-              <Button type="submit" variant="contained" color="primary" onClick={handleCreateProducts}>
-                Xác nhận
-              </Button>
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
+      {({ errors, touched, values, setFieldValue }) => (
+        <Form>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 800,
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2
+            }}
+          >
+            <h2 style={{ marginBottom: '20px', marginTop: 0 }}>{title}</h2>
+            <Grid container spacing={3}>
+              {/* Form bên trái */}
+              <Grid item xs={5}>
+                <Grid container spacing={2}>
+                  {formFields.map(({ name, label, type }) => (
+                    <Grid item xs={12} key={name}>
+                      <Field
+                        as={TextField}
+                        fullWidth
+                        label={label}
+                        name={name}
+                        variant="outlined"
+                        type={type || 'text'}
+                        error={touched[name] && !!errors[name]}
+                        helperText={<ErrorMessage name={name} />}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+              {/* Hình ảnh bên phải */}
+              <Grid item xs={7}>
+                <Grid container spacing={2}>
+                  {values.images.length > 0 &&
+                    values.images.map((file, index) => (
+                      <Grid item xs={4} key={index}>
+                        <Card sx={{ position: 'relative' }}>
+                          <CardMedia
+                            component="img"
+                            height="100"
+                            image={URL.createObjectURL(file)} // Hiển thị ảnh từ file
+                            alt={`Ảnh ${index + 1}`}
+                          />
+                          {/* <CardMedia
+                             component="img"
+                             height="100"
+                             image={typeof file === 'string' ? file : URL.createObjectURL(file)}
+                             alt={`Ảnh ${index + 1}`}
+                           /> */}
+                          <IconButton
+                            size="small"
+                            sx={{ position: 'absolute', top: 5, right: 5, bgcolor: 'rgba(255,255,255,0.7)' }}
+                            onClick={() =>
+                              setFieldValue(
+                                'images',
+                                values.images.filter((_, i) => i !== index)
+                              )
+                            }
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </Card>
+                      </Grid>
+                    ))}
+
+                  {/* Nút thêm ảnh */}
+                  <Grid item xs={4}>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      sx={{ height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      onClick={handleFileInputClick}
+                    >
+                      <AddIcon />
+                    </Button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      multiple={multiple} // Chọn nhiều ảnh nếu multiple = true
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files);
+                        if (files.length > 0) {
+                          setFieldValue('images', multiple ? [...values.images, ...files] : [files[0]]);
+                        }
+                      }}
+                    />
+                    {touched.images && errors.images && <p style={{ color: 'red', marginTop: 5 }}>{errors.images}</p>}
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
 
-            <Grid container sx={{ flex: 1, minHeight: 0 }}>
-              <Grid item xs={12} md={6}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={6}>
-                    <CustomTextField name="name" label="Tên sản phẩm" />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <CustomTextField name="author" label="Tác giả" />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <CustomTextField name="publisher" label="Nhà xuất bản" />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <CustomTextField name="price" label="Giá" type="number" />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <CustomTextField name="qty" label="Số lượng" type="number" />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <InputSelect
-                      label="Loại sản phẩm"
-                      name="type"
-                      value={values.type}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      options={categoryBook}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={12}>
-                    <CustomTextField name="description" label="Mô tả" multiline />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} md={6} px={4}>
-                <Grid item xs={12} md={12}>
-                  <ImageUploader
-                    images={values.img_src || []}
-                    setImages={(newImages) => setFieldValue('img_src', newImages)}
-                    multiple={true}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-          </Form>
-        )}
-      </Formik>
-    </Container>
+            <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
+              <Button variant="outlined" onClick={handleCancel}>
+                Hủy
+              </Button>
+              <Button type="submit" variant="contained" color="primary">
+                Lưu
+              </Button>
+            </Box>
+          </Box>
+        </Form>
+      )}
+    </Formik>
   );
 }

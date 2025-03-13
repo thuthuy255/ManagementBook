@@ -11,7 +11,7 @@ function CustomTextField({ formik, name, label, type = 'text', multiline = false
       type={type}
       multiline={multiline}
       rows={multiline ? 3 : 1}
-      value={formik.values[name]}
+      value={formik.values[name] || ''}
       onChange={formik.handleChange}
       onBlur={formik.handleBlur}
       error={formik.touched[name] && Boolean(formik.errors[name])}

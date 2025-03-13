@@ -6,7 +6,12 @@ export const ListBook = () => {
 };
 
 export const CreateBook = (body) => {
-  console.log('đây là ', body);
   const url = `/product/add`;
   return axiosClientFile.post(url, body);
+};
+
+export const deleteBook = (body) => {
+  console.log('đây là body', body);
+  const url = `/product/delete`;
+  return axiosClientFile.delete(url, { data: body });
 };

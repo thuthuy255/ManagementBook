@@ -3,17 +3,35 @@ import { useState, useEffect, useCallback } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
-import { ListBook } from '../services/book.api';
+import { deleteBook, ListBook } from '../services/book.api';
 import { showToast } from 'components/notification/CustomToast';
 import { formatPrice } from 'utils/format';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
 
 const useBookList = () => {
+  const dispacth = useDispatch();
   const [books, setBooks] = useState([]);
   const [stateComponent, setStateComponent] = useState({
     modal: false,
-    loading: false
+    loading: false,
+    modalDelete: false
   });
   const [selectedBook, setSelectedBook] = useState(null);
+
+  //Đóng modal delete
+  const handleToggleModalDelete = useCallback(() => {
+    setStateComponent((prev) => ({
+      ...prev,
+      modalDelete: !prev.modalDelete
+    }));
+  }, []);
+
+  const handleDeleteConfirm = useCallback((id) => {
+    if (!id) return;
+    handleToggleModalDelete();
+    setSelectedBook(id);
+  }, []);
 
   // Toggle modal
   const handleToggleModalBook = useCallback(() => {
@@ -56,6 +74,39 @@ const useBookList = () => {
         handleToggleLoading();
       });
   };
+
+  const handleDeleteProducts = useCallback(async () => {
+    dispacth(showLoading());
+
+    if (!selectedBook) {
+      dispacth(hideLoading());
+      showToast('Không tìm thấy sản phẩm', 'error');
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append('productID', selectedBook);
+
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
+      const response = await deleteBook(formData);
+
+      if (response?.err !== 0) {
+        showToast(response?.mess, 'warning');
+        dispacth(hideLoading());
+        return;
+      }
+      await handleListBook();
+      showToast('Xóa thành công', 'success');
+    } catch (error) {
+      console.error('Lỗi đăng ký:', error);
+      showToast('Có lỗi xảy ra: ' + error, 'error');
+    } finally {
+      dispacth(hideLoading());
+      handleToggleModalDelete();
+    }
+  }, [selectedBook]);
 
   useEffect(() => {
     handleListBook();
@@ -138,7 +189,7 @@ const useBookList = () => {
           <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
             <EditIcon />
           </IconButton>
-          <IconButton color="error" size="small" onClick={() => handleCloseModal(params.row.id)}>
+          <IconButton color="error" size="small" onClick={handleDeleteConfirm.bind(null, params.row.id)}>
             <DeleteIcon />
           </IconButton>
         </div>
@@ -153,7 +204,9 @@ const useBookList = () => {
     handleEdit,
     handleListBook,
     handleToggleModalBook,
-    columns
+    columns,
+    handleToggleModalDelete,
+    handleDeleteProducts
   };
 };
 

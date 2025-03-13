@@ -1,28 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Container,
-  TextField,
-  Button,
-  Typography,
-  MenuItem,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  Paper,
-  Select,
-  FormControl,
-  InputLabel
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import React from 'react';
+import { Container, Button, Typography, Grid } from '@mui/material';
 import CustomTextField from 'components/input/CustomTextField';
-import { showToast } from 'components/notification/CustomToast';
-import { getAllCategory } from 'pages/admin/category/services/category.api';
 import InputSelect from 'components/input/InputSelect';
 import ImageUploader from 'components/uploadImage/ImageUploader';
 import useAddBook from '../hook/useAddBook';
 import Loading from 'components/loading/Loading';
+import ModalConfirm from 'components/modal/ModalConfirm';
 
 export default function AddBook() {
   const { formik, categoryBook, loading } = useAddBook();
@@ -85,7 +68,8 @@ export default function AddBook() {
             <ImageUploader
               images={formik.values.img_src || []}
               setImages={(newImages) => formik.setFieldValue('img_src', newImages)}
-              multiple={true} // Hoặc false nếu chỉ chọn 1 ảnh
+              multiple={true}
+              error={formik.errors.img_src}
             />
           </Grid>
         </Grid>

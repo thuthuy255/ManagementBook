@@ -5,12 +5,15 @@ import { showToast } from 'components/notification/CustomToast';
 import { getAllCategory } from 'pages/admin/category/services/category.api';
 import { useNavigate } from 'react-router';
 import { CreateBook } from '../services/book.api';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
 
 export default function useAddBook() {
   const [categoryBook, setCategoryBook] = useState([]);
   const [loading, setLoading] = useState(false);
-  const naviagte = useNavigate();
-  // Gọi API lấy danh sách thể loại sách
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -27,36 +30,39 @@ export default function useAddBook() {
     fetchCategories();
   }, []);
 
-  // Hàm xử lý submit form
-  const handleSubmitForm = useCallback(async (values) => {
-    console.log(values);
-    const formData = new FormData();
-    formData.append('author', values.author);
-    formData.append('name', values.name);
-    formData.append('description', values.description);
-    formData.append('publisher', values.publisher);
-    formData.append('qty', values.qty);
-    formData.append('img_src', values.img_src);
-    formData.append('type', values.type);
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
-    setLoading(true);
-    try {
-      const response = await CreateBook(formData);
-      if (response && response?.err === 0) {
-        showToast(response?.mess, 'success');
-        naviagte('/book-management');
-      } else {
-        showToast(response?.mess, 'warning');
+  const handleSubmitForm = useCallback(
+    async (values) => {
+      const formData = new FormData();
+      formData.append('author', values.author);
+      formData.append('name', values.name);
+      formData.append('price', values.price);
+      formData.append('description', values.description);
+      formData.append('publisher', values.publisher);
+      formData.append('qty', values.qty);
+      formData.append('type', values.type);
+      if (Array.isArray(values.img_src) && values.img_src.length > 0) {
+        values.img_src.forEach((file) => {
+          formData.append('img_src', file);
+        });
       }
-    } catch (error) {
-      console.error('Đã có lỗi xảy ra', error);
-      showToast('Có lỗi xảy ra', 'error');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      dispatch(showLoading());
+      try {
+        const response = await CreateBook(formData);
+        if (response && response?.err === 0) {
+          showToast(response?.mess, 'success');
+          navigate('/book-management');
+        } else {
+          showToast(response?.mess, 'warning');
+        }
+      } catch (error) {
+        console.error('Đã có lỗi xảy ra', error);
+        showToast('Có lỗi xảy ra', 'error');
+      } finally {
+        dispatch(hideLoading());
+      }
+    },
+    [setLoading, showToast, navigate]
+  );
 
   // Formik config
   const formik = useFormik({
@@ -68,7 +74,7 @@ export default function useAddBook() {
       publisher: '',
       qty: '',
       type: '',
-      img_src: []
+      img_src: [] // ✅ Khởi tạo đúng kiểu dữ liệu
     },
     validationSchema: Yup.object({
       name: Yup.string().required('Tên sản phẩm không được để trống'),

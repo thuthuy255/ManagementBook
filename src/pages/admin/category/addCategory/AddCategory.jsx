@@ -1,6 +1,6 @@
+import CommonFormWithImages from 'components/form/CommonFormWithImages';
 import React from 'react';
 import * as Yup from 'yup';
-import CommonFormWithImages from 'components/form/CommonFormWithImages';
 
 export default function AddCategory({ handleToggleModal, handleSubmit }) {
   const initialValues = {
