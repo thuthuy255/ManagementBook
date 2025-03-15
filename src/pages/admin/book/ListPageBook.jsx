@@ -17,7 +17,8 @@ function ListPageBook() {
     columns,
     handleSearchTable,
     handleToggleModalDelete,
-    handleDeleteProducts
+    handleDeleteProducts,
+    handleSubmitUpdate
   } = useBookList();
   if (stateComponent.loading) {
     return (
@@ -32,7 +33,7 @@ function ListPageBook() {
       <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeleteProducts} loading={false} />
       <Modal open={stateComponent.modal} onClose={handleToggleModalBook}>
         <div>
-          <UpdateBook selectedBook={selectedBook} handleToggleModalBook={handleToggleModalBook} />
+          <UpdateBook selectedBook={selectedBook} handleToggleModalBook={handleToggleModalBook} handleSubmit={handleSubmitUpdate} />
         </div>
       </Modal>
     </div>

@@ -75,6 +75,10 @@ const useBookList = () => {
       });
   };
 
+  const handleSubmitUpdate = useCallback((values) => {
+    console.log('Đây là modal update', values);
+  }, []);
+
   const handleDeleteProducts = useCallback(async () => {
     dispacth(showLoading());
 
@@ -206,7 +210,8 @@ const useBookList = () => {
     handleToggleModalBook,
     columns,
     handleToggleModalDelete,
-    handleDeleteProducts
+    handleDeleteProducts,
+    handleSubmitUpdate
   };
 };
 

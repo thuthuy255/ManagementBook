@@ -8,7 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Tên sách là bắt buộc'),
   price: Yup.number().typeError('Giá phải là số').positive('Giá phải lớn hơn 0').required('Giá là bắt buộc'),
-  description: Yup.string().required('Mô tả là bắt buộc'),
+  description: Yup.string(),
   author: Yup.string().required('Tác giả là bắt buộc'),
   publisher: Yup.string().required('Nhà xuất bản là bắt buộc'),
   qty: Yup.number()
@@ -22,7 +22,7 @@ export default function UpdateBook({ selectedBook, handleSubmit, handleToggleMod
   const fileInputRef = useRef(null);
   const handlefileInputRef = () => {
     fileInputRef.current.click();
-  }
+  };
   return (
     <Formik
       initialValues={{
@@ -39,7 +39,6 @@ export default function UpdateBook({ selectedBook, handleSubmit, handleToggleMod
     >
       {({ errors, touched, values, setFieldValue }) => (
         <Form>
-
           <Box
             sx={{
               position: 'absolute',
@@ -58,28 +57,74 @@ export default function UpdateBook({ selectedBook, handleSubmit, handleToggleMod
               <Grid item xs={6}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Field as={TextField} fullWidth label="Tên sách" name="name" variant="outlined"
-                      error={touched.name && !!errors.name} helperText={<ErrorMessage name="name" />} />
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label="Tên sách"
+                      name="name"
+                      variant="outlined"
+                      error={touched.name && !!errors.name}
+                      helperText={<ErrorMessage name="name" />}
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <Field as={TextField} fullWidth label="Giá" name="price" type="number" variant="outlined"
-                      error={touched.price && !!errors.price} helperText={<ErrorMessage name="price" />} />
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label="Giá"
+                      name="price"
+                      type="number"
+                      variant="outlined"
+                      error={touched.price && !!errors.price}
+                      helperText={<ErrorMessage name="price" />}
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <Field as={TextField} fullWidth label="Số lượng" name="qty" type="number" variant="outlined"
-                      error={touched.qty && !!errors.qty} helperText={<ErrorMessage name="qty" />} />
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label="Số lượng"
+                      name="qty"
+                      type="number"
+                      variant="outlined"
+                      error={touched.qty && !!errors.qty}
+                      helperText={<ErrorMessage name="qty" />}
+                    />
                   </Grid>
                   <Grid item xs={12}>
-                    <Field as={TextField} fullWidth label="Mô tả" name="description" variant="outlined" multiline rows={3}
-                      error={touched.description && !!errors.description} helperText={<ErrorMessage name="description" />} />
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label="Mô tả"
+                      name="description"
+                      variant="outlined"
+                      multiline
+                      rows={3}
+                      error={touched.description && !!errors.description}
+                      helperText={<ErrorMessage name="description" />}
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <Field as={TextField} fullWidth label="Tác giả" name="author" variant="outlined"
-                      error={touched.author && !!errors.author} helperText={<ErrorMessage name="author" />} />
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label="Tác giả"
+                      name="author"
+                      variant="outlined"
+                      error={touched.author && !!errors.author}
+                      helperText={<ErrorMessage name="author" />}
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <Field as={TextField} fullWidth label="Nhà xuất bản" name="publisher" variant="outlined"
-                      error={touched.publisher && !!errors.publisher} helperText={<ErrorMessage name="publisher" />} />
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label="Nhà xuất bản"
+                      name="publisher"
+                      variant="outlined"
+                      error={touched.publisher && !!errors.publisher}
+                      helperText={<ErrorMessage name="publisher" />}
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -95,7 +140,12 @@ export default function UpdateBook({ selectedBook, handleSubmit, handleToggleMod
                           <IconButton
                             size="small"
                             sx={{ position: 'absolute', top: 5, right: 5, bgcolor: 'rgba(255,255,255,0.7)' }}
-                            onClick={() => setFieldValue('images', values.images.filter((_, i) => i !== index))}
+                            onClick={() =>
+                              setFieldValue(
+                                'images',
+                                values.images.filter((_, i) => i !== index)
+                              )
+                            }
                           >
                             <CloseIcon />
                           </IconButton>
@@ -138,8 +188,12 @@ export default function UpdateBook({ selectedBook, handleSubmit, handleToggleMod
             </Grid>
 
             <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
-              <Button type="submit" variant="contained" color="primary">Lưu</Button>
-              <Button variant="outlined" onClick={handleToggleModalBook}>Hủy</Button>
+              <Button type="submit" variant="contained" color="primary">
+                Lưu
+              </Button>
+              <Button variant="outlined" onClick={handleToggleModalBook}>
+                Hủy
+              </Button>
             </Box>
           </Box>
         </Form>
