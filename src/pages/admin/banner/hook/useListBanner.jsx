@@ -7,8 +7,11 @@ import { showToast } from 'components/notification/CustomToast';
 import { formatPrice } from 'utils/format';
 import { getAllBanner } from '../services/banner.api';
 import { formatDate } from 'utils/format/FormatDate';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
 
 const useListBanner = () => {
+    const dispacth = useDispatch();
     const [banner, setBanner] = useState([]);
     const [stateComponent, setStateComponent] = useState({
         modal: false,
@@ -17,17 +20,34 @@ const useListBanner = () => {
         modalDelete: false,
         loadingConfirm: false
     });
-    const [selectedBanner, setSelectedBanner] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
 
-    // Toggle modal
-    const handleToggleModalBanner = useCallback(() => {
+    //Đóng/mở modal delete
+    const handleToggleModalDelete = useCallback(() => {
+        setStateComponent((prev) => ({
+            ...prev,
+            modalDelete: !prev.modalDelete
+        }));
+    }, []);
+    //Xác nhận xóa 
+    const handleDeleteConfirm = useCallback((id) => {
+        if (!id) return;
+        handleToggleModalDelete();
+        setSelectedItem(id);
+    }, []);
+    //Đóng/mở modal edit
+    const handleToggleModalEdit = useCallback(() => {
         setStateComponent((prev) => ({
             ...prev,
             modal: !prev.modal
         }));
     }, []);
-
-    // Toggle loading
+    // Chọn banner để chỉnh sửa
+    const handleEdit = (banner) => {
+        setSelectedItem(banner);
+        handleToggleModalEdit();
+    };
+    // Đóng mở loading
     const handleToggleLoading = useCallback(() => {
         setStateComponent((prev) => ({
             ...prev,
@@ -35,21 +55,19 @@ const useListBanner = () => {
         }));
     }, []);
 
-    // Chọn sách để chỉnh sửa
-    const handleEdit = (banner) => {
-        setSelectedBanner(banner);
-        handleToggleModalBanner();
-    };
-
     // Lấy danh sách sách từ API
-    const handleListBanner = () => {
+    const handleListTable = useCallback((type) => {
         handleToggleLoading();
-        getAllBanner()
+        getAllBanner({
+            ...(type && { type }),
+            page: 1,
+            limit: 5
+        })
             .then((response) => {
                 if (response.err === 0) {
                     setBanner(response?.data?.rows);
                 } else {
-                    showToast(response.message, 'error');
+                    showToast(response.mess, 'error');
                 }
             })
             .catch((error) => {
@@ -59,10 +77,40 @@ const useListBanner = () => {
             .finally(() => {
                 handleToggleLoading();
             });
-    };
-
+    }, []);
+    // Hàm xóa banner
+    const handleDeleteBanner = useCallback(async () => {
+        dispacth(showLoading());
+        if (!selectedItem) {
+            dispacth(hideLoading());
+            showToast('Không tìm thấy banner', 'error');
+            return;
+        };
+        try {
+            const formData = new FormData();
+            formData.append('BannerID', id);
+            formData.forEach((value, key) => {
+                console.log(key, value);
+            });
+            const response = await deleteBanner(formData);
+            if (response?.err !== 0) {
+                showToast(response?.mess, 'warning');
+                dispacth(hideLoading());
+                return
+            }
+            await handleListTable();
+            showToast('Xóa banner thành công', 'success');
+        } catch (error) {
+            console.error('Lỗi khi xóa banner:', error);
+            showToast('Có lỗi xảy ra: ' + error, 'error');
+        }
+        finally {
+            dispacth(hideLoading());
+            handleToggleModalDelete();
+        }
+    }, [selectedItem]);
     useEffect(() => {
-        handleListBanner();
+        handleListTable();
     }, []);
 
     // Cấu hình cột cho bảng
@@ -127,7 +175,7 @@ const useListBanner = () => {
                     <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
                         <EditIcon />
                     </IconButton>
-                    <IconButton color="error" size="small" onClick={() => handleCloseModal(params.row.id)}>
+                    <IconButton color="error" size="small" onClick={() => handleDeleteConfirm(params.row.id)}>
                         <DeleteIcon />
                     </IconButton>
                 </div>
@@ -138,11 +186,14 @@ const useListBanner = () => {
     return {
         banner,
         stateComponent,
-        selectedBanner,
+        selectedItem,
         handleEdit,
-        handleListBanner,
-        handleToggleModalBanner,
-        columns
+        handleListTable,
+        handleToggleModalEdit,
+        columns,
+        handleDeleteBanner,
+        handleToggleModalDelete,
+        handleDeleteConfirm
     };
 };
 

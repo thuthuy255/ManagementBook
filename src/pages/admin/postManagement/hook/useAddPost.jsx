@@ -1,56 +1,48 @@
 import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useState } from 'react'
 import * as Yup from 'yup';
-import { GetAllArticles } from '../services/Post.api';
 import { title } from 'process';
+import { useNavigate } from 'react-router';
+import { createArticles } from '../services/Post.api';
+import { showLoading } from 'features/slices/loading.slice';
+import { useDispatch } from 'react-redux';
+import { showToast } from 'components/notification/CustomToast';
 
 export default function useAddPost() {
+    const dispatch = useDispatch();
     const [posts, setPosts] = useState([]);
-    const [stateComponent, setStateComponent] = useState({
-        modal: false,
-        loading: false
-    });
-    const [selectedPost, setSelectedPost] = useState(null);
-    // Toggle loading
-    const handleToggleLoading = useCallback(() => {
-        setStateComponent((prev) => ({
-            ...prev,
-            loading: !prev.loading
-        }));
-    }, []);
-    // Lấy danh sách sách từ API
-    const handleListTable = useCallback((type) => {
-        handleToggleLoading();
-        GetAllArticles({
-            ...(type && { type }),
-            page: 1,
-            limit: 5
-        })
-            .then((response) => {
-                if (response.err === 0) {
-                    setPosts(response?.data?.rows);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const handleSubmitForm = useCallback(
+        async (values) => {
+            const formData = new FormData();
+            formData.append('title', values.title);
+            formData.append('content', values.content);
+            formData.append('type', values.type);
+            if (Array.isArray(values.img_src) && values.img_src.length > 0) {
+                values.img_src.forEach((file) => {
+                    formData.append('img_src', file);
+                });
+            }
+            dispatch(showLoading());
+            try {
+                const response = await createArticles(formData);
+                if (response && response?.err === 0) {
+                    showToast(response?.mess, 'success');
+                    navigate('/post-management');
                 } else {
-                    showToast(response.mess, 'error');
+                    showToast(response?.mess, 'warning');
                 }
-            })
-            .catch((error) => {
-                console.error('Lỗi đăng ký:', error);
-                showToast('Có lỗi xảy ra: ' + error, 'error');
-            })
-            .finally(() => {
-                handleToggleLoading();
-            });
-    }, []);
-    const handleSearchTable = useCallback((value) => {
-        handleListTable(value);
-    }, []);
-    useEffect(() => {
-        handleSearchTable();
-    }, []);
-    const handleSubmitForm = useCallback(async (values) => {
-        console.log('Dữ liệu gửi lên:', values);
-        showToast('Thêm sách thành công!', 'success');
-    }, []);
+            } catch (error) {
+                console.error('Đã có lỗi xảy ra', error);
+                showToast('Có lỗi xảy ra', 'error');
+            } finally {
+                dispatch(hideLoading());
+            }
+            submit(); // Gọi hàm async bên trong
+        },
+        [dispatch, showToast, navigate]
+    );
     // Formik config
     const formik = useFormik({
         initialValues: {

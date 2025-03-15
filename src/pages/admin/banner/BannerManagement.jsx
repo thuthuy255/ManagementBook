@@ -1,9 +1,6 @@
-import StyledDataGrid from 'components/table/StyledDataGrid';
 import React, { useCallback } from 'react';
-import { Box, Grid } from '@mui/material';
-import Loading from 'components/loading/Loading';
+import { Grid } from '@mui/material';
 import HeaderTable from 'components/table/headerTable/HeaderTable';
-import ModalConfirm from 'components/modal/ModalConfirm';
 import { useNavigate } from 'react-router';
 import ListPageBanner from './ListPageBanner';
 
