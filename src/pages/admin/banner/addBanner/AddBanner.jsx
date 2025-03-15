@@ -4,9 +4,10 @@ import ImageUploader from 'components/uploadImage/ImageUploader';
 import React from 'react';
 import useAddBanner from '../hook/useAddBanner';
 import InputSelect from 'components/input/InputSelect';
+import Loading from 'components/loading/Loading';
 
 export default function AddBanner() {
-    const { formik, Banner } = useAddBanner();
+    const { formik, loading } = useAddBanner();
     return (
         <Box
             sx={{
@@ -33,30 +34,46 @@ export default function AddBanner() {
             >
                 <Box>
                     <Typography variant="h3" textAlign="center" mb={2}>Thêm Banner</Typography>
-                    <TextField label="Tên Banner" fullWidth margin="normal" />
+                    <TextField
+                        label="Tên Banner"
+                        fullWidth
+                        margin="normal"
+                        name="name"
+                        value={formik.values.name || ''} // Đảm bảo luôn có giá trị
+                        onChange={formik.handleChange}
+                    />
+
                     <TextField
                         select
                         label="Trạng thái"
                         fullWidth
                         margin="normal"
+                        name="status"
+                        value={formik.values.status || ''} // Đảm bảo có giá trị
+                        onChange={formik.handleChange}
                     >
-                        <MenuItem value="teen">Hoạt động</MenuItem>
-                        <MenuItem value="adult">Không hoạt động</MenuItem>
+                        <MenuItem value="active">Hiển thị</MenuItem>
+                        <MenuItem value="inactive">Không hiển thị</MenuItem>
                     </TextField>
+
                 </Box>
                 <Box>
                     <Grid item xs={12} md={12} >
                         <ImageUploader
-                            images={formik.values.img_src || []}
-                            setImages={(newImages) => formik.setFieldValue('img_src', newImages)}
+                            images={formik.values.img || []}
+                            setImages={(newImages) => formik.setFieldValue('img', newImages)}
                             multiple={true} // Hoặc false nếu chỉ chọn 1 ảnh
                         />
                     </Grid>
                 </Box>
                 <Box justifyContent={"center"} display="flex">
-                    <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-                        Xác nhận
-                    </Button>
+                    {loading ? (
+                        <Loading />
+                    ) : (
+                        <Button type="submit" variant="contained" color="primary" onClick={formik.handleSubmit}>
+                            Xác nhận
+                        </Button>
+                    )}
                 </Box>
             </Box>
         </Box>

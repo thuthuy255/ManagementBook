@@ -2,57 +2,43 @@ import { useState, useEffect, useCallback } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { showToast } from 'components/notification/CustomToast';
-import { getAllBanner } from '../services/banner.api';
-
+import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
+import { createBanner } from '../services/banner.api';
 export default function useAddBanner() {
-    const [Banner, setBanner] = useState([]);
-    const [stateComponent, setStateComponent] = useState({
-        modal: false,
-        loading: false,
-        modalAdd: false,
-        modalDelete: false,
-        loadingConfirm: false
-    });
-    // Toggle loading
-    const handleToggleLoading = useCallback(() => {
-        setStateComponent((prev) => ({
-            ...prev,
-            loading: !prev.loading
-        }));
-    }, []);
-    // Lấy danh sách sách từ API
-    const handleListTable = useCallback((type) => {
-        handleToggleLoading();
-        getAllBanner({
-            ...(type && { type }),
-            page: 1,
-            limit: 5
-        })
-            .then((response) => {
-                if (response.err === 0) {
-                    setBanner(response?.data?.rows);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const handleSubmitForm = useCallback(
+        async (values) => {
+            const formData = new FormData();
+            formData.append('name', values.name);
+            formData.append('active', values.active);
+            if (Array.isArray(values.img) && values.img.length > 0) {
+                values.img.forEach((file) => {
+                    formData.append('img', file);
+                });
+            }
+            setLoading(true); // Bật loading
+            dispatch(showLoading());
+            try {
+                const response = await createBanner(formData);
+                if (response && response?.err === 0) {
+                    showToast(response?.mess, 'success');
+                    navigate('/banner-management');
                 } else {
-                    showToast(response.mess, 'error');
+                    showToast(response?.mess, 'warning');
                 }
-            })
-            .catch((error) => {
-                console.error('Lỗi đăng ký:', error);
-                showToast('Có lỗi xảy ra: ' + error, 'error');
-            })
-            .finally(() => {
-                handleToggleLoading();
-            });
-    }, []);
-    const handleSearchTable = useCallback((value) => {
-        handleListTable(value);
-    }, []);
-    useEffect(() => {
-        handleSearchTable();
-    }, []);
-    const handleSubmitForm = useCallback(async (values) => {
-        console.log('Dữ liệu gửi lên:', values);
-        showToast('Thêm sách thành công!', 'success');
-    }, []);
+            } catch (error) {
+                console.error('Đã có lỗi xảy ra', error);
+                showToast('Có lỗi xảy ra', 'error');
+            } finally {
+                dispatch(hideLoading());
+            }
+        },
+        [setLoading, showToast, navigate]
+    );
     // Formik config
     const formik = useFormik({
         initialValues: {
@@ -68,5 +54,5 @@ export default function useAddBanner() {
         onSubmit: handleSubmitForm
     });
 
-    return { formik, Banner };
+    return { formik, loading };
 }

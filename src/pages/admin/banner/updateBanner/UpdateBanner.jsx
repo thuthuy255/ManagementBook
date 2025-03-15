@@ -7,11 +7,11 @@ import InputSelect from 'components/input/InputSelect';
 
 export default function UpdateBanner() {
     const { formik, Banner } = useAddBanner();
-    return (
 
-        <Container maxWidth={true} disableGutters style={{ height: ' 200px' }} >
-            <Grid container display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-                <Typography variant="h4" gutterBottom mb={0}>
+    return (
+        <Container maxWidth="xl" disableGutters style={{ height: '200px' }}>
+            <Grid container alignItems="center" justifyContent="space-between">
+                <Typography variant="h4" gutterBottom>
                     Thêm sản phẩm
                 </Typography>
                 <Button type="submit" variant="contained" color="primary" onClick={formik.handleSubmit}>
@@ -34,21 +34,20 @@ export default function UpdateBanner() {
                                     value={formik.values.active}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    options={Banner} // Truyền danh sách loại sách vào
-                                    error={formik.touched.type && formik.errors.active}
+                                    options={Banner || []} // Kiểm tra nếu Banner không phải danh sách
+                                    error={formik.touched.active && formik.errors.active}
                                 />
                             </Grid>
                         </Grid>
                     </form>
                 </Grid>
+
                 <Grid item xs={12} md={6} px={4}>
-                    <Grid item xs={12} md={12}>
-                        <ImageUploader
-                            images={formik.values.img || []}
-                            setImages={(newImages) => formik.setFieldValue('img', newImages)}
-                            multiple={true} // Hoặc false nếu chỉ chọn 1 ảnh
-                        />
-                    </Grid>
+                    <ImageUploader
+                        images={formik.values.img || []}
+                        setImages={(newImages) => formik.setFieldValue('img', newImages)}
+                        multiple={true} // Hoặc false nếu chỉ chọn 1 ảnh
+                    />
                 </Grid>
             </Grid>
         </Container>
