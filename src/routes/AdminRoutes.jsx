@@ -16,6 +16,7 @@ const PageOrder = Loadable(lazy(() => import('pages/admin/order/OrderManagement'
 const PageCart = Loadable(lazy(() => import('pages/admin/cart/CartManagement')));
 const AddBook = Loadable(lazy(() => import('pages/admin/book/addbook/AddBook')));
 const AddBanner = Loadable(lazy(() => import('pages/admin/banner/addBanner/AddBanner')));
+const UpdateBanner = Loadable(lazy(() => import('pages/admin/banner/updateBanner/UpdateBanner')));
 const AddCart = Loadable(lazy(() => import('pages/admin/cart/addCart/AddCart')));
 const AddPost = Loadable(lazy(() => import('pages/admin/postManagement/addPost/AddPost')));
 const PageStaff = Loadable(lazy(() => import('pages/admin/staff/StaffManagement')));
@@ -102,6 +103,10 @@ const MainRoutes = {
     {
       path: 'add-banner',
       element: <AddBanner />
+    },
+    {
+      path: 'update-banner/:name',
+      element: <UpdateBanner />
     },
     {
       path: 'add-cart',

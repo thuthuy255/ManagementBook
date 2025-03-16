@@ -1,55 +1,84 @@
-import { Button, Container, Grid, Typography } from '@mui/material';
-import CustomTextField from 'components/input/CustomTextField';
+import React, { useEffect } from 'react'
+import useUpdateBanner from '../hook/useUpdateBanner';
+import { Box, Button, Grid, MenuItem, TextField, Typography } from '@mui/material';
 import ImageUploader from 'components/uploadImage/ImageUploader';
-import React from 'react';
-import useAddBanner from '../hook/useAddBanner';
-import InputSelect from 'components/input/InputSelect';
+import Loading from 'components/loading/Loading';
+import { useParams } from 'react-router';
+import { getAllBanner } from '../services/banner.api';
 
 export default function UpdateBanner() {
-    const { formik, Banner } = useAddBanner();
+
+    const { formik, loading } = useUpdateBanner();
+
 
     return (
-        <Container maxWidth="xl" disableGutters style={{ height: '200px' }}>
-            <Grid container alignItems="center" justifyContent="space-between">
-                <Typography variant="h4" gutterBottom>
-                    Thêm sản phẩm
-                </Typography>
-                <Button type="submit" variant="contained" color="primary" onClick={formik.handleSubmit}>
-                    Xác nhận
-                </Button>
-            </Grid>
+        <Box
+            sx={{
+                // width: "100%",           // Đảm bảo chiều rộng full
+                minHeight: { xs: 'calc(100vh - 210px)', sm: 'calc(100vh - 134px)', md: 'calc(100vh - 220px)' },
+                backgroundImage: "url('https://img.freepik.com/free-photo/creative-composition-with-different-books_23-2148851035.jpg?t=st=1741876625~exp=1741880225~hmac=f7cc2644ad029ded37764197ab98493ef367eb3734ae889c8e9fd21811fe81de&w=996')",
 
-            <Grid container sx={{ flex: 1, minHeight: 0 }}>
-                <Grid item xs={12} md={6}>
-                    <form onSubmit={formik.handleSubmit}>
-                        <Grid container spacing={2}>
-                            {/* Cột 1 */}
-                            <Grid item xs={12} md={6}>
-                                <CustomTextField formik={formik} name="name" label="Tên Banner" />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <InputSelect
-                                    label="Trạng thái"
-                                    name="active"
-                                    value={formik.values.active}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    options={Banner || []} // Kiểm tra nếu Banner không phải danh sách
-                                    error={formik.touched.active && formik.errors.active}
-                                />
-                            </Grid>
-                        </Grid>
-                    </form>
-                </Grid>
+                backgroundSize: "cover", // Đảm bảo ảnh phủ full box
+                backgroundPosition: "center",
+                display: "flex",         // Dùng flexbox
+                justifyContent: "center",
+                alignItems: "center",
 
-                <Grid item xs={12} md={6} px={4}>
-                    <ImageUploader
-                        images={formik.values.img || []}
-                        setImages={(newImages) => formik.setFieldValue('img', newImages)}
-                        multiple={true} // Hoặc false nếu chỉ chọn 1 ảnh
+            }}
+        >
+            <Box
+                sx={{
+                    backgroundColor: "rgba(253, 253, 253, 0.93)", // Làm mờ nền form
+                    padding: 4,
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    width: "30%",
+                }}
+            >
+                <Box>
+                    <Typography variant="h3" textAlign="center" mb={2}>Sửa Banner</Typography>
+                    <TextField
+                        label="Tên Banner"
+                        fullWidth
+                        margin="normal"
+                        name="name"
+                        value={formik.values.name || ''} // Đảm bảo luôn có giá trị
+                        onChange={formik.handleChange}
                     />
-                </Grid>
-            </Grid>
-        </Container>
+
+                    <TextField
+                        select
+                        label="Trạng thái"
+                        fullWidth
+                        margin="normal"
+                        name="status"
+                        value={formik.values.status || ''} // Đảm bảo có giá trị
+                        onChange={formik.handleChange}
+                    >
+                        <MenuItem value={1}>Hiển thị</MenuItem>
+                        <MenuItem value={0}>Không hiển thị</MenuItem>
+                    </TextField>
+
+                </Box>
+                <Box>
+                    <Grid item xs={12} md={12} >
+                        <ImageUploader
+                            images={formik.values.img || []}
+                            setImages={(newImages) => formik.setFieldValue('img', newImages)}
+                            multiple={true} // Hoặc false nếu chỉ chọn 1 ảnh
+                        />
+                    </Grid>
+                </Box>
+                <Box justifyContent={"center"} display="flex">
+                    {loading ? (
+                        <Loading />
+                    ) : (
+                        <Button type="submit" variant="contained" color="primary" onClick={formik.handleSubmit}>
+                            Xác nhận
+                        </Button>
+                    )}
+                </Box>
+            </Box>
+        </Box>
     );
 }

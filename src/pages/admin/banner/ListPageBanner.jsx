@@ -27,11 +27,11 @@ function ListPageBanner() {
         <div>
             <StyledDataGrid rows={banner} columns={columns} paginationModel={{ page: 0, pageSize: 5 }} />
             <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeleteBanner} loading={false} />
-            <Modal open={stateComponent.modal} onClose={handleToggleModalEdit}>
+            {/* <Modal open={stateComponent.modal} onClose={handleToggleModalEdit}>
                 <div>
                     <UpdateBanner selectedItem={selectedItem} handleToggleModalEdit={handleToggleModalEdit} />
                 </div>
-            </Modal>
+            </Modal> */}
         </div>
     );
 }
