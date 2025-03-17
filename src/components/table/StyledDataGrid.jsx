@@ -3,7 +3,7 @@ import { Paper } from '@mui/material';
 import './StyledDataGrid.css';
 import { NameFilter } from 'utils/vi/nameFilterTable';
 
-export default function StyledDataGrid({ rows, columns, paginationModel }) {
+export default function StyledDataGrid({ rows, columns, paginationModel, onSelectedIdsChange }) {
   return (
     <Paper
       elevation={3} // Tạo hiệu ứng đổ bóng nhẹ
@@ -26,6 +26,7 @@ export default function StyledDataGrid({ rows, columns, paginationModel }) {
         pageSizeOptions={[5, 10]}
         checkboxSelection
         disableRowSelectionOnClick
+        onRowSelectionModelChange={onSelectedIdsChange}
         localeText={NameFilter}
         sx={{
           border: 0,

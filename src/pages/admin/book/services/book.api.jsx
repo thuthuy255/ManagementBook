@@ -1,4 +1,4 @@
-import { axiosClientFile, axiosClientNoAuth } from 'services/axiosConfig';
+import { axiosClient, axiosClientFile, axiosClientNoAuth } from 'services/axiosConfig';
 import { stringtifyQuery } from 'utils/StringHelper';
 
 export const ListBook = (params) => {
@@ -13,9 +13,8 @@ export const CreateBook = (body) => {
 };
 
 export const deleteBook = (body) => {
-  console.log('đây là body', body);
   const url = `/product/delete`;
-  return axiosClientFile.delete(url, { data: body });
+  return axiosClient.delete(url, { data: body });
 };
 
 export const updateBook = (body) => {
