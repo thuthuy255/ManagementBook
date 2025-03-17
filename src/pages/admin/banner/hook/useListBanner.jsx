@@ -9,7 +9,7 @@ import { getAllBanner } from '../services/banner.api';
 import { formatDate } from 'utils/format/FormatDate';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
-
+import { useNavigate, useParams } from 'react-router';
 const useListBanner = () => {
     const dispacth = useDispatch();
     const [banner, setBanner] = useState([]);
@@ -20,8 +20,12 @@ const useListBanner = () => {
         modalDelete: false,
         loadingConfirm: false
     });
-    const [selectedItem, setSelectedItem] = useState(null);
 
+    const [selectedItem, setSelectedItem] = useState(null);
+    const navigate = useNavigate();
+    const handleNavigate = (name) => {
+        navigate(`/update-banner/${name}`);
+    }
     //Đóng/mở modal delete
     const handleToggleModalDelete = useCallback(() => {
         setStateComponent((prev) => ({
@@ -47,6 +51,7 @@ const useListBanner = () => {
         setSelectedItem(banner);
         handleToggleModalEdit();
     };
+
     // Đóng mở loading
     const handleToggleLoading = useCallback(() => {
         setStateComponent((prev) => ({
@@ -172,7 +177,7 @@ const useListBanner = () => {
             align: 'center',
             renderCell: (params) => (
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', padding: '5px' }}>
-                    <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
+                    <IconButton color="primary" size="small" onClick={() => handleNavigate(params.row.name)}>
                         <EditIcon />
                     </IconButton>
                     <IconButton color="error" size="small" onClick={() => handleDeleteConfirm(params.row.id)}>
