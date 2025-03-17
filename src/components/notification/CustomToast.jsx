@@ -30,12 +30,12 @@ export const showToast = (message, type = 'success') => {
 
   toast(
     <div className="flex flex-col" style={{ flexDirection: 'column' }}>
-      <strong className="text-lg">{toastType.name}</strong>
+      {/* <strong className="text-lg">{toastType.name}</strong> */}
       <span>{message}</span>
     </div>,
     {
-      className: `p-3 rounded-lg shadow-lg ${toastType.className}`,
-      icon: toastType.icon,
+      className: `p-3 rounded-lg shadow-lg bg-green-500 text-white`,
+      icon: '✅',
       position: 'top-right',
       autoClose: 3000,
       hideProgressBar: false,

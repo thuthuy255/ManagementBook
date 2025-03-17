@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import Loadable from 'components/Loadable';
 import { createBrowserRouter } from 'react-router-dom';
 import Dashboard from 'layout/Dashboard';
+import UpdateBook from 'pages/admin/book/updateBook/UpdateBook';
 // render - login
 const Color = Loadable(lazy(() => import('pages/admin/component-overview/color')));
 const Typography = Loadable(lazy(() => import('pages/admin/component-overview/typography')));
@@ -21,6 +22,7 @@ const AddPost = Loadable(lazy(() => import('pages/admin/postManagement/addPost/A
 const PageStaff = Loadable(lazy(() => import('pages/admin/staff/StaffManagement')));
 const PageCategory = Loadable(lazy(() => import('pages/admin/category/CategoryManagement')));
 const PageProfile = Loadable(lazy(() => import('pages/admin/profile/Profile')));
+const PageUpdatePost = Loadable(lazy(() => import('pages/admin/postManagement/updatePost/UpdatePost')));
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/admin/extra-pages/sample-page')));
 
@@ -88,6 +90,10 @@ const MainRoutes = {
       element: <AddBook />
     },
     {
+      path: 'update-book/:slug',
+      element: <UpdateBook />
+    },
+    {
       path: 'staf-management',
       element: <PageStaff />
     },
@@ -110,6 +116,10 @@ const MainRoutes = {
     {
       path: 'add-post',
       element: <AddPost />
+    },
+    {
+      path: 'update-post/:title',
+      element: <PageUpdatePost />
     }
   ]
 };

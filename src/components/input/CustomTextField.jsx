@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material';
 import React, { memo } from 'react';
 
-function CustomTextField({ formik, name, label, type = 'text', multiline = false }) {
+function CustomTextField({ formik, name, label, type = 'text', multiline = false, disabled = false }) {
   return (
     <TextField
       fullWidth={true}
@@ -16,6 +16,7 @@ function CustomTextField({ formik, name, label, type = 'text', multiline = false
       onBlur={formik.handleBlur}
       error={formik.touched[name] && Boolean(formik.errors[name])}
       helperText={formik.touched[name] && formik.errors[name]}
+      disabled={disabled}
     />
   );
 }

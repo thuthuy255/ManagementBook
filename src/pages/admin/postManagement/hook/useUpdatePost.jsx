@@ -1,17 +1,46 @@
-import { useFormik } from 'formik';
-import React, { useCallback, useEffect, useState } from 'react';
-import * as Yup from 'yup';
-import { useNavigate } from 'react-router';
-import { createArticles } from '../services/Post.api';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
-import { useDispatch } from 'react-redux';
-import { showToast } from 'components/notification/CustomToast';
 import { getAllCategory } from 'pages/admin/category/services/category.api';
-
-export default function useAddPost() {
-  const dispatch = useDispatch();
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router';
+import { GetAllArticles, updateArticles } from '../services/Post.api';
+import { showToast } from 'components/notification/CustomToast';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { convertUrlsToFiles } from 'utils/fileUtils';
+export default function useUpdatePost() {
+  const { title } = useParams();
   const [categoryPost, setCategoryPost] = useState([]);
+  const [dataPost, setDataPost] = useState();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleDetailBook = useCallback(async () => {
+    dispatch(showLoading());
+    try {
+      const params = {
+        title
+      };
+      const res = await GetAllArticles(params);
+      if (!res || res?.err !== 0) {
+        showToast(res?.mess, 'warning');
+        return;
+      }
+
+      const currentData = res?.data?.rows[0];
+      const imageFiles = await convertUrlsToFiles(currentData.img_src);
+
+      const updatedPost = { ...currentData, img_src: imageFiles };
+      console.log('ĐÂt là ', updatedPost);
+      setDataPost(updatedPost);
+    } catch (error) {
+      console.error('Đã có lỗi xảy ra', error);
+      showToast('Đã có lỗi xảy ra', 'warning');
+    } finally {
+      dispatch(hideLoading());
+    }
+  }, [title]);
 
   const fetchCategories = async () => {
     try {
@@ -26,10 +55,16 @@ export default function useAddPost() {
     }
   };
 
+  useEffect(() => {
+    fetchCategories();
+    handleDetailBook();
+  }, []);
+
   const handleSubmitForm = useCallback(
     async (values) => {
       const formData = new FormData();
-      formData.append('title', values.title);
+      formData.append('ArticleID', values.ArticleID);
+      // formData.append('title', values.title);
       formData.append('content', values.content);
       formData.append('type', values.type);
       if (Array.isArray(values.img_src) && values.img_src.length > 0) {
@@ -39,9 +74,9 @@ export default function useAddPost() {
       }
       dispatch(showLoading());
       try {
-        const response = await createArticles(formData);
+        const response = await updateArticles(formData);
         if (response && response?.err === 0) {
-          showToast('Thêm thành công bài viết', 'success');
+          showToast('Sửa thành công bài viết', 'success');
           navigate('/post-management');
         } else {
           showToast(response?.mess, 'warning');
@@ -52,21 +87,19 @@ export default function useAddPost() {
       } finally {
         dispatch(hideLoading());
       }
-      submit(); // Gọi hàm async bên trong
     },
     [dispatch, showToast, navigate]
   );
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
   // Formik config
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: '',
-      content: '',
-      type: '',
-      img_src: []
+      ArticleID: dataPost?.id || '',
+      title: dataPost?.title || '',
+      content: dataPost?.content || '',
+      type: dataPost?.type || '',
+      img_src: dataPost?.img_src || []
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Tiêu đề không được để trống'),
@@ -76,5 +109,6 @@ export default function useAddPost() {
     }),
     onSubmit: handleSubmitForm
   });
-  return { formik, categoryPost };
+
+  return { formik, categoryPost, loading };
 }

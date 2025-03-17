@@ -1,4 +1,4 @@
-import { axiosClient } from 'services/axiosConfig';
+import { axiosClient, axiosClientFile } from 'services/axiosConfig';
 import { stringtifyQuery } from 'utils/StringHelper';
 
 export const GetAllArticles = (params) => {
@@ -17,6 +17,7 @@ export const updateArticles = (body) => {
 };
 
 export const deleteArticles = (body) => {
+  console.log('body', body);
   const url = `/articles/delete`;
-  return axiosClient.delete(url, body);
+  return axiosClient.delete(url, { data: body });
 };

@@ -8,9 +8,11 @@ import { showToast } from 'components/notification/CustomToast';
 import { formatPrice } from 'utils/format';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
+import { useNavigate } from 'react-router';
 
 const useBookList = () => {
   const dispacth = useDispatch();
+  const navigate = useNavigate();
   const [books, setBooks] = useState([]);
   const [stateComponent, setStateComponent] = useState({
     modal: false,
@@ -55,6 +57,14 @@ const useBookList = () => {
     handleToggleModalBook();
   };
 
+  const handleNavigateUpdate = (slug) => {
+    if (!slug) {
+      showToast('Không lấy được slug', 'error');
+      return;
+    }
+
+    navigate(`/update-book/${slug}`);
+  };
   // Lấy danh sách sách từ API
   const handleListBook = () => {
     handleToggleLoading();
@@ -74,10 +84,6 @@ const useBookList = () => {
         handleToggleLoading();
       });
   };
-
-  const handleSubmitUpdate = useCallback((values) => {
-    console.log('Đây là modal update', values);
-  }, []);
 
   const handleDeleteProducts = useCallback(async () => {
     dispacth(showLoading());
@@ -190,7 +196,7 @@ const useBookList = () => {
       align: 'center',
       renderCell: (params) => (
         <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', padding: '5px' }}>
-          <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
+          <IconButton color="primary" size="small" onClick={() => handleNavigateUpdate(params.row.slug)}>
             <EditIcon />
           </IconButton>
           <IconButton color="error" size="small" onClick={handleDeleteConfirm.bind(null, params.row.id)}>
@@ -210,8 +216,7 @@ const useBookList = () => {
     handleToggleModalBook,
     columns,
     handleToggleModalDelete,
-    handleDeleteProducts,
-    handleSubmitUpdate
+    handleDeleteProducts
   };
 };
 

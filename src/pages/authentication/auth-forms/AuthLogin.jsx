@@ -46,7 +46,9 @@ export default function AuthLogin({ isDemo = false }) {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
+  const handleLogin = () => {
+    showToast('Thành công', 'success');
+  };
   const handleLoginSubmit = useCallback(async (values, { setSubmitting }) => {
     Login(values)
       .then((response) => {
@@ -173,7 +175,10 @@ export default function AuthLogin({ isDemo = false }) {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                  {/* <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                    Đăng Nhập
+                  </Button> */}
+                  <Button onClick={handleLogin} fullWidth size="large" type="submit" variant="contained" color="primary">
                     Đăng Nhập
                   </Button>
                 </AnimateButton>
