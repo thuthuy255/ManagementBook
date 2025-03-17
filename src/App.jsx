@@ -13,7 +13,7 @@ import { showToast } from 'components/notification/CustomToast';
 import { GetInfoUser } from 'services/user.api';
 import { setUserState } from 'features/slices/user.slice';
 import GlobalLoading from 'components/loading/GlobalLoading ';
-
+import UserRoutes from 'routes/UserRoutes';
 // ==============================|| APP - THEME, ROUTER, LOCAL ||============================== //
 
 export default function App() {
@@ -44,7 +44,7 @@ export default function App() {
     const USER_ROUTES = {
       [ADMIN]: AdminRoutes,
       [STAFF]: AdminRoutes,
-      [USER]: AdminRoutes
+      [USER]: UserRoutes
     };
 
     return USER_ROUTES[infoAuth.role_id] || AuthRoutes;

@@ -70,14 +70,6 @@ const management = {
       requiredRole: ADMIN
     },
     {
-      id: 'cart-management',
-      title: 'Quản lý giỏ hàng',
-      type: 'item',
-      url: '/cart-management',
-      icon: icons.ShoppingCartOutlined,
-      requiredRole: ADMIN
-    },
-    {
       id: 'category-management',
       title: 'Quản lý danh mục',
       type: 'item',

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy } from 'react';
 // project import
 import Loadable from 'components/Loadable';
 import { createBrowserRouter } from 'react-router-dom';
@@ -14,7 +14,6 @@ const PagePost = Loadable(lazy(() => import('pages/admin/postManagement/PostMana
 const PageUser = Loadable(lazy(() => import('pages/admin/user/ManagementUser')));
 const PageBanner = Loadable(lazy(() => import('pages/admin/banner/BannerManagement')));
 const PageOrder = Loadable(lazy(() => import('pages/admin/order/OrderManagement')));
-const PageCart = Loadable(lazy(() => import('pages/admin/cart/CartManagement')));
 const AddBook = Loadable(lazy(() => import('pages/admin/book/addbook/AddBook')));
 const AddBanner = Loadable(lazy(() => import('pages/admin/banner/addBanner/AddBanner')));
 const UpdateBanner = Loadable(lazy(() => import('pages/admin/banner/updateBanner/UpdateBanner')));
@@ -82,10 +81,10 @@ const MainRoutes = {
       path: 'order-management',
       element: <PageOrder />
     },
-    {
-      path: 'cart-management',
-      element: <PageCart />
-    },
+    // {
+    //   path: 'cart-management',
+    //   element: <PageCart />
+    // },
     {
       path: 'add-book',
       element: <AddBook />
