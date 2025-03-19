@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react'
 import useUpdateBanner from '../hook/useUpdateBanner';
-import { Box, Button, Grid, MenuItem, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import ImageUploader from 'components/uploadImage/ImageUploader';
 import Loading from 'components/loading/Loading';
 import { useParams } from 'react-router';
 import { getAllBanner } from '../services/banner.api';
+import InputSelect from 'components/input/InputSelect';
 
 export default function UpdateBanner() {
 
-    const { formik, loading } = useUpdateBanner();
+    const { formik, loading, statusOptions } = useUpdateBanner();
 
 
     return (
@@ -44,20 +45,26 @@ export default function UpdateBanner() {
                         name="name"
                         value={formik.values.name || ''} // Đảm bảo luôn có giá trị
                         onChange={formik.handleChange}
+                        style={{ marginBottom: '20px' }}
                     />
 
-                    <TextField
-                        select
-                        label="Trạng thái"
-                        fullWidth
-                        margin="normal"
-                        name="status"
-                        value={formik.values.status || ''} // Đảm bảo có giá trị
-                        onChange={formik.handleChange}
-                    >
-                        <MenuItem value={1}>Hiển thị</MenuItem>
-                        <MenuItem value={0}>Không hiển thị</MenuItem>
-                    </TextField>
+                    <FormControl fullWidth error={formik.touched.active && Boolean(formik.errors.active)} >
+                        <InputLabel>Trạng thái</InputLabel>
+                        <Select
+                            name="active"
+                            value={formik.values.active}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                        >
+                            {statusOptions.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText>{formik.touched.active && formik.errors.active}</FormHelperText>
+                    </FormControl>
+
 
                 </Box>
                 <Box>
@@ -69,7 +76,7 @@ export default function UpdateBanner() {
                         />
                     </Grid>
                 </Box>
-                <Box justifyContent={"center"} display="flex">
+                <Box justifyContent={"center"} display="flex" marginTop={5}>
                     {loading ? (
                         <Loading />
                     ) : (
