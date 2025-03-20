@@ -18,22 +18,43 @@ function ListPageBook() {
     handleSelectedIds,
     handleNavigateAdd,
     handleRemoveMultipleItems,
-    handleSearchTable
+    handleSearchTable,
+    searchProducts,
+    handlePaginationChange,
+    handleToggleModalWarring
   } = useBookList();
-  if (stateComponent.loading) {
-    return (
-      <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
-        <Loading />
-      </Grid>
-    );
-  }
+
   return (
     <div>
       <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
-        <HeaderTable onAdd={handleNavigateAdd} onRemove={handleRemoveMultipleItems} searchTable={handleSearchTable} />
+        <HeaderTable onAdd={handleNavigateAdd} onRemove={handleToggleModalWarring} searchTable={handleSearchTable} />
       </Grid>
-      <StyledDataGrid rows={books} columns={columns} paginationModel={{ page: 0, pageSize: 5 }} onSelectedIdsChange={handleSelectedIds} />
+      {stateComponent.loading ? (
+        <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
+          <Loading />
+        </Grid>
+      ) : (
+        <StyledDataGrid
+          rows={books}
+          columns={columns}
+          onPaginationChange={handlePaginationChange}
+          paginationModel={{
+            page: searchProducts.page - 1,
+            pageSize: searchProducts.limit
+          }}
+          onSelectedIdsChange={handleSelectedIds}
+          rowCount={stateComponent.quantity}
+          paginationMode="server"
+        />
+      )}
+
       <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeleteProducts} loading={false} />
+      <ModalConfirm
+        open={stateComponent.modalWarring}
+        onClose={handleToggleModalWarring}
+        onConfirm={handleRemoveMultipleItems}
+        loading={false}
+      />
     </div>
   );
 }

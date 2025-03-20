@@ -15,13 +15,38 @@ const useBookList = () => {
   const [books, setBooks] = useState([]);
   const [stateComponent, setStateComponent] = useState({
     loading: false,
-    modalDelete: false
+    modalDelete: false,
+    total: 0,
+    quantity: 0,
+    modalWarring: false
   });
   const [selectedBook, setSelectedBook] = useState(null);
   const [listIdProducts, setListIdProducts] = useState([]);
+  const [searchProducts, setSearchProducts] = useState({
+    keyword: '',
+    type: '',
+    minPrice: '',
+    maxPrice: '',
+    sortBy: 'price',
+    sort: 'desc',
+    page: 1,
+    limit: 5
+  });
+
   const handleSearchTable = useCallback((value) => {
-    console.log('Đây là value', value);
+    setSearchProducts((prev) => ({
+      ...prev,
+      keyword: value
+    }));
   }, []);
+
+  const handleToggleModalWarring = useCallback(() => {
+    setStateComponent((prev) => ({
+      ...prev,
+      modalWarring: !prev.modalWarring
+    }));
+  }, []);
+
   const handleNavigateAdd = useCallback(() => {
     navigate('/add-book');
   }, [navigate]);
@@ -47,6 +72,7 @@ const useBookList = () => {
       console.error('Có lỗi xảy ra', error);
       showToast(error, 'error');
     } finally {
+      handleToggleModalWarring();
       dispacth(hideLoading());
     }
   }, [listIdProducts]);
@@ -80,12 +106,18 @@ const useBookList = () => {
     navigate(`/update-book/${slug}`);
   };
   // Lấy danh sách sách từ API
-  const handleListBook = () => {
+  const handleListBook = useCallback(() => {
     handleToggleLoading();
-    ListBook()
+    ListBook(searchProducts)
       .then((response) => {
+        console.log('đây là tổng số trang', response);
         if (response.err === 0) {
           setBooks(response?.data?.rows);
+          setStateComponent((prev) => ({
+            ...prev,
+            total: response?.totalPage,
+            quantity: response?.data?.count
+          }));
         } else {
           showToast(response.message, 'error');
         }
@@ -97,7 +129,7 @@ const useBookList = () => {
       .finally(() => {
         handleToggleLoading();
       });
-  };
+  }, [searchProducts]);
 
   const handleDeleteProducts = useCallback(async () => {
     dispacth(showLoading());
@@ -132,11 +164,18 @@ const useBookList = () => {
     setListIdProducts(selectedIds);
   };
 
-  useEffect(() => {
-    handleListBook();
+  const handlePaginationChange = useCallback((model) => {
+    setSearchProducts((prev) => ({
+      ...prev,
+      page: model.page + 1,
+      limit: model.pageSize
+    }));
   }, []);
 
-  // Cấu hình cột cho bảng
+  useEffect(() => {
+    handleListBook();
+  }, [searchProducts]);
+
   const columns = [
     // { field: 'id', headerName: 'ID', headerAlign: 'center', align: 'center' },
     {
@@ -232,7 +271,10 @@ const useBookList = () => {
     handleSelectedIds,
     handleNavigateAdd,
     handleRemoveMultipleItems,
-    handleSearchTable
+    handleSearchTable,
+    searchProducts,
+    handlePaginationChange,
+    handleToggleModalWarring
   };
 };
 
