@@ -3,7 +3,9 @@
 }
 .btnSearch {
   background-color: #fff;
-  border-radius: 15px;
-  border: 1px color #ccc;
+  border-radius: 8px;
+  border: 1px solid #ccc;
   display: flex;
+  width: 100%;
+  min-width: 500px;
 }
