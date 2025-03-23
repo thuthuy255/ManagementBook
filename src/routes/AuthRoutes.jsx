@@ -9,9 +9,9 @@ const AuthVerifyEmail = lazy(() => import('pages/authentication/verifyEmail'));
 // Fallback component
 const LoadingFallback = () => <div>Loading...</div>;
 
-const AuthRoutes = createBrowserRouter([
+export const AuthRoutes = [
   {
-    path: '/',
+    path: '/login',
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <AuthLogin />
@@ -41,11 +41,45 @@ const AuthRoutes = createBrowserRouter([
         <AuthVerifyEmail />
       </Suspense>
     )
-  },
-  {
-    path: '*', // Route không hợp lệ
-    element: <AuthLogin />
   }
-]);
+];
+// const AuthRoutes = createBrowserRouter([
+//   {
+//     path: '/',
+//     element: (
+//       <Suspense fallback={<LoadingFallback />}>
+//         <AuthLogin />
+//       </Suspense>
+//     )
+//   },
+//   {
+//     path: '/register',
+//     element: (
+//       <Suspense fallback={<LoadingFallback />}>
+//         <AuthRegister />
+//       </Suspense>
+//     )
+//   },
+//   {
+//     path: '/forgot-password',
+//     element: (
+//       <Suspense fallback={<LoadingFallback />}>
+//         <AuthForgotPassword />
+//       </Suspense>
+//     )
+//   },
+//   {
+//     path: '/verify-email',
+//     element: (
+//       <Suspense fallback={<LoadingFallback />}>
+//         <AuthVerifyEmail />
+//       </Suspense>
+//     )
+//   },
+//   {
+//     path: '*', // Route không hợp lệ
+//     element: <AuthLogin />
+//   }
+// ]);
 
-export default AuthRoutes;
+// export default AuthRoutes;

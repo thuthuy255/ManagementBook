@@ -81,12 +81,6 @@ function Header() {
             <AddShoppingCartIcon fontSize="medium" />
           </IconButton>
         </Tooltip>
-
-        {/* <Tooltip title="Tài khoản" placement="top">
-          <IconButton sx={{ color: '#fff' }} size="small">
-            <PersonIcon fontSize="medium" />
-          </IconButton>
-        </Tooltip> */}
         <AccountMenu />
       </Grid>
       <CategoryHeader anchorEl={anchorEl} open={open} handleClose={handleClose} />
