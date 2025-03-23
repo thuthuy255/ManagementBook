@@ -52,12 +52,7 @@ function ListPageBook() {
       )}
 
       <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeleteProducts} loading={false} />
-      {/* <ModalConfirm
-        open={stateComponent.modalWarring}
-        onClose={handleToggleModalWarring}
-        onConfirm={handleRemoveMultipleItems}
-        loading={false}
-      /> */}
+
     </div>
   );
 }

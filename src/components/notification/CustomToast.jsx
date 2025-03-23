@@ -43,9 +43,6 @@ const CustomIcon = (props) => {
  * @param {Object} [options={}] - Tuỳ chỉnh thêm cho toast.
  */
 export const showToast = (message, type = 'success', options = {}) => {
-  console.log('🚀 ~ showToast ~ type:', type);
-  console.log('🚀 ~ showToast ~ message:', message);
-
   const toastType = toastTypes[type] || toastTypes.success;
 
   toast(

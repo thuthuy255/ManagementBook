@@ -15,12 +15,14 @@ const useBookList = () => {
   const dispacth = useDispatch();
   const navigate = useNavigate();
   const [stateComponent, setStateComponent] = useState({
+    loading: false,
     modalDelete: false,
     total: 0,
     quantity: 0,
     modalWarring: false
   });
   const [selectedBook, setSelectedBook] = useState(null);
+  const [listIdProducts, setListIdProducts] = useState([]);
   const [searchProducts, setSearchProducts] = useState({
     keyword: '',
     type: '',
@@ -47,6 +49,14 @@ const useBookList = () => {
     handleToggleModalDelete();
     setSelectedBook([item.id]);
   }, []);
+
+  const handleToggleModalWarring = useCallback(() => {
+    setStateComponent((prev) => ({
+      ...prev,
+      modalWarring: !prev.modalWarring
+    }));
+  }, []);
+
   const handleNavigateAdd = useCallback(() => {
     navigate('/add-book');
   }, [navigate]);
@@ -119,7 +129,6 @@ const useBookList = () => {
       limit: model.pageSize
     }));
   }, []);
-
 
   const columns = [
     // { field: 'id', headerName: 'ID', headerAlign: 'center', align: 'center' },

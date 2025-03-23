@@ -2,10 +2,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { getAllUserQuery } from '../services/user.query';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LockPersonIcon from '@mui/icons-material/LockPerson';
+import { formatDate } from 'utils/format/FormatDate';
+import { showToast } from 'components/notification/CustomToast';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
 
+import { blockUser } from '../services/User.api';
+import NoEncryptionIcon from '@mui/icons-material/NoEncryption';
 const useListUser = () => {
   const [searchBody, setSearchBody] = useState({
     page: 1,
@@ -14,15 +20,17 @@ const useListUser = () => {
     sort: 'asc'
   });
   const { data: dataListUser, isFetching: isFetchingPost, error, refetch: refetchPost } = getAllUserQuery({ params: searchBody });
+  console.log('🚀 ~ useListUser ~ dataListUser:', dataListUser);
   const [stateComponent, setStateComponent] = useState({
     modal: false,
     modalDelete: false,
+    modalLockUser: false,
+    modalUnLockUser: false,
     total: 0,
     quantity: 0
   });
 
-  const [selectedPost, setSelectedPost] = useState([]);
-
+  const [selectedItem, setSelectedItem] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -33,18 +41,29 @@ const useListUser = () => {
     }));
   }, []);
 
+  const handleUpdateState = useCallback((key, value, item = null) => {
+    setStateComponent((prev) => ({
+      ...prev,
+      [key]: value // Cập nhật trạng thái với key và value truyền vào
+    }));
+
+    setSelectedItem(item);
+  }, []);
+
   const handleSelectedIds = (selectedIds) => {
-    setSelectedPost(selectedIds);
+    setSelectedItem(selectedIds);
   };
+
+  // Xóa user
   const handleDelete = async () => {
     dispatch(showLoading());
-    if (!selectedPost) {
+    if (!selectedItem) {
       showToast('Không tồn tại id bài viết', 'error');
       return;
     }
     try {
       const body = {
-        ArticleID: selectedPost
+        ArticleID: selectedItem
       };
       const response = await deleteArticles(body);
       if (response.err === 0) {
@@ -72,18 +91,19 @@ const useListUser = () => {
     navigate('/add-user');
   }, [navigate]);
 
+  //Validate Xóa
   const handleRemoveMultipleItems = useCallback(() => {
-    if (selectedPost?.length <= 0) {
+    if (selectedItem?.length <= 0) {
       showToast('Bạn cần chọn ít nhất một mục để tiếp tục', 'warning');
       return;
     }
     handleToggleModalDelete();
-  }, [navigate, selectedPost]);
+  }, [navigate, selectedItem]);
 
   const handleDeleteConfirm = useCallback((item) => {
     if (!item) return;
     handleToggleModalDelete();
-    setSelectedPost([item.id]);
+    setSelectedItem([item.id]);
   }, []);
 
   // Toggle modal
@@ -102,9 +122,42 @@ const useListUser = () => {
     }));
   }, []);
 
-  const handleEdit = useCallback(() => {
-    navigate('/update-user');
+  const handleEdit = useCallback((value) => {
+    navigate(`/update-user?id=${value?.id}`);
   }, []);
+
+  const handleLockUser = useCallback(
+    (status = 'unlock') => {
+      if (!selectedItem || !selectedItem.id) {
+        showToast('Không tìm thấy ID', 'error');
+        return;
+      }
+      dispatch(showLoading());
+      const body = {
+        userID: selectedItem.id
+      };
+      const params = { key: status };
+      blockUser(params, body)
+        .then((res) => {
+          if (res?.err === 0) {
+            showToast(res?.mess, 'success');
+            setSelectedItem();
+            refetchPost();
+          } else {
+            showToast(res?.mess || 'Có lỗi xảy ra', 'error');
+          }
+        })
+        .catch((e) => {
+          console.error('Lỗi:', e);
+          showToast('Có lỗi xảy ra', 'error');
+        })
+        .finally(() => {
+          dispatch(hideLoading());
+          handleUpdateState(status === 'unlock' ? 'modalUnLockUser' : 'modalLockUser', false);
+        });
+    },
+    [selectedItem, dispatch]
+  );
 
   const columns = [
     {
@@ -158,12 +211,26 @@ const useListUser = () => {
       align: 'center',
       renderCell: (params) => (
         <>
-          <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error" size="small" onClick={() => handleDelete(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
+          <Tooltip title="Sửa" placement="top">
+            <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Mở khóa tài khoản" placement="top">
+            <IconButton color="waring" size="small" onClick={() => handleUpdateState('modalUnLockUser', true, params.row)}>
+              <NoEncryptionIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Khóa tài khoản" placement="top">
+            <IconButton color="waring" size="small" onClick={() => handleUpdateState('modalLockUser', true, params.row)}>
+              <LockPersonIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Xóa tài khoản" placement="top">
+            <IconButton color="error" size="small" onClick={() => handleDelete(params.row.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </>
       )
     }
@@ -181,7 +248,6 @@ const useListUser = () => {
   return {
     dataListUser,
     stateComponent,
-    selectedPost,
     handleToggleModalDelete,
     handleSearchTable,
     handleToggleModalPost,
@@ -192,7 +258,9 @@ const useListUser = () => {
     handleNavigateAdd,
     handleSelectedIds,
     searchBody,
-    handlePaginationChange
+    handlePaginationChange,
+    handleLockUser,
+    handleUpdateState
   };
 };
 

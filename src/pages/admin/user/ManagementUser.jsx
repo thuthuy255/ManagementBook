@@ -10,10 +10,8 @@ export default function ManagementUser() {
   const {
     dataListUser,
     stateComponent,
-    selectedPost,
     handleToggleModalDelete,
     handleSearchTable,
-    handleToggleModalPost,
     handleRemoveMultipleItems,
     columns,
     handleDelete,
@@ -21,7 +19,9 @@ export default function ManagementUser() {
     handleNavigateAdd,
     handleSelectedIds,
     searchBody,
-    handlePaginationChange
+    handlePaginationChange,
+    handleLockUser,
+    handleUpdateState
   } = useListUser();
   return (
     <>
@@ -50,6 +50,18 @@ export default function ManagementUser() {
           )}
 
           <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDelete} loading={false} />
+          <ModalConfirm
+            open={stateComponent.modalUnLockUser}
+            onClose={() => handleUpdateState('modalUnLockUser', false)}
+            onConfirm={() => handleLockUser('unlock')}
+            loading={false}
+          />
+          <ModalConfirm
+            open={stateComponent.modalLockUser}
+            onClose={() => handleUpdateState('modalLockUser', false)}
+            onConfirm={() => handleLockUser('lock')}
+            loading={false}
+          />
         </div>
       )}
     </>

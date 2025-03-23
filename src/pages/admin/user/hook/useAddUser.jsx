@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { useQueryClient } from 'react-query';
 import { showToast } from 'components/notification/CustomToast';
-import { CreateStaff } from '../services/user.api';
+
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
+import { CreateStaff } from '../services/User.api';
 
 const useAddUser = () => {
   const dispatch = useDispatch();
@@ -15,16 +16,9 @@ const useAddUser = () => {
 
   const handleSubmitForm = useCallback(
     async (values) => {
-      const formData = new FormData();
-      formData.append('name', values.name);
-      formData.append('email', values.email);
-      formData.append('password', values.password);
-      formData.append('phoneNumber', values.phoneNumber);
-      formData.append('address', values.address);
-      formData.append('avatar', values.avatar[0]);
       dispatch(showLoading());
       try {
-        const response = await CreateStaff(formData);
+        const response = await CreateStaff(values);
         if (response && response?.err === 0) {
           showToast('Thêm thành công nhân viên', 'success');
           await queryClient.invalidateQueries(['GetAllUser']);
@@ -50,8 +44,7 @@ const useAddUser = () => {
       password: '',
       passwordConfirm: '',
       phoneNumber: '',
-      address: '',
-      avatar: ''
+      address: ''
     },
     validationSchema: Yup.object({
       name: Yup.string().required('Tên không được bỏ trống'),
@@ -61,8 +54,7 @@ const useAddUser = () => {
         .required('Xác nhận mật khẩu không được bỏ trống')
         .oneOf([Yup.ref('password'), null], 'Mật khẩu không khớp'),
       phoneNumber: Yup.string().required('Số điện thoại không được bỏ trống'),
-      address: Yup.string().required('Địa chỉ không được bỏ trống'),
-      avatar: Yup.array().min(1, 'Ảnh là bắt buộc')
+      address: Yup.string().required('Địa chỉ không được bỏ trống')
     }),
     onSubmit: handleSubmitForm
   });

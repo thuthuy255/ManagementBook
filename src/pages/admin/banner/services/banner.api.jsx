@@ -20,4 +20,5 @@ export const deleteBanner = (params) => {
   const query = stringtifyQuery(params);
   const url = `/banner/delete?${query}`;
   return axiosClient.delete(url);
+
 };

@@ -4,6 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 
 function ImageUploader({ images = [], setImages, multiple = true, error }) {
+  console.log('🚀 ~ ImageUploader ~ images:', images);
   const fileInputRef = useRef(null);
 
   const handleFileInputClick = () => {
