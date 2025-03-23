@@ -1,0 +1,9 @@
+.container-header {
+  background-color: var(--default-color);
+}
+.btnSearch {
+  background-color: #fff;
+  border-radius: 15px;
+  border: 1px color #ccc;
+  display: flex;
+}

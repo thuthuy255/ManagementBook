@@ -14,6 +14,7 @@ import { GetInfoUser } from 'services/user.api';
 import { setUserState } from 'features/slices/user.slice';
 import GlobalLoading from 'components/loading/GlobalLoading ';
 import UserRoutes from 'routes/UserRoutes';
+import ClientRoutes from 'routes/ClientRoutes';
 // ==============================|| APP - THEME, ROUTER, LOCAL ||============================== //
 
 export default function App() {
@@ -46,7 +47,8 @@ export default function App() {
     const USER_ROUTES = {
       [ADMIN]: AdminRoutes,
       [STAFF]: AdminRoutes,
-      [USER]: UserRoutes
+      // [USER]: UserRoutes
+      [USER]: ClientRoutes
     };
 
     return USER_ROUTES[infoAuth.role_id] || AuthRoutes;

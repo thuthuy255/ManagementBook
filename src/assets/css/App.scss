@@ -2,9 +2,11 @@
 
 $primary-color: #007bff;
 $primary-color-lighter: color.adjust($primary-color, $lightness: 15%);
+$default-color: #c12530;
 
 :root {
   --primary-color: #{$primary-color};
+  --default-color: #{$default-color};
   --primary-color-lighter: #{$primary-color-lighter};
   --text-color: #000;
 }

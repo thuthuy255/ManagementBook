@@ -23,7 +23,7 @@ export default function UserLayout() {
 
   return (
     <UserProvider>
-      <Box sx={{ display: 'flex', height: '100vh', position: 'relative', bgcolor: '#f9f9f9',gap: 2 }}>
+      <Box sx={{ display: 'flex', height: '100vh', position: 'relative', bgcolor: '#f9f9f9', gap: 2 }}>
         {/* Sidebar */}
         <Paper
           elevation={1}
@@ -37,7 +37,7 @@ export default function UserLayout() {
             bgcolor: '#ffffff',
             border: '1px solid #e0e0e0',
             transform: open ? 'translateX(0)' : 'translateX(-300px)',
-            boxShadow: '0px 4px 20px rgba(0,0,0,0.1)',
+            boxShadow: '0px 4px 20px rgba(0,0,0,0.1)'
           }}
         >
           <CategoryPage />
