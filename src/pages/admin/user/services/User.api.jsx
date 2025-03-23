@@ -9,5 +9,22 @@ export const GetAllUser = (params) => {
 
 export const CreateStaff = (body) => {
   const url = `/admin/staff`;
+  return axiosClient.post(url, body);
+};
+
+export const getDetailUser = (params) => {
+  const query = stringtifyQuery(params);
+  const url = `/user/current?${query}`;
+  return axiosClient.get(url);
+};
+
+export const updateStaff = (body) => {
+  const url = `/admin/update`;
   return axiosClientFile.post(url, body);
+};
+
+export const blockUser = (params, body) => {
+  const query = stringtifyQuery(params);
+  const url = `admin/block?${query}`;
+  return axiosClient.post(url, body);
 };
