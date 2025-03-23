@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
@@ -15,12 +14,42 @@ const useBookList = () => {
   const navigate = useNavigate();
   const [books, setBooks] = useState([]);
   const [stateComponent, setStateComponent] = useState({
-    modal: false,
     loading: false,
     modalDelete: false
   });
   const [selectedBook, setSelectedBook] = useState(null);
+  const [listIdProducts, setListIdProducts] = useState([]);
+  const handleSearchTable = useCallback((value) => {
+    console.log('Đây là value', value);
+  }, []);
+  const handleNavigateAdd = useCallback(() => {
+    navigate('/add-book');
+  }, [navigate]);
 
+  const handleRemoveMultipleItems = useCallback(async () => {
+    if (!listIdProducts || listIdProducts?.length <= 0) {
+      showToast('Vui lòng chọn sản phẩm', 'warning');
+      return;
+    }
+    try {
+      dispacth(showLoading());
+      const body = {
+        productIDs: [listIdProducts]
+      };
+      const response = await deleteBook(body);
+      if (response?.err !== 0) {
+        showToast(response?.mess, 'warning');
+        return;
+      }
+      await handleListBook();
+      showToast('Xóa thành công', 'success');
+    } catch (error) {
+      console.error('Có lỗi xảy ra', error);
+      showToast(error, 'error');
+    } finally {
+      dispacth(hideLoading());
+    }
+  }, [listIdProducts]);
   //Đóng modal delete
   const handleToggleModalDelete = useCallback(() => {
     setStateComponent((prev) => ({
@@ -35,14 +64,6 @@ const useBookList = () => {
     setSelectedBook(id);
   }, []);
 
-  // Toggle modal
-  const handleToggleModalBook = useCallback(() => {
-    setStateComponent((prev) => ({
-      ...prev,
-      modal: !prev.modal
-    }));
-  }, []);
-
   // Toggle loading
   const handleToggleLoading = useCallback(() => {
     setStateComponent((prev) => ({
@@ -51,18 +72,11 @@ const useBookList = () => {
     }));
   }, []);
 
-  // Chọn sách để chỉnh sửa
-  const handleEdit = (book) => {
-    setSelectedBook(book);
-    handleToggleModalBook();
-  };
-
   const handleNavigateUpdate = (slug) => {
     if (!slug) {
       showToast('Không lấy được slug', 'error');
       return;
     }
-
     navigate(`/update-book/${slug}`);
   };
   // Lấy danh sách sách từ API
@@ -94,14 +108,10 @@ const useBookList = () => {
       return;
     }
     try {
-      const formData = new FormData();
-      formData.append('productID', selectedBook);
-
-      formData.forEach((value, key) => {
-        console.log(`${key}: ${value}`);
-      });
-      const response = await deleteBook(formData);
-
+      const body = {
+        productIDs: [selectedBook]
+      };
+      const response = await deleteBook(body);
       if (response?.err !== 0) {
         showToast(response?.mess, 'warning');
         dispacth(hideLoading());
@@ -117,6 +127,10 @@ const useBookList = () => {
       handleToggleModalDelete();
     }
   }, [selectedBook]);
+
+  const handleSelectedIds = (selectedIds) => {
+    setListIdProducts(selectedIds);
+  };
 
   useEffect(() => {
     handleListBook();
@@ -211,12 +225,14 @@ const useBookList = () => {
     books,
     stateComponent,
     selectedBook,
-    handleEdit,
     handleListBook,
-    handleToggleModalBook,
     columns,
     handleToggleModalDelete,
-    handleDeleteProducts
+    handleDeleteProducts,
+    handleSelectedIds,
+    handleNavigateAdd,
+    handleRemoveMultipleItems,
+    handleSearchTable
   };
 };
 
