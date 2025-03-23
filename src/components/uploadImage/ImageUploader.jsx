@@ -11,10 +11,15 @@ function ImageUploader({ images = [], setImages, multiple = true, error }) {
   };
 
   const handleFileChange = (event) => {
-    const files = Array.from(event.target.files);
+    let files = Array.from(event.target.files);
+
+    if (!multiple) {
+      files = files.slice(0, 1); // Chỉ lấy ảnh đầu tiên nếu không cho phép chọn nhiều ảnh
+    }
+
     if (files.length > 0) {
       const currentImage = [...images, ...files];
-      setImages(currentImage);
+      setImages(multiple ? currentImage : files);
     }
     event.target.value = ''; // Reset input
   };

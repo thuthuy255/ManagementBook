@@ -15,26 +15,18 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
-// third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-
-// project import
 import AnimateButton from 'components/@extended/AnimateButton';
-
-// assets
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 import FirebaseSocial from './FirebaseSocial';
 import { Login } from '../services/auth.api';
 import { showToast } from 'components/notification/CustomToast';
-
 import { jwtDecode } from 'jwt-decode';
 import { setAppState } from 'features/slices/app.slice';
 import { useDispatch } from 'react-redux';
-
-// ============================|| JWT - LOGIN ||============================ //
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
 
 export default function AuthLogin({ isDemo = false }) {
   const [checked, setChecked] = React.useState(false);
@@ -46,12 +38,12 @@ export default function AuthLogin({ isDemo = false }) {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  const handleLogin = () => {
-    showToast('Thành công', 'success');
-  };
+
   const handleLoginSubmit = useCallback(async (values, { setSubmitting }) => {
+    dispath(showLoading());
     Login(values)
       .then((response) => {
+        console.log('🚀 ~ .then ~ response:', response);
         if (response.err === 0) {
           const decoded = jwtDecode(response?.access_token);
           if (decoded && decoded?.role && response?.access_token) {
@@ -73,6 +65,7 @@ export default function AuthLogin({ isDemo = false }) {
       })
       .finally(() => {
         setSubmitting(false); // Dừng trạng thái loading
+        dispath(hideLoading());
       });
   }, []);
 
@@ -86,7 +79,13 @@ export default function AuthLogin({ isDemo = false }) {
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('Must be a valid email').max(255).required('Địa chỉ Email là bắt buộc'),
-          password: Yup.string().max(255).required('Mật khẩu là bắt buộc')
+          password: Yup.string()
+            .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
+            .matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?=.*\d).{6,}$/,
+              'Mật khẩu phải chứa ít nhất một chữ cái thường, một chữ cái hoa, một ký tự đặc biệt và một chữ số'
+            )
+            .required('Mật khẩu là bắt buộc')
         })}
         onSubmit={handleLoginSubmit}
       >
@@ -175,12 +174,12 @@ export default function AuthLogin({ isDemo = false }) {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  {/* <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Đăng Nhập
-                  </Button> */}
-                  <Button onClick={handleLogin} fullWidth size="large" type="submit" variant="contained" color="primary">
+                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
                     Đăng Nhập
                   </Button>
+                  {/* <Button onClick={handleLogin} fullWidth size="large" type="submit" variant="contained" color="primary">
+                    Đăng Nhập
+                  </Button> */}
                 </AnimateButton>
               </Grid>
               <Grid item xs={12}>

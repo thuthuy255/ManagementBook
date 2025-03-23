@@ -3,7 +3,7 @@ import React, { memo, useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import useDebounce from 'hook/useDebounce';
-function HeaderTable({ searchTable, onAdd, onRemove }) {
+function HeaderTable({ searchTable, onAdd, onRemove, statusRemoveMultipleItems = true }) {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
   useEffect(() => {
@@ -33,16 +33,18 @@ function HeaderTable({ searchTable, onAdd, onRemove }) {
             <AddIcon />
             <span>Thêm mới</span>
           </Button>
-          <Button
-            size="small"
-            variant="contained"
-            color="error"
-            sx={{ display: 'flex', alignItems: 'center', gap: 0.5, height: '35px' }}
-            onClick={onRemove}
-          >
-            <DeleteIcon />
-            <span>Xóa đã chọn</span>
-          </Button>
+          {statusRemoveMultipleItems && (
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              sx={{ display: 'flex', alignItems: 'center', gap: 0.5, height: '35px' }}
+              onClick={onRemove}
+            >
+              <DeleteIcon />
+              <span>Xóa đã chọn</span>
+            </Button>
+          )}
         </Box>
       </Grid>
     </Grid>

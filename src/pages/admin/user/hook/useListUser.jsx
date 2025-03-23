@@ -1,23 +1,19 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { getAllUserQuery } from '../services/user.query';
+import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { IconButton } from '@mui/material';
-import { showToast } from 'components/notification/CustomToast';
-import { deleteArticles } from '../services/Post.api';
-import { formatJson } from 'utils/format/FormatJson';
-import { formatDate } from 'utils/format/FormatDate';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
-import { hideLoading, showLoading } from 'features/slices/loading.slice';
-import { getListPostQuery } from '../services/Post.query';
-const usePostList = () => {
+
+const useListUser = () => {
   const [searchBody, setSearchBody] = useState({
     page: 1,
     limit: 5,
     keyword: '',
     sort: 'asc'
   });
-  const { data: posts, isFetching: isFetchingPost, error, refetch: refetchPost } = getListPostQuery({ params: searchBody });
+  const { data: dataListUser, isFetching: isFetchingPost, error, refetch: refetchPost } = getAllUserQuery({ params: searchBody });
   const [stateComponent, setStateComponent] = useState({
     modal: false,
     modalDelete: false,
@@ -73,7 +69,7 @@ const usePostList = () => {
     }));
   }, []);
   const handleNavigateAdd = useCallback(() => {
-    navigate('/add-post');
+    navigate('/add-user');
   }, [navigate]);
 
   const handleRemoveMultipleItems = useCallback(() => {
@@ -98,10 +94,6 @@ const usePostList = () => {
     }));
   }, []);
 
-  // Chọn bài viết để chỉnh sửa
-  const handleNavigatePost = (title) => {
-    navigate(`/update-post/${title}`);
-  };
   const handlePaginationChange = useCallback((model) => {
     setSearchBody((prev) => ({
       ...prev,
@@ -110,49 +102,48 @@ const usePostList = () => {
     }));
   }, []);
 
-  // Cấu hình cột cho bảng
+  const handleEdit = useCallback(() => {
+    navigate('/update-user');
+  }, []);
+
   const columns = [
     {
-      field: 'title',
-      headerName: 'Tiêu đề',
+      field: 'name',
+      headerName: 'Họ và tên',
       flex: 1,
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => <span>{params.value?.toUpperCase() || 'Không có'}</span>
     },
     {
-      field: 'content',
-      headerName: 'Nội dung',
+      field: 'email',
+      headerName: 'Email',
       flex: 1,
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => <span>{params.value || 'Không có'}</span>
     },
     {
-      field: 'type',
-      headerName: 'Loại',
+      field: 'phoneNumber',
+      headerName: 'Số điện thoại',
       flex: 1,
       headerAlign: 'center',
       align: 'center',
-      renderCell: (params) => <span>{params.value === 'news' ? 'Tin tức' : 'Không có thể loại'}</span>
+      renderCell: (params) => <span> {params.value || 'Không có'}</span> // Thêm icon điện thoại
     },
     {
-      field: 'img_src',
+      field: 'avatar',
       headerName: 'Ảnh đại diện',
       flex: 1,
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => {
-        const listImage = formatJson(params?.value);
-        if (!listImage) {
-          return <span>Không có</span>;
-        }
-        return <img src={listImage[0]} alt="Ảnh đại diện" width={80} height={80} />;
+        return <img src={params.value} alt="Ảnh đại diện" width={80} height={80} />;
       }
     },
     {
-      field: 'createdAt',
-      headerName: 'Ngày tạo',
+      field: 'address',
+      headerName: 'Địa chỉ',
       flex: 1,
       headerAlign: 'center',
       align: 'center',
@@ -167,27 +158,28 @@ const usePostList = () => {
       align: 'center',
       renderCell: (params) => (
         <>
-          <IconButton color="primary" size="small" onClick={() => handleNavigatePost(params.row.title)}>
+          <IconButton color="primary" size="small" onClick={() => handleEdit(params.row)}>
             <EditIcon />
           </IconButton>
-          <IconButton color="error" size="small" onClick={() => handleDeleteConfirm(params.row)}>
+          <IconButton color="error" size="small" onClick={() => handleDelete(params.row.id)}>
             <DeleteIcon />
           </IconButton>
         </>
       )
     }
   ];
+
   useEffect(() => {
-    if (posts) {
+    if (dataListUser) {
       setStateComponent((prev) => ({
         ...prev,
-        total: posts?.totalPage,
-        quantity: posts?.data?.count
+        total: dataListUser?.totalPage,
+        quantity: dataListUser?.data?.count
       }));
     }
-  }, [posts]);
+  }, [dataListUser]);
   return {
-    posts,
+    dataListUser,
     stateComponent,
     selectedPost,
     handleToggleModalDelete,
@@ -204,4 +196,4 @@ const usePostList = () => {
   };
 };
 
-export default usePostList;
+export default useListUser;

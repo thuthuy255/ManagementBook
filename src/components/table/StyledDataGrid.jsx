@@ -2,12 +2,11 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Paper } from '@mui/material';
 import './StyledDataGrid.css';
 import { NameFilter } from 'utils/vi/nameFilterTable';
-import { useEffect } from 'react';
 
 export default function StyledDataGrid({
   rows,
   columns,
-  paginationModel = { page: 0, pageSize: 5 },
+  paginationModel = { page: 1, pageSize: 5 },
   onPaginationChange,
   rowCount = 0,
   paginationMode = 'server',
@@ -35,6 +34,7 @@ export default function StyledDataGrid({
         paginationModel={paginationModel}
         onPaginationModelChange={onPaginationChange}
         rowCount={paginationMode === 'server' ? rowCount : undefined}
+        paginationMode="server"
         checkboxSelection
         disableRowSelectionOnClick
         onRowSelectionModelChange={onSelectedIdsChange}

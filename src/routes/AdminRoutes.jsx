@@ -20,6 +20,8 @@ const UpdateBanner = Loadable(lazy(() => import('pages/admin/banner/updateBanner
 const AddCart = Loadable(lazy(() => import('pages/admin/cart/addCart/AddCart')));
 const AddPost = Loadable(lazy(() => import('pages/admin/postManagement/addPost/AddPost')));
 const PageStaff = Loadable(lazy(() => import('pages/admin/staff/StaffManagement')));
+const PageAddUser = Loadable(lazy(() => import('pages/admin/user/addUser/AddUser')));
+const PageUpdateUser = Loadable(lazy(() => import('pages/admin/user/updateUser/UpdateUser')));
 const PageCategory = Loadable(lazy(() => import('pages/admin/category/CategoryManagement')));
 const PageProfile = Loadable(lazy(() => import('pages/admin/profile/Profile')));
 const PageUpdatePost = Loadable(lazy(() => import('pages/admin/postManagement/updatePost/UpdatePost')));
@@ -120,6 +122,14 @@ const MainRoutes = {
     {
       path: 'add-post',
       element: <AddPost />
+    },
+    {
+      path: 'add-user',
+      element: <PageAddUser />
+    },
+    {
+      path: 'update-user',
+      element: <PageUpdateUser />
     },
     {
       path: 'update-post/:title',

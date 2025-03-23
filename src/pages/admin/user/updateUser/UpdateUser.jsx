@@ -1,19 +1,13 @@
+import { Button, Grid, Typography } from '@mui/material';
+import { Container } from '@mui/system';
 import React from 'react';
-import { Container, Button, Typography, Grid } from '@mui/material';
-import CustomTextField from 'components/input/CustomTextField';
-import InputSelect from 'components/input/InputSelect';
-import ImageUploader from 'components/uploadImage/ImageUploader';
-import useAddBook from '../hook/useAddBook';
-import Loading from 'components/loading/Loading';
 
-export default function AddBook() {
-  const { formik, categoryBook, loading } = useAddBook();
-
+export default function UpdateUser() {
   return (
     <Container maxWidth={false} disableGutters style={{ height: 'calc(100vh - 200px)' }}>
       <Grid container display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
         <Typography variant="h4" gutterBottom mb={0}>
-          Thêm sản phẩm
+          Chỉnh sửa thông tin nhân viên
         </Typography>
 
         {loading ? (
@@ -29,35 +23,23 @@ export default function AddBook() {
         <Grid item xs={12} md={6}>
           <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
-              {/* Cột 1 */}
               <Grid item xs={12} md={6}>
-                <CustomTextField formik={formik} name="name" label="Tên sản phẩm" />
+                <CustomTextField formik={formik} name="title" label="Tiêu đề" disabled={true} />
               </Grid>
-              <Grid item xs={12} md={6}>
-                <CustomTextField formik={formik} name="author" label="Tác giả" />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <CustomTextField formik={formik} name="publisher" label="Nhà xuất bản" />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <CustomTextField formik={formik} name="price" label="Giá" type="number" />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <CustomTextField formik={formik} name="qty" label="Số lượng" type="number" />
-              </Grid>
+
               <Grid item xs={12} md={6}>
                 <InputSelect
-                  label="Loại sản phẩm"
+                  label="Loại bài viết"
                   name="type"
                   value={formik.values.type}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  options={categoryBook} // Truyền danh sách loại sách vào
+                  options={categoryPost} // Truyền danh sách loại sách vào
                   error={formik.touched.type && formik.errors.type}
                 />
               </Grid>
               <Grid item xs={12} md={12}>
-                <CustomTextField formik={formik} name="description" label="Mô tả" multiline />
+                <CustomTextField formik={formik} name="content" label="Nội dung" multiline />
               </Grid>
             </Grid>
           </form>

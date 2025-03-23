@@ -110,7 +110,6 @@ const useBookList = () => {
     handleToggleLoading();
     ListBook(searchProducts)
       .then((response) => {
-        console.log('đây là tổng số trang', response);
         if (response.err === 0) {
           setBooks(response?.data?.rows);
           setStateComponent((prev) => ({
@@ -200,11 +199,26 @@ const useBookList = () => {
       field: 'description',
       headerName: 'Mô tả',
       flex: 2,
-
       headerAlign: 'center',
       align: 'center',
-      cellClassName: 'wrap-text'
+      cellClassName: 'wrap-text',
+      renderCell: (params) => (
+        <div
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'normal',
+            maxHeight: '4.5em' /* Tùy chỉnh theo font-size */
+          }}
+        >
+          {params.value}
+        </div>
+      )
     },
+
     {
       field: 'author',
       headerName: 'Tác giả',

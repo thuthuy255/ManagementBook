@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -29,8 +29,10 @@ import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import avatar1 from 'assets/images/users/avatar-1.png';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { InfoUserState } from 'features/slices/user.slice';
+import ModalConfirm from 'components/modal/ModalConfirm';
+import { resetLogin } from 'features/slices/app.slice';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -55,6 +57,7 @@ export default function Profile() {
   const infoUser = useSelector(InfoUserState);
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
+
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };

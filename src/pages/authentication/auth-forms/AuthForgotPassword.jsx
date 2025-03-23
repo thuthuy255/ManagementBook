@@ -14,12 +14,37 @@ import { Formik } from 'formik';
 
 // Project import
 import AnimateButton from 'components/@extended/AnimateButton';
+import { showToast } from 'components/notification/CustomToast';
+import { ForgotPassword } from '../services/auth.api';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
+import { useNavigate } from 'react-router';
 
 // ============================|| AUTH - FORGOT PASSWORD ||============================ //
 
 export default function AuthForgotPassword() {
   const [submitted, setSubmitted] = useState(false);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleSubmitForgotPassword = async (values) => {
+    dispatch(showLoading());
+    ForgotPassword(values)
+      .then((response) => {
+        if (response?.otpToken && values.email) {
+          showToast('OTP đã được gửi về email của bạn', 'success');
+          navigate(`/verify-email?otpToken=${response.otpToken}&email=${values.email}&type=forgot-password`);
+        } else {
+          showToast(response.mess, 'warning');
+        }
+      })
+      .catch((error) => {
+        console.error('Lỗi đăng ký:', error);
+        showToast('Có lỗi xảy ra' + error, 'error');
+      })
+      .finally(() => {
+        dispatch(hideLoading());
+      });
+  };
   return (
     <Formik
       initialValues={{ email: '' }}
@@ -27,7 +52,7 @@ export default function AuthForgotPassword() {
         email: Yup.string().email('Email không hợp lệ').required('Email là bắt buộc')
       })}
       onSubmit={(values, { setSubmitting }) => {
-        console.log('Email gửi yêu cầu:', values.email);
+        handleSubmitForgotPassword(values);
         setSubmitted(true);
         setSubmitting(false);
       }}

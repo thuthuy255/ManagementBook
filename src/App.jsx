@@ -36,7 +36,9 @@ export default function App() {
   }, [token]);
 
   useEffect(() => {
-    handleGetInfoUser();
+    if (token) {
+      handleGetInfoUser();
+    }
   }, [token]);
   const routes = useMemo(() => {
     if (!token) return AuthRoutes;

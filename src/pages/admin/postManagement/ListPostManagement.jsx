@@ -33,7 +33,7 @@ function ListPostManagement() {
       ) : (
         <div>
           <StyledDataGrid
-            rows={posts?.data?.rows}
+            rows={posts?.data?.rows || []}
             columns={columns}
             onPaginationChange={handlePaginationChange}
             paginationModel={{
@@ -44,6 +44,7 @@ function ListPostManagement() {
             rowCount={stateComponent.quantity}
             paginationMode="server"
           />
+
           <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDelete} loading={false} />
         </div>
       )}

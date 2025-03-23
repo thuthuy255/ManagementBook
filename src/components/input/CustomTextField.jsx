@@ -1,12 +1,13 @@
 import { TextField } from '@mui/material';
 import React, { memo } from 'react';
 
-function CustomTextField({ formik, name, label, type = 'text', multiline = false, disabled = false }) {
+function CustomTextField({ formik, name, label, type = 'text', multiline = false, disabled = false, placeholder }) {
   return (
     <TextField
       fullWidth={true}
       margin="normal"
       label={label}
+      placeholder={placeholder}
       name={name}
       type={type}
       multiline={multiline}

@@ -16,7 +16,8 @@ export const updateBanner = (body) => {
   return axiosClientFile.post(url, body);
 };
 
-export const deleteBanner = (body) => {
-  const url = `/banner/delete`;
-  return axiosClient.delete(url, body);
+export const deleteBanner = (params) => {
+  const query = stringtifyQuery(params);
+  const url = `/banner/delete?${query}`;
+  return axiosClient.delete(url);
 };

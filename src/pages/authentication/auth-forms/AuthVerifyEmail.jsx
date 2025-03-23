@@ -6,16 +6,20 @@ import { Formik } from 'formik';
 import AnimateButton from 'components/@extended/AnimateButton';
 import { showToast } from 'components/notification/CustomToast';
 import { useNavigate } from 'react-router';
-import { ResendEmail, VerifyEmail } from '../services/auth.api';
+import { ResendEmail, VerifyEmail, VerifyForgotPassword } from '../services/auth.api';
 import { useSearchParams } from 'react-router-dom';
 import CountdownTimer from 'components/CountdownTimer';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
 
 export default function AuthVerifyEmail({ onSubmit }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
   const otpToken = searchParams.get('otpToken');
   const emailUser = searchParams.get('email');
-  console.log(emailUser);
+  const typePage = searchParams.get('type');
+  console.log('🚀 ~ AuthVerifyEmail ~ typePage:', typePage);
   const [resetTimer, setResetTimer] = useState(false);
   const [otpTokenCurrent, setOtpCurrent] = useState(otpToken);
   console.log(otpTokenCurrent);
@@ -26,26 +30,48 @@ export default function AuthVerifyEmail({ onSubmit }) {
 
   const handleSubmitForm = useCallback(
     (values, { setSubmitting }) => {
+      dispatch(showLoading());
       const body = {
         ...values,
         otpToken: otpTokenCurrent
       };
-      VerifyEmail(body)
-        .then((response) => {
-          if (response.err === 0) {
-            showToast('Xác minh thành công', 'success');
-            navigate(`/`, { replace: true });
-          } else {
-            showToast(response.mess, 'warning');
-          }
-        })
-        .catch((error) => {
-          console.error('Lỗi đăng ký:', error);
-          showToast('Có lỗi xảy ra ' + error, 'error');
-        })
-        .finally(() => {
-          setSubmitting(false); // Dừng trạng thái loading
-        });
+      if (typePage === 'forgot-password') {
+        VerifyForgotPassword(body)
+          .then((response) => {
+            if (response.err === 0) {
+              showToast('Xác minh thành công', 'success');
+              navigate(`/`, { replace: true });
+            } else {
+              showToast(response.mess, 'warning');
+            }
+          })
+          .catch((error) => {
+            console.error('Lỗi đăng ký:', error);
+            showToast('Có lỗi xảy ra ' + error, 'error');
+          })
+          .finally(() => {
+            setSubmitting(false); // Dừng trạng thái loading
+            dispatch(hideLoading());
+          });
+      } else {
+        VerifyEmail(body)
+          .then((response) => {
+            if (response.err === 0) {
+              showToast('Xác minh thành công', 'success');
+              navigate(`/`, { replace: true });
+            } else {
+              showToast(response.mess, 'warning');
+            }
+          })
+          .catch((error) => {
+            console.error('Lỗi đăng ký:', error);
+            showToast('Có lỗi xảy ra ' + error, 'error');
+          })
+          .finally(() => {
+            setSubmitting(false); // Dừng trạng thái loading
+            dispatch(hideLoading());
+          });
+      }
     },
     [navigate, otpTokenCurrent]
   );

@@ -1,19 +1,17 @@
 import React from 'react';
-import { Container, Button, Typography, Grid } from '@mui/material';
-import CustomTextField from 'components/input/CustomTextField';
-import InputSelect from 'components/input/InputSelect';
-import ImageUploader from 'components/uploadImage/ImageUploader';
+import useAddUser from '../hook/useAddUser';
+import { Button, Container, Grid, Typography } from '@mui/material';
 import Loading from 'components/loading/Loading';
-import useAddPost from '../hook/useAddPost';
+import CustomTextField from 'components/input/CustomTextField';
+import ImageUploader from 'components/uploadImage/ImageUploader';
 
-export default function AddPost() {
-  const { formik, loading, categoryPost } = useAddPost();
-
+export default function AddUser() {
+  const { formik, loading } = useAddUser();
   return (
     <Container maxWidth={false} disableGutters style={{ height: 'calc(100vh - 200px)' }}>
       <Grid container display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
         <Typography variant="h4" gutterBottom mb={0}>
-          Thêm bài viết
+          Thêm nhân viên
         </Typography>
 
         {loading ? (
@@ -30,22 +28,22 @@ export default function AddPost() {
           <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-                <CustomTextField formik={formik} name="title" label="Tiêu đề" />
+                <CustomTextField formik={formik} name="name" label="Tên" />
               </Grid>
-
               <Grid item xs={12} md={6}>
-                <InputSelect
-                  label="Loại bài viết"
-                  name="type"
-                  value={formik.values.type}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  options={categoryPost} // Truyền danh sách loại sách vào
-                  error={formik.touched.type && formik.errors.type}
-                />
+                <CustomTextField formik={formik} name="email" label="Email" />
               </Grid>
-              <Grid item xs={12} md={12}>
-                <CustomTextField formik={formik} name="content" label="Nội dung" multiline />
+              <Grid item xs={12} md={6}>
+                <CustomTextField formik={formik} name="password" label="Mật khẩu" type="password" />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomTextField formik={formik} name="passwordConfirm" label="Xác nhận mật khẩu" type="password" />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomTextField formik={formik} name="phoneNumber" label="Số điện thoại" />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomTextField formik={formik} name="address" label="Địa chỉ" />
               </Grid>
             </Grid>
           </form>
@@ -53,9 +51,9 @@ export default function AddPost() {
         <Grid item xs={12} md={6} px={4}>
           <Grid item xs={12} md={12}>
             <ImageUploader
-              images={[]}
+              images={formik.values.avatar || []}
               setImages={(newImages) => formik.setFieldValue('avatar', newImages)}
-              multiple={true}
+              multiple={false}
               error={formik.errors.avatar}
             />
           </Grid>

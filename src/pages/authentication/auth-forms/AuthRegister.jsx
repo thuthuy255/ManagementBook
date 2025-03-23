@@ -51,7 +51,6 @@ export default function AuthRegister() {
   const handleRegister = (values, { setSubmitting }) => {
     RegisterApi(values)
       .then((response) => {
-        console.log(response);
         if (response?.otpToken && values.email) {
           showToast(response.mess, 'success');
           navigate(`/verify-email?otpToken=${response.otpToken}&email=${values.email}`);
@@ -88,7 +87,13 @@ export default function AuthRegister() {
             .required('Số điện thoại là bắt buộc'),
           name: Yup.string().max(255, 'họ và tên quá dài').required('Họ và tên là bắt buộc'),
           email: Yup.string().email('Email không hợp lệ').max(255, 'Email quá dài').required('Email là bắt buộc'),
-          password: Yup.string().max(255, 'Mật khẩu quá dài').required('Mật khẩu là bắt buộc')
+          password: Yup.string()
+            .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
+            .matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?=.*\d).{6,}$/,
+              'Mật khẩu phải chứa ít nhất một chữ cái thường, một chữ cái hoa, một ký tự đặc biệt và một chữ số'
+            )
+            .required('Mật khẩu là bắt buộc')
         })}
         onSubmit={handleRegister}
       >
