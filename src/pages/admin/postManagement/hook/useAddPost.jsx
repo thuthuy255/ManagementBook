@@ -7,12 +7,13 @@ import { hideLoading, showLoading } from 'features/slices/loading.slice';
 import { useDispatch } from 'react-redux';
 import { showToast } from 'components/notification/CustomToast';
 import { getAllCategory } from 'pages/admin/category/services/category.api';
+import { useQueryClient } from 'react-query';
 
 export default function useAddPost() {
   const dispatch = useDispatch();
   const [categoryPost, setCategoryPost] = useState([]);
   const navigate = useNavigate();
-
+  const queryClient = useQueryClient();
   const fetchCategories = async () => {
     try {
       const response = await getAllCategory();
@@ -42,6 +43,7 @@ export default function useAddPost() {
         const response = await createArticles(formData);
         if (response && response?.err === 0) {
           showToast('Thêm thành công bài viết', 'success');
+          await queryClient.invalidateQueries(['getListPostQuery']);
           navigate('/post-management');
         } else {
           showToast(response?.mess, 'warning');
@@ -52,7 +54,6 @@ export default function useAddPost() {
       } finally {
         dispatch(hideLoading());
       }
-      submit(); // Gọi hàm async bên trong
     },
     [dispatch, showToast, navigate]
   );

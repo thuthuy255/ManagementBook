@@ -5,7 +5,6 @@ import InputSelect from 'components/input/InputSelect';
 import ImageUploader from 'components/uploadImage/ImageUploader';
 import useAddBook from '../hook/useAddBook';
 import Loading from 'components/loading/Loading';
-import ModalConfirm from 'components/modal/ModalConfirm';
 
 export default function AddBook() {
   const { formik, categoryBook, loading } = useAddBook();

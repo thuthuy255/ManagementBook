@@ -8,6 +8,7 @@ import { showToast } from 'components/notification/CustomToast';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { convertUrlsToFiles } from 'utils/fileUtils';
+import { useQueryClient } from 'react-query';
 export default function useUpdatePost() {
   const { title } = useParams();
   const [categoryPost, setCategoryPost] = useState([]);
@@ -15,7 +16,7 @@ export default function useUpdatePost() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const queryClient = useQueryClient();
   const handleDetailBook = useCallback(async () => {
     dispatch(showLoading());
     try {
@@ -32,7 +33,7 @@ export default function useUpdatePost() {
       const imageFiles = await convertUrlsToFiles(currentData.img_src);
 
       const updatedPost = { ...currentData, img_src: imageFiles };
-      console.log('ĐÂt là ', updatedPost);
+
       setDataPost(updatedPost);
     } catch (error) {
       console.error('Đã có lỗi xảy ra', error);
@@ -49,6 +50,7 @@ export default function useUpdatePost() {
         showToast(response?.mess, 'warning');
         return;
       }
+
       setCategoryPost(response?.data?.rows);
     } catch (error) {
       showToast('Có lỗi xảy ra: ' + error.message, 'error');
@@ -77,6 +79,7 @@ export default function useUpdatePost() {
         const response = await updateArticles(formData);
         if (response && response?.err === 0) {
           showToast('Sửa thành công bài viết', 'success');
+          await queryClient.invalidateQueries(['getListPostQuery']);
           navigate('/post-management');
         } else {
           showToast(response?.mess, 'warning');

@@ -7,12 +7,14 @@ import { useNavigate } from 'react-router';
 import { CreateBook } from '../services/book.api';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
+import { useQueryClient } from 'react-query';
 
 export default function useAddBook() {
   const [categoryBook, setCategoryBook] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -49,7 +51,8 @@ export default function useAddBook() {
       try {
         const response = await CreateBook(formData);
         if (response && response?.err === 0) {
-          showToast(response?.mess, 'success');
+          showToast('Thêm thành công sách', 'success');
+          await queryClient.invalidateQueries(['getAllBookQuery']);
           navigate('/book-management');
         } else {
           showToast(response?.mess, 'warning');
@@ -61,7 +64,7 @@ export default function useAddBook() {
         dispatch(hideLoading());
       }
     },
-    [setLoading, showToast, navigate]
+    [dispatch, showToast, navigate]
   );
 
   // Formik config
@@ -89,5 +92,5 @@ export default function useAddBook() {
     onSubmit: handleSubmitForm
   });
 
-  return { formik, categoryBook, loading };
+  return { formik, categoryBook };
 }

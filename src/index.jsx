@@ -33,13 +33,17 @@ import reportWebVitals from './reportWebVitals';
 import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './features/store';
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import { QueryClient, QueryClientProvider } from 'react-query';
 
+const root = ReactDOM.createRoot(document.getElementById('root'));
+const queryClient = new QueryClient();
 // ==============================|| MAIN - REACT DOM RENDER ||============================== //
 
 root.render(
   <Provider store={store}>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </Provider>
 );
 

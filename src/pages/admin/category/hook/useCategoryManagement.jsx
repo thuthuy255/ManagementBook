@@ -1,22 +1,38 @@
 import { useState, useEffect, useCallback } from 'react';
 import { showToast } from 'components/notification/CustomToast';
 import { formatDate } from 'utils/format/FormatDate';
-import { createCategory, deleteCategory, getAllCategory, updateCategory } from '../services/category.api';
+import { createCategory, deleteCategory, updateCategory } from '../services/category.api';
 import { Box } from '@mui/system';
 import ButtonAction from 'components/table/buttonAction/ButtonAction';
+import { getAllCategoryQuery } from '../services/category.query';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
 
 const useCategoryManagement = () => {
-  const [category, setCategory] = useState([]);
   const [stateComponent, setStateComponent] = useState({
     modal: false,
-    loading: false,
     modalAdd: false,
     modalDelete: false,
-    loadingConfirm: false
+    total: 0,
+    quantity: 0,
+    selectIds: null
   });
 
+  const [searchParams, setSearchParams] = useState({
+    page: 1,
+    limit: 5,
+    keyword: '',
+    sort: 'desc'
+  });
+  const { data: dataCategory, isLoading: isLoadingCategory, refetch: refetchCategory } = getAllCategoryQuery({ params: searchParams });
   const [selectedItem, setSelectedItem] = useState(null);
-
+  const dispatch = useDispatch();
+  const handleSelectIds = useCallback((ids) => {
+    setStateComponent((prev) => ({
+      ...prev,
+      selectIds: ids
+    }));
+  }, []);
   const handleToggleModalDelete = useCallback(() => {
     setStateComponent((prev) => ({
       ...prev,
@@ -38,52 +54,43 @@ const useCategoryManagement = () => {
     }));
   }, []);
 
-  // Toggle loading
-  const handleToggleLoading = useCallback(() => {
-    setStateComponent((prev) => ({
-      ...prev,
-      loading: !prev.loading
-    }));
-  }, []);
-
-  const handleToggleLoadingDelete = useCallback(() => {
-    setStateComponent((prev) => ({
-      ...prev,
-      loadingConfirm: !prev.loadingConfirm
-    }));
-  }, []);
-  // Chọn sách để chỉnh sửa
   const handleEdit = (book) => {
     setSelectedItem(book);
     handleToggleModalEdit();
   };
 
   const handleDelete = (item) => {
-    setSelectedItem(item);
+    handleSelectIds([item.id]);
     handleToggleModalDelete();
   };
 
+  const handleRemoveMultipleItems = useCallback(() => {
+    if (stateComponent.selectIds?.length <= 0) {
+      showToast('Bạn cần chọn ít nhất một mục để tiếp tục', 'warning');
+      return;
+    }
+    handleToggleModalDelete();
+  }, [selectedItem]);
+
   const handleSearchTable = useCallback((value) => {
-    handleListTable(value);
+    setSearchParams((prev) => ({
+      ...prev,
+      keyword: value
+    }));
   }, []);
 
   const handleDeleteCateogory = useCallback(async () => {
-    if (!selectedItem) {
-      showToast('Không lấy được id', 'error');
+    if (stateComponent.selectIds?.length <= 0) {
+      showToast('Vui lòng chọn ít nhất 1 danh mục', 'error');
       return;
     }
-
-    handleToggleLoadingDelete();
-
+    dispatch(showLoading());
     try {
-      const body = { categoryID: `${selectedItem?.id}` };
+      const body = { categoryID: stateComponent.selectIds };
       const response = await deleteCategory(body);
-
-      console.log('Xin chào body', response);
-
       if (response.err === 0) {
-        await handleListTable();
         showToast('Xóa thành công danh mục', 'success');
+        await refetchCategory();
         handleToggleModalDelete();
       } else {
         showToast(response.mess, 'error');
@@ -92,32 +99,9 @@ const useCategoryManagement = () => {
       console.error('Lỗi đăng ký:', error);
       showToast('Có lỗi xảy ra: ' + error, 'error');
     } finally {
-      handleToggleLoadingDelete();
+      dispatch(hideLoading());
     }
-  }, [selectedItem, handleToggleLoadingDelete]);
-
-  // Lấy danh sách sách từ API
-  const handleListTable = useCallback(async (type) => {
-    handleToggleLoading();
-    try {
-      const response = await getAllCategory({
-        ...(type && { type }),
-        page: 1,
-        limit: 5
-      });
-
-      if (response.err === 0) {
-        setCategory(response?.data?.rows);
-      } else {
-        showToast(response.mess, 'error');
-      }
-    } catch (error) {
-      console.error('Lỗi lấy danh mục:', error);
-      showToast('Có lỗi xảy ra: ' + error, 'error');
-    } finally {
-      handleToggleLoading();
-    }
-  }, []);
+  }, [stateComponent]);
 
   const handleSubmitAdd = async (values) => {
     try {
@@ -131,7 +115,7 @@ const useCategoryManagement = () => {
         showToast('Đã có lỗi xảy ra ' + response?.mess, 'warning');
         return;
       }
-      handleListTable();
+      await refetchCategory();
       showToast('Thêm thành công danh mục', 'success');
 
       handleToggleModalAdd();
@@ -140,7 +124,12 @@ const useCategoryManagement = () => {
       showToast('Có lỗi xảy ra: ' + error, 'error');
     }
   };
-
+  const handleSelectedIds = (selectedIds) => {
+    setStateComponent((prev) => ({
+      ...prev,
+      selectIds: selectedIds
+    }));
+  };
   const handleSubmitUpdate = async (values) => {
     try {
       const formData = new FormData();
@@ -149,14 +138,13 @@ const useCategoryManagement = () => {
       if (values.images.length > 0) {
         formData.append('img', values.images[0]); // Lấy ảnh đầu tiên
       }
-
       const response = await updateCategory(formData);
       if (response?.err !== 0) {
         showToast('Đã có lỗi xảy ra ' + response?.mess, 'warning');
         return;
       }
+      await refetchCategory();
       showToast('Sửa danh mục thành công', 'success');
-      handleListTable();
       handleToggleModalEdit();
       console.log('Response:', response.data);
     } catch (error) {
@@ -164,8 +152,12 @@ const useCategoryManagement = () => {
       showToast('Có lỗi xảy ra: ' + error, 'error');
     }
   };
-  useEffect(() => {
-    handleSearchTable();
+  const handlePaginationChange = useCallback((model) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      page: model.page + 1,
+      limit: model.pageSize
+    }));
   }, []);
   const columns = [
     {
@@ -187,7 +179,7 @@ const useCategoryManagement = () => {
       align: 'center',
       height: '200px',
       renderCell: (params) => {
-        return <img src={params.value} alt="Ảnh sản phẩm" width={70} height={70} />;
+        return <img src={params.value} alt="Ảnh sản phẩm" width={80} height={80} />;
       }
     },
     {
@@ -215,12 +207,19 @@ const useCategoryManagement = () => {
     }
   ];
 
+  useEffect(() => {
+    if (dataCategory) {
+      setStateComponent((prev) => ({
+        ...prev,
+        total: dataCategory?.totalPage,
+        quantity: dataCategory?.data?.count
+      }));
+    }
+  }, [dataCategory]);
   return {
-    category,
     stateComponent,
     selectedItem,
     handleEdit,
-    handleListTable,
     handleToggleModalEdit,
     columns,
     handleToggleModalAdd,
@@ -228,7 +227,13 @@ const useCategoryManagement = () => {
     handleSubmitUpdate,
     handleDeleteCateogory,
     handleToggleModalDelete,
-    handleSearchTable
+    handleSearchTable,
+    isLoadingCategory,
+    dataCategory,
+    handlePaginationChange,
+    handleSelectedIds,
+    searchParams,
+    handleRemoveMultipleItems
   };
 };
 

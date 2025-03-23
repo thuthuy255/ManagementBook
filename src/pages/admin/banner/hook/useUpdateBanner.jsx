@@ -1,101 +1,85 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { showToast } from 'components/notification/CustomToast';
 import { useNavigate, useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
-import { createBanner, getAllBanner, updateBanner } from '../services/banner.api';
+import { getDetailBannerQuery } from '../services/banner.query';
 import { convertUrlsToFiles } from 'utils/fileUtils';
-import { getAllCategory } from 'pages/admin/category/services/category.api';
+import { updateBanner } from '../services/banner.api';
+import { useQueryClient } from 'react-query';
+
 export default function useUpdateBanner() {
-    const [loading, setLoading] = useState(false);
     const { name } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [bannerData, setBannerData] = useState([]);
-    const handleGetDetailBanner = useCallback(async () => {
-        try {
-            const params = {
-                name: name
-            }
-            const response = await getAllBanner(params);
-            console.log(response)
-            if (!response || response?.err !== 0) {  // Chỉ return nếu lỗi
-                console.log("Có lỗi xảy ra", response);
-                return;
-            }
-            const currentData = response?.data?.rows?.[0];
-            const imageFiles = await convertUrlsToFiles(Array.isArray(currentData.img) ? currentData.img : [currentData.img]);
-            const updatedBanner = { ...currentData, img: imageFiles };
-            setBannerData(updatedBanner)
+    const queryClient = useQueryClient();
+    const { data: dataBanner, isLoading: isFetchingBanner } = getDetailBannerQuery({ params: { name } });
 
-        } catch (error) {
-            console.error('Đã có lỗi xảy ra', error);
-            showToast('Đã có lỗi xảy ra', 'warning');
-        } finally {
-            dispatch(hideLoading());
-        }
+    const convertFiles = useCallback(async () => {
+        const banner = dataBanner?.data?.rows[0]?.img;
+        const imageFiles = banner ? await convertUrlsToFiles([banner]) : [];
+        formik.setFieldValue('img', imageFiles);
+    }, [dataBanner]);
 
-    }, [name]);
-
-
-    useEffect(() => {
-        handleGetDetailBanner();
-    }, [])
-    const statusOptions = [
-        { value: "1", label: "Hoạt động" },
-        { value: "0", label: "Không hoạt động" }
-    ];
+    /** ✅ Submit form */
     const handleSubmitForm = useCallback(
         async (values) => {
+            if (!values.bannerID) {
+                showToast('Không tìm thấy banner để cập nhật', 'error');
+                return;
+            }
+            console.log('🚀 ~ values:', values);
             const formData = new FormData();
-            formData.append('bannerID', values.bannerID);
-            // formData.append('title', values.title);
+            formData.append('bannerID', values.bannerID.toString());
             formData.append('name', values.name);
             formData.append('active', values.active);
-            if (Array.isArray(values.img_src) && values.img.length > 0) {
-                values.img.forEach((file) => {
-                    formData.append('img', file);
-                });
-            }
+
+            values.img.forEach((file) => formData.append('img', file));
+
             dispatch(showLoading());
             try {
                 const response = await updateBanner(formData);
-                console.log('reponse', response)
-                if (response && response?.err === 0) {
-                    showToast('Sửa thành công banner', 'success');
+                console.log('🚀 ~ response:', response);
+                if (response?.err === 0) {
+                    showToast(response.mess, 'success');
+                    queryClient.invalidateQueries({ queryKey: ['getAllBannerQuery'] });
                     navigate('/banner-management');
                 } else {
-                    showToast(response?.mess, 'warning');
+                    showToast(response.mess, 'warning');
                 }
             } catch (error) {
-                console.error('Đã có lỗi xảy ra', error);
+                console.error('Lỗi cập nhật banner:', error);
                 showToast('Có lỗi xảy ra', 'error');
             } finally {
                 dispatch(hideLoading());
             }
         },
-        [dispatch, showToast, navigate]
+        [dispatch, queryClient, navigate]
     );
 
+    useEffect(() => {
+        if (dataBanner) {
+            convertFiles();
+        }
+    }, [dataBanner]);
 
-    // Formik config
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
-            bannerID: bannerData?.id || "",
-            name: bannerData?.name || '',
-            active: bannerData?.active?.toString() || "1",  // Chuyển `active` thành string
-            img: bannerData?.img || []
+            bannerID: dataBanner?.data?.rows[0]?.id || '',
+            name: dataBanner?.data?.rows[0]?.name || '',
+            active: dataBanner?.data?.rows[0]?.active || '1',
+            img: []
         },
         validationSchema: Yup.object({
-            name: Yup.string().required('Tên sản phẩm không được để trống'),
+            name: Yup.string().required('Tên banner không được để trống'),
             active: Yup.string().required('Trạng thái không được để trống'),
-            img: Yup.array().min(1, 'Ảnh sản phẩm là bắt buộc')
+            img: Yup.array().min(1, 'Ảnh banner là bắt buộc')
         }),
         onSubmit: handleSubmitForm
     });
 
-    return { formik, loading, statusOptions };
+    return { formik, isFetchingBanner };
 }

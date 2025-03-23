@@ -8,6 +8,7 @@ import { ListBook, updateBook } from '../services/book.api';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
 import { convertUrlsToFiles } from 'utils/fileUtils';
+import { useQueryClient } from 'react-query';
 
 export default function useUpdateBook() {
   const { slug } = useParams();
@@ -17,7 +18,7 @@ export default function useUpdateBook() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const queryClient = useQueryClient();
   const handleDetailBook = useCallback(async () => {
     dispatch(showLoading());
     try {
@@ -83,7 +84,8 @@ export default function useUpdateBook() {
         const response = await updateBook(formData);
 
         if (response && response?.err === 0) {
-          showToast(response?.mess, 'success');
+          showToast('Sửa thành công sách', 'success');
+          await queryClient.invalidateQueries(['getAllBookQuery']);
           navigate('/book-management');
         } else {
           showToast(response?.mess, 'warning');

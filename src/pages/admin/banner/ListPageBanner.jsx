@@ -1,38 +1,53 @@
-import { Box, Grid, Modal } from '@mui/material';
+import { Grid } from '@mui/material';
 import Loading from 'components/loading/Loading';
 import StyledDataGrid from 'components/table/StyledDataGrid';
-import React, { memo } from 'react'
+import React, { memo } from 'react';
 import useListBanner from './hook/useListBanner';
-import UpdateBanner from './updateBanner/UpdateBanner';
 import ModalConfirm from 'components/modal/ModalConfirm';
+import HeaderTable from 'components/table/headerTable/HeaderTable';
 
 function ListPageBanner() {
-    const {
-        banner,
-        stateComponent,
-        selectedItem,
-        handleToggleModalEdit,
-        columns,
-        handleDeleteBanner,
-        handleToggleModalDelete,
-    } = useListBanner();
-    if (stateComponent.loading) {
-        return (
-            <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
-                <Loading />
-            </Grid>
-        );
-    }
-    return (
+  const {
+    stateComponent,
+    columns,
+    handleDeleteBanner,
+    handleToggleModalDelete,
+    handleSearchTable,
+    handleNavigateAdd,
+    isFetchingBanner,
+    dataBanner,
+    handlePaginationChange,
+    searchParams,
+    handleSelectedIds
+  } = useListBanner();
+  return (
+    <div>
+      <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
+        <HeaderTable onAdd={handleNavigateAdd} statusRemoveMultipleItems={false} searchTable={handleSearchTable} />
+      </Grid>
+      {isFetchingBanner ? (
+        <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
+          <Loading />
+        </Grid>
+      ) : (
         <div>
-            <StyledDataGrid rows={banner} columns={columns} paginationModel={{ page: 0, pageSize: 5 }} />
-            <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeleteBanner} loading={false} />
-            {/* <Modal open={stateComponent.modal} onClose={handleToggleModalEdit}>
-                <div>
-                    <UpdateBanner selectedItem={selectedItem} handleToggleModalEdit={handleToggleModalEdit} />
-                </div>
-            </Modal> */}
+          <StyledDataGrid
+            rows={dataBanner?.data?.rows || []}
+            columns={columns}
+            onPaginationChange={handlePaginationChange}
+            paginationModel={{
+              page: searchParams.page - 1,
+              pageSize: searchParams.limit
+            }}
+            onSelectedIdsChange={handleSelectedIds}
+            rowCount={stateComponent.quantity}
+            paginationMode="server"
+          />
         </div>
-    );
+      )}
+
+      <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeleteBanner} loading={false} />
+    </div>
+  );
 }
 export default memo(ListPageBanner);

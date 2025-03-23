@@ -1,7 +1,7 @@
 import StyledDataGrid from 'components/table/StyledDataGrid';
 import React from 'react';
 import useCategoryManagement from './hook/useCategoryManagement';
-import { Container, Grid, Modal } from '@mui/material';
+import { Grid, Modal } from '@mui/material';
 import UpdateCategory from './updateCategory/UpdateCategory';
 import AddCategory from './addCategory/AddCategory';
 import ModalConfirm from 'components/modal/ModalConfirm';
@@ -10,7 +10,6 @@ import Loading from 'components/loading/Loading';
 
 export default function CategoryManagement() {
   const {
-    category,
     stateComponent,
     selectedItem,
     handleToggleModalEdit,
@@ -20,16 +19,40 @@ export default function CategoryManagement() {
     handleSubmitUpdate,
     handleDeleteCateogory,
     handleToggleModalDelete,
-    handleSearchTable
+    handleSearchTable,
+    isLoadingCategory,
+    dataCategory,
+    handleSelectedIds,
+    handlePaginationChange,
+    searchParams,
+    handleRemoveMultipleItems
   } = useCategoryManagement();
 
   return (
     <div>
       <>
         <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
-          <HeaderTable onAdd={handleToggleModalAdd} onRemove={handleToggleModalAdd} searchTable={handleSearchTable} />
+          <HeaderTable onAdd={handleToggleModalAdd} onRemove={handleRemoveMultipleItems} searchTable={handleSearchTable} />
         </Grid>
-        <StyledDataGrid rows={category} columns={columns} paginationModel={{ page: 0, pageSize: 5 }} />
+        {isLoadingCategory ? (
+          <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
+            <Loading />
+          </Grid>
+        ) : (
+          <StyledDataGrid
+            rows={dataCategory?.data?.rows || []}
+            columns={columns}
+            onPaginationChange={handlePaginationChange}
+            paginationModel={{
+              page: searchParams.page - 1,
+              pageSize: searchParams.limit
+            }}
+            onSelectedIdsChange={handleSelectedIds}
+            rowCount={stateComponent.quantity}
+            paginationMode="server"
+          />
+        )}
+
         <Modal open={stateComponent.modal} onClose={handleToggleModalEdit}>
           <div>
             <UpdateCategory selectedBook={selectedItem} handleToggleModalBook={handleToggleModalEdit} handleSubmit={handleSubmitUpdate} />
@@ -42,7 +65,7 @@ export default function CategoryManagement() {
         </Modal>
         <ModalConfirm
           open={stateComponent.modalDelete}
-          loading={stateComponent.loadingConfirm}
+          loading={false}
           onClose={handleToggleModalDelete}
           onConfirm={handleDeleteCateogory}
         />

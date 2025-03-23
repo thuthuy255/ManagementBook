@@ -11,20 +11,13 @@ export const createBanner = (body) => {
   return axiosClientFile.post(url, body);
 };
 
-export const updateBanner = async (body) => {
+export const updateBanner = (body) => {
   const url = `/banner/update`;
-  try {
-    const response = await axiosClientFile.post(url, body);
-    console.log("API updateBanner response:", response);
-    return response;
-  } catch (error) {
-    console.error("Lỗi khi gọi API updateBanner:", error.response ? error.response.data : error);
-    throw error;
-  }
+  return axiosClientFile.post(url, body);
 };
 
-
-export const deleteBanner = (body) => {
-  const url = `/banner/delete`;
-  return axiosClient.delete(url, body);
+export const deleteBanner = (params) => {
+  const query = stringtifyQuery(params);
+  const url = `/banner/delete?${query}`;
+  return axiosClient.delete(url);
 };

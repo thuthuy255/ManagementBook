@@ -1,23 +1,32 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import { showToast } from 'components/notification/CustomToast';
-import { deleteArticles, GetAllArticles } from '../services/Post.api';
+import { deleteArticles } from '../services/Post.api';
 import { formatJson } from 'utils/format/FormatJson';
 import { formatDate } from 'utils/format/FormatDate';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
+import { getListPostQuery } from '../services/Post.query';
 const usePostList = () => {
-  const [posts, setPosts] = useState([]);
-  console.log('dkjádjahsd', posts);
+  const [searchBody, setSearchBody] = useState({
+    page: 1,
+    limit: 5,
+    keyword: '',
+    sort: 'asc'
+  });
+  const { data: posts, isFetching: isFetchingPost, error, refetch: refetchPost } = getListPostQuery({ params: searchBody });
   const [stateComponent, setStateComponent] = useState({
     modal: false,
-    loading: false,
-    modalDelete: false
+    modalDelete: false,
+    total: 0,
+    quantity: 0
   });
-  const [selectedPost, setSelectedPost] = useState(null);
+
+  const [selectedPost, setSelectedPost] = useState([]);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -28,6 +37,9 @@ const usePostList = () => {
     }));
   }, []);
 
+  const handleSelectedIds = (selectedIds) => {
+    setSelectedPost(selectedIds);
+  };
   const handleDelete = async () => {
     dispatch(showLoading());
     if (!selectedPost) {
@@ -39,11 +51,12 @@ const usePostList = () => {
         ArticleID: selectedPost
       };
       const response = await deleteArticles(body);
-      console.log('Đây là phản hoòi', response);
       if (response.err === 0) {
-        await handleListPost();
+        await refetchPost();
         handleToggleModalDelete();
         showToast('Xóa bài viết thành công', 'success');
+      } else {
+        showToast(response?.mess, 'warning');
       }
     } catch (error) {
       console.error('Lỗi xóa bài viết:', error);
@@ -53,10 +66,28 @@ const usePostList = () => {
     }
   };
 
-  const handleDeleteConfirm = useCallback((id) => {
-    if (!id) return;
+  const handleSearchTable = useCallback((value) => {
+    setSearchBody((prev) => ({
+      ...prev,
+      keyword: value
+    }));
+  }, []);
+  const handleNavigateAdd = useCallback(() => {
+    navigate('/add-post');
+  }, [navigate]);
+
+  const handleRemoveMultipleItems = useCallback(() => {
+    if (selectedPost?.length <= 0) {
+      showToast('Bạn cần chọn ít nhất một mục để tiếp tục', 'warning');
+      return;
+    }
     handleToggleModalDelete();
-    setSelectedPost(id);
+  }, [navigate, selectedPost]);
+
+  const handleDeleteConfirm = useCallback((item) => {
+    if (!item) return;
+    handleToggleModalDelete();
+    setSelectedPost([item.id]);
   }, []);
 
   // Toggle modal
@@ -67,42 +98,16 @@ const usePostList = () => {
     }));
   }, []);
 
-  const handleToggleLoading = useCallback(() => {
-    setStateComponent((prev) => ({
-      ...prev,
-      loading: !prev.loading
-    }));
-  }, []);
-
   // Chọn bài viết để chỉnh sửa
   const handleNavigatePost = (title) => {
     navigate(`/update-post/${title}`);
   };
-
-  // Gọi API lấy danh sách bài viết
-  // Gọi API lấy danh sách bài viết
-  const handleListPost = () => {
-    handleToggleLoading();
-    GetAllArticles()
-      .then((response) => {
-        if (response.err === 0) {
-          console.log('Đây là data', response);
-          setPosts(response?.data?.rows || []);
-        } else {
-          showToast(response.message, 'error');
-        }
-      })
-      .catch((error) => {
-        console.error('Lỗi lấy bài viết:', error);
-        showToast('Có lỗi xảy ra: ' + error.message, 'error');
-      })
-      .finally(() => {
-        handleToggleLoading();
-      });
-  };
-
-  useEffect(() => {
-    handleListPost();
+  const handlePaginationChange = useCallback((model) => {
+    setSearchBody((prev) => ({
+      ...prev,
+      page: model.page + 1,
+      limit: model.pageSize
+    }));
   }, []);
 
   // Cấu hình cột cho bảng
@@ -142,7 +147,7 @@ const usePostList = () => {
         if (!listImage) {
           return <span>Không có</span>;
         }
-        return <img src={listImage[0]} alt="Ảnh đại diện" width={100} height={100} />;
+        return <img src={listImage[0]} alt="Ảnh đại diện" width={80} height={80} />;
       }
     },
     {
@@ -165,23 +170,37 @@ const usePostList = () => {
           <IconButton color="primary" size="small" onClick={() => handleNavigatePost(params.row.title)}>
             <EditIcon />
           </IconButton>
-          <IconButton color="error" size="small" onClick={() => handleDeleteConfirm(params.row.id)}>
+          <IconButton color="error" size="small" onClick={() => handleDeleteConfirm(params.row)}>
             <DeleteIcon />
           </IconButton>
         </>
       )
     }
   ];
-
+  useEffect(() => {
+    if (posts) {
+      setStateComponent((prev) => ({
+        ...prev,
+        total: posts?.totalPage,
+        quantity: posts?.data?.count
+      }));
+    }
+  }, [posts]);
   return {
     posts,
     stateComponent,
     selectedPost,
     handleToggleModalDelete,
-    handleListPost,
+    handleSearchTable,
     handleToggleModalPost,
+    handleRemoveMultipleItems,
     columns,
-    handleDelete
+    handleDelete,
+    isFetchingPost,
+    handleNavigateAdd,
+    handleSelectedIds,
+    searchBody,
+    handlePaginationChange
   };
 };
 

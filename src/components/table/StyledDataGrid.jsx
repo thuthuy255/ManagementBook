@@ -3,7 +3,15 @@ import { Paper } from '@mui/material';
 import './StyledDataGrid.css';
 import { NameFilter } from 'utils/vi/nameFilterTable';
 
-export default function StyledDataGrid({ rows, columns, paginationModel, onSelectedIdsChange }) {
+export default function StyledDataGrid({
+  rows,
+  columns,
+  paginationModel = { page: 1, pageSize: 5 },
+  onPaginationChange,
+  rowCount = 0,
+  paginationMode = 'server',
+  onSelectedIdsChange
+}) {
   return (
     <Paper
       elevation={3} // Tạo hiệu ứng đổ bóng nhẹ
@@ -22,8 +30,11 @@ export default function StyledDataGrid({ rows, columns, paginationModel, onSelec
           headerClassName: 'custom-header' // Tạo class tùy chỉnh cho header
         }))}
         getRowHeight={() => 'auto'}
-        initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[5]}
+        paginationModel={paginationModel}
+        onPaginationModelChange={onPaginationChange}
+        rowCount={paginationMode === 'server' ? rowCount : undefined}
+        paginationMode="server"
         checkboxSelection
         disableRowSelectionOnClick
         onRowSelectionModelChange={onSelectedIdsChange}

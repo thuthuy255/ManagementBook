@@ -38,5 +38,13 @@ export const NameFilter = {
   noResultsOverlayLabel: 'Không tìm thấy kết quả nào',
 
   columnMenuManageColumns: 'Quản lý cột', // 🔥 Nếu có trong menu
-  toolbarManageColumns: 'Quản lý cột hiển thị' // 🔥 Nếu xuất hiện trong toolbar
+  toolbarManageColumns: 'Quản lý cột hiển thị', // 🔥 Nếu xuất hiện trong toolbar,
+  footerRowSelected: (count) => (count > 1 ? `${count} hàng đã chọn` : `${count} hàng được chọn`),
+  footerTotalRows: 'Tổng số dòng:',
+  footerPaginationRowsPerPage: 'Số dòng mỗi trang:',
+  footerPagination: (count) => `1–${count} của ${count}`,
+  MuiTablePagination: {
+    labelRowsPerPage: 'Số hàng trên trang:',
+    labelDisplayedRows: ({ from, to, count }) => `${from}–${to} trên ${count}`
+  }
 };

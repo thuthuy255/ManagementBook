@@ -1,5 +1,4 @@
 export async function convertImageUrlsToFiles(imageUrls) {
-  console.log('đầu hàm', imageUrls);
   if (!imageUrls) return [];
 
   const urls = Array.isArray(imageUrls) ? imageUrls : [imageUrls];

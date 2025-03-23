@@ -19,3 +19,13 @@ export const ResendEmail = (body) => {
   const url = `/auth/resend`;
   return axiosClientNoAuth.post(url, body);
 };
+
+export const ForgotPassword = (body) => {
+  const url = `/auth/forgot-password`;
+  return axiosClientNoAuth.post(url, body);
+};
+
+export const VerifyForgotPassword = (body) => {
+  const url = `/auth/verify-forgot-password`;
+  return axiosClientNoAuth.post(url, body);
+};

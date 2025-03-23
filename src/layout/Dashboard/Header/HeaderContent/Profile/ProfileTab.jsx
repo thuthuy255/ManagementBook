@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 // material-ui
 import List from '@mui/material/List';
@@ -14,16 +14,23 @@ import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import WalletOutlined from '@ant-design/icons/WalletOutlined';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { resetLogin } from 'features/slices/app.slice';
+import ModalConfirm from 'components/modal/ModalConfirm';
 
 // ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
 
 export default function ProfileTab() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-
-  // const handleListItemClick = (index) => {
-  //   setSelectedIndex(index);
-  // };
-
+  const [openModal, setOpenModal] = useState(false);
+  const dispatch = useDispatch();
+  const handleToggleModal = useCallback(() => {
+    setOpenModal((prev) => !prev);
+  }, [openModal]);
+  const handleConfirmLogout = useCallback(() => {
+    dispatch(resetLogin());
+    localStorage.removeItem('access_token');
+  }, [dispatch]);
   return (
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
       <ListItemButton selected={selectedIndex === 1} component={Link} to="/profile">
@@ -32,12 +39,13 @@ export default function ProfileTab() {
         </ListItemIcon>
         <ListItemText primary="View Profile" />
       </ListItemButton>
-      <ListItemButton selected={selectedIndex === 2}>
+      <ListItemButton selected={selectedIndex === 2} onClick={handleToggleModal}>
         <ListItemIcon>
           <LogoutOutlined />
         </ListItemIcon>
         <ListItemText primary="Logout" />
       </ListItemButton>
+      <ModalConfirm open={openModal} onClose={handleToggleModal} onConfirm={handleConfirmLogout} loading={false} />
     </List>
   );
 }
