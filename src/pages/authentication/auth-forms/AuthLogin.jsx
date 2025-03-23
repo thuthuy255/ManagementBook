@@ -43,6 +43,7 @@ export default function AuthLogin({ isDemo = false }) {
     dispath(showLoading());
     Login(values)
       .then((response) => {
+        console.log('🚀 ~ .then ~ response:', response);
         if (response.err === 0) {
           const decoded = jwtDecode(response?.access_token);
           if (decoded && decoded?.role && response?.access_token) {

@@ -8,11 +8,12 @@ import { formatPrice } from 'utils/format';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
 import { useNavigate } from 'react-router';
+import { getAllBookQuery } from '../services/book.query';
+import { formatJson } from 'utils/format/FormatJson';
 
 const useBookList = () => {
   const dispacth = useDispatch();
   const navigate = useNavigate();
-  const [books, setBooks] = useState([]);
   const [stateComponent, setStateComponent] = useState({
     loading: false,
     modalDelete: false,
@@ -32,12 +33,21 @@ const useBookList = () => {
     page: 1,
     limit: 5
   });
-
+  const { data: books, isLoading: isFetchingBook, error, refetch: refetchBook } = getAllBookQuery({ params: searchProducts });
   const handleSearchTable = useCallback((value) => {
-    setSearchProducts((prev) => ({
-      ...prev,
-      keyword: value
-    }));
+    setSearchProducts((prev) => {
+      if (prev.keyword === value) return prev; // Tránh cập nhật không cần thiết
+      return {
+        ...prev,
+        keyword: value
+      };
+    });
+  }, []);
+
+  const handleDeleteConfirm = useCallback((item) => {
+    if (!item) return;
+    handleToggleModalDelete();
+    setSelectedBook([item.id]);
   }, []);
 
   const handleToggleModalWarring = useCallback(() => {
@@ -50,32 +60,6 @@ const useBookList = () => {
   const handleNavigateAdd = useCallback(() => {
     navigate('/add-book');
   }, [navigate]);
-
-  const handleRemoveMultipleItems = useCallback(async () => {
-    if (!listIdProducts || listIdProducts?.length <= 0) {
-      showToast('Vui lòng chọn sản phẩm', 'warning');
-      return;
-    }
-    try {
-      dispacth(showLoading());
-      const body = {
-        productIDs: [listIdProducts]
-      };
-      const response = await deleteBook(body);
-      if (response?.err !== 0) {
-        showToast(response?.mess, 'warning');
-        return;
-      }
-      await handleListBook();
-      showToast('Xóa thành công', 'success');
-    } catch (error) {
-      console.error('Có lỗi xảy ra', error);
-      showToast(error, 'error');
-    } finally {
-      handleToggleModalWarring();
-      dispacth(hideLoading());
-    }
-  }, [listIdProducts]);
   //Đóng modal delete
   const handleToggleModalDelete = useCallback(() => {
     setStateComponent((prev) => ({
@@ -83,20 +67,44 @@ const useBookList = () => {
       modalDelete: !prev.modalDelete
     }));
   }, []);
-
-  const handleDeleteConfirm = useCallback((id) => {
-    if (!id) return;
+  const handleDeleteProducts = async () => {
+    dispacth(showLoading());
+    if (!selectedBook) {
+      dispacth(hideLoading());
+      showToast('Không tìm thấy sản phẩm', 'error');
+      return;
+    }
+    try {
+      const body = {
+        productIDs: selectedBook
+      };
+      const response = await deleteBook(body);
+      if (response?.err !== 0) {
+        await refetchBook();
+        handleToggleModalDelete();
+        showToast('Xóa sách thành công', 'success');
+      } else {
+        showToast(response?.mess, 'warning');
+      }
+    } catch (error) {
+      console.error('Lỗi xóa sách:', error);
+      showToast('Có lỗi xảy ra: ', 'error');
+    } finally {
+      dispacth(hideLoading());
+    }
+  };
+  const handleRemoveMultipleItems = useCallback(() => {
+    console.log(selectedBook)
+    if (selectedBook?.length <= 0) {
+      showToast('Bạn cần chọn ít nhất một mục để tiếp tục', 'warning');
+      return;
+    }
     handleToggleModalDelete();
-    setSelectedBook(id);
-  }, []);
+  }, [navigate, selectedBook]);
 
-  // Toggle loading
-  const handleToggleLoading = useCallback(() => {
-    setStateComponent((prev) => ({
-      ...prev,
-      loading: !prev.loading
-    }));
-  }, []);
+
+
+
 
   const handleNavigateUpdate = (slug) => {
     if (!slug) {
@@ -105,62 +113,13 @@ const useBookList = () => {
     }
     navigate(`/update-book/${slug}`);
   };
-  // Lấy danh sách sách từ API
-  const handleListBook = useCallback(() => {
-    handleToggleLoading();
-    ListBook(searchProducts)
-      .then((response) => {
-        if (response.err === 0) {
-          setBooks(response?.data?.rows);
-          setStateComponent((prev) => ({
-            ...prev,
-            total: response?.totalPage,
-            quantity: response?.data?.count
-          }));
-        } else {
-          showToast(response.message, 'error');
-        }
-      })
-      .catch((error) => {
-        console.error('Lỗi đăng ký:', error);
-        showToast('Có lỗi xảy ra: ' + error, 'error');
-      })
-      .finally(() => {
-        handleToggleLoading();
-      });
-  }, [searchProducts]);
 
-  const handleDeleteProducts = useCallback(async () => {
-    dispacth(showLoading());
 
-    if (!selectedBook) {
-      dispacth(hideLoading());
-      showToast('Không tìm thấy sản phẩm', 'error');
-      return;
-    }
-    try {
-      const body = {
-        productIDs: [selectedBook]
-      };
-      const response = await deleteBook(body);
-      if (response?.err !== 0) {
-        showToast(response?.mess, 'warning');
-        dispacth(hideLoading());
-        return;
-      }
-      await handleListBook();
-      showToast('Xóa thành công', 'success');
-    } catch (error) {
-      console.error('Lỗi đăng ký:', error);
-      showToast('Có lỗi xảy ra: ' + error, 'error');
-    } finally {
-      dispacth(hideLoading());
-      handleToggleModalDelete();
-    }
-  }, [selectedBook]);
+
+
 
   const handleSelectedIds = (selectedIds) => {
-    setListIdProducts(selectedIds);
+    setSelectedBook(selectedIds);
   };
 
   const handlePaginationChange = useCallback((model) => {
@@ -171,10 +130,6 @@ const useBookList = () => {
     }));
   }, []);
 
-  useEffect(() => {
-    handleListBook();
-  }, [searchProducts]);
-
   const columns = [
     // { field: 'id', headerName: 'ID', headerAlign: 'center', align: 'center' },
     {
@@ -183,7 +138,9 @@ const useBookList = () => {
       flex: 1,
       headerAlign: 'center',
       width: '100px',
-      align: 'center'
+      align: 'center',
+      // renderCell: (params) => <span>{params.value?.toUpperCase() || 'Không có'}</span>
+
     },
     {
       field: 'price',
@@ -192,7 +149,6 @@ const useBookList = () => {
       flex: 1,
       headerAlign: 'center',
       align: 'center',
-
       renderCell: (params) => <div>{formatPrice(params.value)}</div>
     },
     {
@@ -224,14 +180,17 @@ const useBookList = () => {
       headerName: 'Tác giả',
       flex: 1,
       headerAlign: 'center',
-      align: 'center'
+      align: 'center',
+      // renderCell: (params) => <span>{params.value?.toUpperCase() || 'Không có'}</span>
+
     },
     {
       field: 'publisher',
       headerName: 'Nhà xuất bản',
       flex: 1,
       headerAlign: 'center',
-      align: 'center'
+      align: 'center',
+      // renderCell: (params) => <span>{params.value?.toUpperCase() || 'Không có'}</span>
     },
     {
       field: 'qty',
@@ -239,7 +198,8 @@ const useBookList = () => {
       type: 'number',
       flex: 1,
       headerAlign: 'center',
-      align: 'center'
+      align: 'center',
+      // renderCell: (params) => <span>{params.value?.toUpperCase() || 'Không có'}</span>
     },
     {
       field: 'img_src',
@@ -250,8 +210,11 @@ const useBookList = () => {
       align: 'center',
       height: '300px',
       renderCell: (params) => {
-        const firstImage = JSON.parse(params.value)?.[0];
-        return firstImage ? <img src={firstImage} alt="Ảnh sản phẩm" width={100} height={100} /> : null;
+        const listImage = formatJson(params?.value);
+        if (!listImage) {
+          return <span>Không có</span>;
+        }
+        return <img src={listImage[0]} alt="Ảnh đại diện" width={80} height={80} />;
       }
     },
     {
@@ -262,24 +225,33 @@ const useBookList = () => {
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', padding: '5px' }}>
-          <IconButton color="primary" size="small" onClick={() => handleNavigateUpdate(params.row.slug)}>
+        <>
+          <IconButton color="primary" size="small" onClick={() => handleNavigateUpdate(params.row.slug)}          >
             <EditIcon />
           </IconButton>
-          <IconButton color="error" size="small" onClick={handleDeleteConfirm.bind(null, params.row.id)}>
+          <IconButton color="error" size="small" onClick={() => handleDeleteConfirm(params.row)}>
             <DeleteIcon />
           </IconButton>
-        </div>
+        </>
       )
     }
   ];
+  useEffect(() => {
+    if (books) {
+      setStateComponent((prev) => ({
+        ...prev,
+        total: books?.totalPage,
+        quantity: books?.data?.count
+      }));
+    }
+  }, [books]);
 
   return {
     books,
     stateComponent,
     selectedBook,
-    handleListBook,
     columns,
+    isFetchingBook,
     handleToggleModalDelete,
     handleDeleteProducts,
     handleSelectedIds,
@@ -288,7 +260,6 @@ const useBookList = () => {
     handleSearchTable,
     searchProducts,
     handlePaginationChange,
-    handleToggleModalWarring
   };
 };
 

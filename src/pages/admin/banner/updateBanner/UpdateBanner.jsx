@@ -1,6 +1,6 @@
 import React from 'react';
 import useUpdateBanner from '../hook/useUpdateBanner';
-import { Box, Button, Grid, MenuItem, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import ImageUploader from 'components/uploadImage/ImageUploader';
 import Loading from 'components/loading/Loading';
 export default function UpdateBanner() {
