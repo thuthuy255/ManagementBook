@@ -76,11 +76,14 @@ function Header() {
             <NotificationsIcon fontSize="medium" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Giỏ hàng" placement="top">
-          <IconButton sx={{ color: '#fff' }} size="small">
-            <AddShoppingCartIcon fontSize="medium" />
-          </IconButton>
-        </Tooltip>
+        <Link to={'/Cart'}>
+          <Tooltip title="Giỏ hàng" placement="top">
+            <IconButton sx={{ color: '#fff' }} size="small">
+              <AddShoppingCartIcon fontSize="medium" />
+            </IconButton>
+          </Tooltip>
+        </Link>
+
         <AccountMenu />
       </Grid>
       <CategoryHeader anchorEl={anchorEl} open={open} handleClose={handleClose} />

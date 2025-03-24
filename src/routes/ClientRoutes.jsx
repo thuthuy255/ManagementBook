@@ -14,6 +14,7 @@ const ProtectedRoute = ({ children }) => {
 const Page404 = Loadable(lazy(() => import('pages/client/404/NotFoundPage')));
 const PageHome = Loadable(lazy(() => import('pages/client/home/HomeProducts')));
 const PageProducts = Loadable(lazy(() => import('pages/client/pages/product/ContentPage')));
+const PageCart = Loadable(lazy(() => import('pages/client/cart/CartProducts')));
 const MainRoutes = [
   {
     path: '/',
@@ -26,6 +27,10 @@ const MainRoutes = [
       {
         path: '/ListProducts',
         element: <PageProducts />
+      },
+      {
+        path: '/Cart',
+        element: <PageCart />
       }
     ]
   },
