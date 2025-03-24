@@ -12,12 +12,19 @@ import Logo_android from "../../../assets/images/icons/android1.webp"
 import Logo_ios from "../../../assets/images/icons/appstore1.webp"
 import HomeIcon from '@mui/icons-material/Home';
 import Logo_lex from "../../../assets/images/icons/logo_lex.webp"
+import Logo_ninja from "../../../assets/images/icons/Logo_ninjavan.webp"
+import Logo_vnpost from "../../../assets/images/icons/vnpost1.webp"
+import Logo_vnpay from "../../../assets/images/icons/vnpay_logo.png"
+import Logo_momo from "../../../assets/images/icons/momopay.png"
+import Logo_shopeepay from "../../../assets/images/icons/shopeepay_logo.png"
+import Logo_zalopay from "../../../assets/images/icons/logo_zalopay_2.png"
+
 function Footer() {
   return <div>
     <Grid container sx={{ display: 'flex', alignItems: 'center' }} px={3} md={12} >
       <Grid item md={3} >
         <Logo />
-        <Box mb={1} mt={1}>
+        <Box mb={1} mt={5}>
           <Typography className='text_add'>Lầu 5, 387-389 Hai Bà Trưng Quận 3 TP HCM</Typography>
           <Typography className='text_add'>Công Ty Cổ Phần Phát Hành Sách TP HCM - FAHASA</Typography>
           <Typography className='text_add'>60 - 62 Lê Lợi, Quận 1, TP. HCM, Việt Nam</Typography>
@@ -59,7 +66,7 @@ function Footer() {
 
       </Grid>
       {/* Đường kẻ dọc */}
-      <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: 'gray' }} />
+      <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: '#BFB1AD', borderWidth: '1px' }} />
       <Grid item md={8}>
         <Grid container ml={6} mr={6} sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Grid item>
@@ -158,36 +165,39 @@ function Footer() {
 
           </Grid>
         </Grid>
-        <Grid container maxWidth={"90%"} spacing={10}
+        <Grid container maxWidth={"100%"} spacing={12} pl={15} pb={1} pt={2}
           sx={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
           <Grid item>
             <img src={Logo_lex} width={100}></img>
           </Grid>
           <Grid item>
-            <img src={Logo_lex} width={100}></img>
+            <img src={Logo_ninja} width={100}></img>
           </Grid>
           <Grid item>
-            <img src={Logo_lex} width={100}></img>
+            <img src={Logo_vnpost} width={100}></img>
           </Grid>
 
         </Grid>
-        <Grid container maxWidth={"90%"} spacing={10}
+        <Grid container maxWidth={"100%"} spacing={10} pl={10}
           sx={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
           <Grid item>
-            <img src={Logo_lex} width={100}></img>
+            <img src={Logo_vnpay} width={100}></img>
           </Grid>
           <Grid item>
-            <img src={Logo_lex} width={100}></img>
+            <img src={Logo_momo} width={60}></img>
           </Grid>
           <Grid item>
-            <img src={Logo_lex} width={100}></img>
+            <img src={Logo_shopeepay} width={100}></img>
           </Grid>
           <Grid item>
-            <img src={Logo_lex} width={100}></img>
+            <img src={Logo_zalopay} width={100}></img>
           </Grid>
         </Grid>
       </Grid>
     </Grid>
+    <Typography sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: '#BFB1AD' }} mt={3} >
+      Giấy chứng nhận Đăng ký Kinh doanh số 0304132047 do Sở Kế hoạch và Đầu tư Thành phố Hồ Chí Minh cấp ngày 20/12/2005, đăng ký thay đổi lần thứ 10, ngày 20/05/2022.
+    </Typography>
   </div>;
 }
 

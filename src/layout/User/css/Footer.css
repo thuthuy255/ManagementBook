@@ -1,3 +1,14 @@
 .text_add {
     font-size: 13px;
+
+}
+
+
+.infor:hover {
+    color: #EB7A96;
+    /* Màu chữ khi hover */
+    cursor: pointer;
+    /* Hiển thị con trỏ chuột */
+    transform: translateX(20px);
+    transition: transform 0.5s ease-in-out;
 }
