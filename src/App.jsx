@@ -2,7 +2,6 @@ import { RouterProvider } from 'react-router-dom';
 import ThemeCustomization from 'themes';
 import ScrollTop from 'components/ScrollTop';
 import AdminRoutes from 'routes/AdminRoutes';
-import AuthRoutes from 'routes/AuthRoutes';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { getRole_Id, getTokenState } from 'features/slices/app.slice';
@@ -13,7 +12,6 @@ import { showToast } from 'components/notification/CustomToast';
 import { GetInfoUser } from 'services/user.api';
 import { setUserState } from 'features/slices/user.slice';
 import GlobalLoading from 'components/loading/GlobalLoading ';
-import UserRoutes from 'routes/UserRoutes';
 import ClientRoutes from 'routes/ClientRoutes';
 // ==============================|| APP - THEME, ROUTER, LOCAL ||============================== //
 
@@ -27,12 +25,12 @@ export default function App() {
     try {
       const response = await GetInfoUser();
       if (!response?.data || response?.err !== 0) {
-        showToast('Lỗi', response?.mess);
+        showToast(response?.mess, 'error');
         return;
       }
       dispacth(setUserState(response.data));
     } catch (error) {
-      showToast('Có lỗi xảy ra', error);
+      showToast(`Có lỗi xảy ra ${error}`, 'error');
     }
   }, [token]);
 
@@ -42,7 +40,7 @@ export default function App() {
     }
   }, [token]);
   const routes = useMemo(() => {
-    if (!token) return AuthRoutes;
+    if (!token) return ClientRoutes;
 
     const USER_ROUTES = {
       [ADMIN]: AdminRoutes,
@@ -51,7 +49,7 @@ export default function App() {
       [USER]: ClientRoutes
     };
 
-    return USER_ROUTES[infoAuth.role_id] || AuthRoutes;
+    return USER_ROUTES[infoAuth.role_id] || ClientRoutes;
   }, [infoAuth.role_id, token]);
 
   return (
