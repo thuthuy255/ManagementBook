@@ -1,0 +1,20 @@
+.image_bannner {
+  height: 315px;
+  border-radius: 10px;
+  /* width: 100%; */
+}
+.ImageBackgroud {
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 10px;
+}
+.BannerRightTop {
+  background-image: url('../../../../assets/images/banner/banner_top.png');
+}
+.BannerRightBottom {
+  background-image: url('../../../../assets/images/banner/banner_topLeft.png');
+}
+
+.backgroundActive {
+  background-image: url('../../../../assets/images/BackgroundHome.webp');
+}

@@ -28,3 +28,20 @@ $default-color: #c12530;
   justify-content: center !important;
   align-items: center !important;
 }
+.Button_Hover {
+  transition:
+    transform 0.4s ease-in-out,
+    box-shadow 0.4s ease-in-out;
+}
+.Button_Hover:hover {
+  cursor: pointer;
+  transform: scale(1.05); /* Phóng to lên 1.5 lần */
+  transition: transform 0.35s ease-in-out; /* Hiệu ứng mượt mà */
+  // box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+}
+.css-1e4exq2 {
+  border: none !important;
+}
+.css-1tblnla-MuiButtonBase-root-MuiTab-root:hover {
+  color: #c12530;
+}

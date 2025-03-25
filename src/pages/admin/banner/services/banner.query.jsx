@@ -6,8 +6,8 @@ export const getAllBannerQuery = ({ params }) => {
   const _options = {
     queryKey: queryKey,
     queryFn: () => getAllBanner(params),
-    staleTime: 3 * 60 * 1000,
-    cacheTime: 3 * 60 * 1000,
+    staleTime: Infinity,
+    cacheTime: Infinity,
     enabled: true
   };
   return useQuery(_options);

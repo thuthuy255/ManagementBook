@@ -1,4 +1,4 @@
-import { Box, Button, Grid, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Box, Button, Grid, IconButton, Tooltip } from '@mui/material';
 import React, { memo, useState } from 'react';
 import Logo from 'components/logo/LogoMain';
 import '../css/Header.css';
@@ -6,7 +6,6 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import TypingEffectText from 'components/input/TypingEffectText';
 import SearchIcon from '@mui/icons-material/Search';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import PersonIcon from '@mui/icons-material/Person';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Link } from 'react-router-dom';
@@ -30,7 +29,7 @@ function Header() {
       className="container-header"
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
       px={3}
-      style={{ height: '100px' }}
+      style={{ height: '100px', position: 'sticky', top: 0, zIndex: 999 }}
     >
       <Grid item>
         <Link to="/">

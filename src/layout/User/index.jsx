@@ -20,14 +20,14 @@ export default function UserLayout() {
     <Box sx={{ width: '100%' }}>
       <Header />
 
-      <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, sm: 3 } }}>
+      <Box component="main" sx={{ flexGrow: 1, pb: { xs: 2, sm: 3 } }}>
         {/* <Toolbar /> */}
         {/* <Box>
           <Breadcrumbs navigation={navigation} title />
         </Box> */}
-        <Box paddingBottom={'60px'} sx={{ overflowY: 'auto', flexGrow: 1 }}>
-          <Outlet />
-        </Box>
+        {/* <Box paddingBottom={'60px'} sx={{ overflowY: 'auto', flexGrow: 1 }}> */}
+        <Outlet />
+        {/* </Box> */}
       </Box>
       <Footer />
     </Box>
