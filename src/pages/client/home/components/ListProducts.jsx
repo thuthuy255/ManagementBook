@@ -4,11 +4,22 @@ import StarIcon from '@mui/icons-material/Star';
 
 function ListProducts({ image, title, price, sale, oldPrice, star, sold }) {
   return (
-    <Box bgcolor={'white'} display="flex" flexDirection={'column'} gap={1} pt={1} minHeight={320} p={2} width={'100%'}>
+    <Grid bgcolor={'white'} display="flex" flexDirection={'column'} gap={1} pt={1} minHeight={320} p={2}>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <img src={image} style={{ width: '125px', display: 'flex', justifyContent: 'center' }} />
+        <img src={image} style={{ width: '125px', height: '125px', display: 'flex', justifyContent: 'center' }} />
       </div>
-      <Typography sx={{ padding: '5px', width: '100%' }}>{title}</Typography>
+      <Typography
+        sx={{
+          padding: '5px',
+          width: '100%',
+          display: '-webkit-box',
+          WebkitBoxOrient: 'vertical',
+          WebkitLineClamp: 2,
+          overflow: 'hidden'
+        }}
+      >
+        {title}
+      </Typography>
       <Grid container alignItems={'center'} spacing={1} sx={{ padding: '5px' }}>
         <Grid item>
           <Typography sx={{ color: '#C42415', fontSize: '18px', fontWeight: 'bold' }}>{price}</Typography>
@@ -39,7 +50,7 @@ function ListProducts({ image, title, price, sale, oldPrice, star, sold }) {
           ({star}) | Đã bán {sold}
         </Typography>
       </Grid>
-    </Box>
+    </Grid>
   );
 }
 

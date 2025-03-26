@@ -10,7 +10,7 @@ export default function useListProductsTopTrend() {
     loop: true
   };
   const { View } = useLottie(options);
-  console.log('🚀 ~ useListProductsTopTrend ~ View:', View);
+
   const getListCategary = useSelector(getCategories);
   const [value, setValue] = useState();
   const [searchProducts, setSearchProducts] = useState({

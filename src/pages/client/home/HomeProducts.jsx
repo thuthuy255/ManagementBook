@@ -8,6 +8,8 @@ import './css/Home.css';
 import ListProductsTopTrend from './components/ListProductsTopTrend';
 import ListProducts from './components/ListProducts';
 import imgProduct from '../../../assets/images/cart_img/Book1.jpg';
+import MyListProducts from './components/MyListProducts';
+import NewsHome from './components/NewsHome';
 export default function HomeProducts() {
   return (
     <Grid container style={{ backgroundColor: BACKGROUND_PRIMARY, minHeight: 'calc(100vh - 100px)' }} pt={3} pb={'60px'}>
@@ -19,6 +21,13 @@ export default function HomeProducts() {
       </Grid>
       <Grid className="backgroundActive" py={3} mt={2} display={'flex'} alignItems={'center'} justifyContent={'center'} item container>
         <ListProductsTopTrend />
+      </Grid>
+
+      <Grid py={3} mt={2} display={'flex'} alignItems={'center'} justifyContent={'center'} item container>
+        <MyListProducts />
+      </Grid>
+      <Grid py={3} mt={2} display={'flex'} alignItems={'center'} justifyContent={'center'} item container>
+        <NewsHome />
       </Grid>
       <Grid container spacing={2} mt={2} justifyContent="center">
         <Grid item xs={6} sm={4} md={2}>
