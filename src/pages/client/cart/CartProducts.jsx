@@ -17,11 +17,11 @@ export default function CartProducts() {
     setCount((prev) => Math.max(prev - 1, 0));
   };
   return <div style={{ minHeight: 'calc(100vh - 100px)' }}>
-    <Typography variant='h6' sx={{ fontSize: '18px' }}>
+    <Typography variant='h6' sx={{ fontSize: '18px', margin: '20px' }}>
       GIỎ HÀNG (1 sản phẩm)
     </Typography>
-    <Grid container spacing={5}>
-      <Grid item md={8}>
+    <Grid container spacing={5} p={2}>
+      <Grid item md={9}>
         <TableContainer >
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead sx={{ backgroundColor: '#fff', }}>

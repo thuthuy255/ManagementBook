@@ -15,6 +15,18 @@ function AccountMenu() {
     handleClose();
     navigate('/login');
   }, [handleClose]);
+  const navigatePrivacy = useNavigate();
+  const handleNavigationPrivacy = () => {
+    navigatePrivacy('/PagePrivacy')
+  }
+  const navigateClause = useNavigate();
+  const handleNavigationClause = () => {
+    navigateClause('/PageClause')
+  }
+  const navigatInfo = useNavigate();
+  const handleNavigationInfo = () => {
+    navigatInfo('/PageInfo_support')
+  }
   return (
     <>
       <Tooltip title="Tài khoản" placement="top">
@@ -33,9 +45,9 @@ function AccountMenu() {
             <MenuItem onClick={handleNavigateLogin}>Đăng nhập tài khoản</MenuItem>
           </Box>
         )}
-        <MenuItem onClick={handleClose}>Thông tin hỗ trợ</MenuItem>
-        <MenuItem onClick={handleClose}>Chính sách bảo mật</MenuItem>
-        <MenuItem onClick={handleClose}>Điều khoản sử dụng</MenuItem>
+        <MenuItem onClick={handleNavigationInfo}>Thông tin hỗ trợ</MenuItem>
+        <MenuItem onClick={handleNavigationPrivacy}>Chính sách bảo mật</MenuItem>
+        <MenuItem onClick={handleNavigationClause}>Điều khoản sử dụng</MenuItem>
       </Menu>
     </>
   );
