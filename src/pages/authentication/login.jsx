@@ -4,8 +4,13 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import AuthWrapper from './AuthWrapper';
 import AuthLogin from './auth-forms/AuthLogin';
+import { useEffect } from 'react';
 
 export default function Login() {
+  useEffect(() => {
+    console.log('Login Component Rendered!');
+  }, []);
+
   return (
     <AuthWrapper>
       <Grid container spacing={3}>

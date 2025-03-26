@@ -2,6 +2,8 @@ import axios from 'axios';
 import store from '../features/store';
 import { resetLogin } from '../features/slices/app.slice';
 import { APP_URL } from 'constants/Url';
+import { showToast } from 'components/notification/CustomToast';
+import { getNavigate } from '../utils/navigateHelper';
 
 const handleRequest = (config) => {
   //check token
@@ -31,6 +33,18 @@ const handleResponseError = async (error) => {
   if (error.response?.status === 401) {
     const dispatch = store.dispatch;
     dispatch(resetLogin());
+    showToast('Vui lòng đăng nhập', 'warning');
+    // Điều hướng về trang đăng nhập
+    // const navigate = getNavigate();
+    // // console.log('🚀 ~ handleResponseError ~ navigate:', navigate);
+
+    // if (navigate) {
+    //   navigate('/login', { replace: true }); // Chuyển trang không reload
+    //   console.log('Current path:', window.location.pathname);
+    // } else {
+    //   window.location.href = '/login'; // Fallback nếu navigate bị lỗi
+    // }
+
     // Xóa token khỏi localStorage
     localStorage.removeItem('access_token');
 

@@ -50,6 +50,7 @@ function MyListProducts() {
           {books?.data?.rows?.map((item) => (
             <Grid key={item?.id} item xs={6} sm={4} md={2} className="Button_Hover btn-boxshadown custom-padding" p={0}>
               <ListProducts
+                slug={item?.slug}
                 image={getImage(item)}
                 title={item.name}
                 price={formatPrice(item.price || 0)}
@@ -63,6 +64,7 @@ function MyListProducts() {
           {books?.data?.rows?.map((item) => (
             <Grid key={item?.id} item xs={6} sm={4} md={2} className="Button_Hover btn-boxshadown custom-padding" p={0}>
               <ListProducts
+                slug={item?.slug}
                 image={getImage(item)}
                 title={item.name}
                 price={formatPrice(item.price || 0)}

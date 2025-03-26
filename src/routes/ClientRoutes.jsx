@@ -1,7 +1,7 @@
 import Loadable from 'components/Loadable';
 import { getTokenState } from 'features/slices/app.slice';
 import UserLayout from 'layout/User';
-import { lazy, Suspense } from 'react';
+import { lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AuthRoutes } from './AuthRoutes';
@@ -15,6 +15,7 @@ const Page404 = Loadable(lazy(() => import('pages/client/404/NotFoundPage')));
 const PageHome = Loadable(lazy(() => import('pages/client/home/HomeProducts')));
 const PageProducts = Loadable(lazy(() => import('pages/client/pages/product/ContentPage')));
 const PageCart = Loadable(lazy(() => import('pages/client/cart/CartProducts')));
+const PageDetail = Loadable(lazy(() => import('pages/client/product-detail/Product-detail-layout')));
 const MainRoutes = [
   {
     path: '/',
@@ -30,7 +31,15 @@ const MainRoutes = [
       },
       {
         path: '/Cart',
-        element: <PageCart />
+        element: (
+          <ProtectedRoute>
+            <PageCart />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/DetailProducts/:slug',
+        element: <PageDetail />
       }
     ]
   },

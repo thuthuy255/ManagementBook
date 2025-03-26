@@ -1,4 +1,4 @@
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider, useNavigate } from 'react-router-dom';
 import ThemeCustomization from 'themes';
 import ScrollTop from 'components/ScrollTop';
 import AdminRoutes from 'routes/AdminRoutes';
@@ -13,6 +13,7 @@ import { GetInfoUser } from 'services/user.api';
 import { setUserState } from 'features/slices/user.slice';
 import GlobalLoading from 'components/loading/GlobalLoading ';
 import ClientRoutes from 'routes/ClientRoutes';
+
 // ==============================|| APP - THEME, ROUTER, LOCAL ||============================== //
 
 export default function App() {
@@ -45,7 +46,6 @@ export default function App() {
     const USER_ROUTES = {
       [ADMIN]: AdminRoutes,
       [STAFF]: AdminRoutes,
-      // [USER]: UserRoutes
       [USER]: ClientRoutes
     };
 

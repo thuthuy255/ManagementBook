@@ -25,12 +25,19 @@ function CategaryHome() {
         md={12}
         overflow={'auto'}
         display={'flex'}
-        justifyContent={'space-between'}
         py={2}
         whiteSpace="nowrap"
+        sx={{
+          maxWidth: '100%', // Không tràn ra ngoài
+          overflowX: 'auto', // Cuộn ngang khi quá dài
+          display: 'flex',
+          flexWrap: 'nowrap', // Ngăn xuống dòng
+          whiteSpace: 'nowrap' // Giữ nội dung trên một dòng
+        }}
       >
         {listCategory?.map((item) => (
           <Grid
+            item
             style={{ cursor: 'pointer' }}
             onClick={() => handleNavigateList(item.type)}
             display={'flex'}
@@ -38,6 +45,7 @@ function CategaryHome() {
             alignItems={'center'}
             className="Button_Hover"
             key={item?.id}
+            md={2}
           >
             <Grid pb={1}>
               <img src={item.img} height={100} width={100} style={{ objectFit: 'contain' }} />

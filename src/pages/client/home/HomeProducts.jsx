@@ -29,7 +29,7 @@ export default function HomeProducts() {
       <Grid py={3} mt={2} display={'flex'} alignItems={'center'} justifyContent={'center'} item container>
         <NewsHome />
       </Grid>
-      <Grid container spacing={2} mt={2} justifyContent="center">
+      {/* <Grid container spacing={2} mt={2} justifyContent="center">
         <Grid item xs={6} sm={4} md={2}>
           <ListProducts
             image={imgProduct}
@@ -85,7 +85,7 @@ export default function HomeProducts() {
             sold={231}
           />
         </Grid>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }

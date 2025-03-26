@@ -28,6 +28,7 @@ import { formatPrice } from 'utils/format';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { showToast } from 'components/notification/CustomToast';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BACKGROUND_DEFAULT } from 'constants/Color';
 const Item = styled(Box)(({ theme }) => ({
   backgroundColor: '#fff',
   padding: theme.spacing(2),
@@ -41,7 +42,6 @@ export default function ProductDetailLayout() {
   const [selectedImage, setSelectedImage] = useState('');
   const [open, setOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const navigator = useNavigate();
   useEffect(() => {
     async function fetchBook() {
       const response = await getProducts({ slug });
@@ -73,31 +73,23 @@ export default function ProductDetailLayout() {
     { label: 'Số lượng kho', value: book?.qty }
   ];
   const [quantity, setQuantity] = useState(1);
-
-  const handleQuantityChange = (event) => {
-    const value = Math.max(1, parseInt(event.target.value) || 1);
-    console.log(value);
-    setQuantity(value);
-  };
+  const navigate = useNavigate();
   const handleAddToCart = async () => {
     const payload = { productID: book?.id, qty: quantity };
+
     const response = await addCategory(payload);
-    const { err, mess } = response;
-    if (response) return showToast(mess, err === 0 ? 'success' : 'error');
+    if (response?.err === 0) {
+      navigate('/Cart');
+      showToast(response?.mess, 'success');
+    } else {
+      showToast(response?.mess, 'warning');
+    }
   };
   return (
-    <Container sx={{ height: '500vh' }}>
-      <Button
-        variant="outlined"
-        onClick={() => navigator(-1)}
-        style={{ marginTop: '10px', marginBottom: '10px', border: 'none', color: 'red' }}
-      >
-        <ArrowBackIcon />
-      </Button>
+    <Grid container sx={{ minHeight: 'calc(100vh - 100px)' }} pb={'60px'} pt={2} style={{ margin: '0 auto', width: '80vw' }}>
       <Grid container spacing={4}>
         <Grid item xs={12} md={5}>
-          <Box sx={{ position: 'sticky', top: 32, alignSelf: 'flex-start' }}>
-            {' '}
+          <Box sx={{ position: 'sticky', top: 100, alignSelf: 'flex-start' }}>
             <Card sx={{ p: 1, textAlign: 'center' }}>
               {book ? (
                 <CardMedia
@@ -124,9 +116,9 @@ export default function ProductDetailLayout() {
                 direction="row"
                 sx={{
                   p: 1,
-                  mt: 2,
-                  overflowX: 'auto',
-                  whiteSpace: 'nowrap'
+                  mt: 2
+                  // overflowX: 'auto',
+                  // whiteSpace: 'nowrap'
                 }}
                 spacing={1}
                 justifyContent="center"
@@ -160,42 +152,73 @@ export default function ProductDetailLayout() {
             <Lightbox open={open} close={() => setOpen(false)} slides={images.map((img) => ({ src: img }))} index={lightboxIndex} />
             <Item>
               <Stack direction="row" spacing={2} alignItems="center" sx={{ width: '100%' }}>
-                <TextField
+                {/* <TextField
                   type="number"
                   value={quantity}
                   onChange={handleQuantityChange}
                   size="small"
                   sx={{ width: 80 }}
                   inputProps={{ min: 1 }}
-                />
+                /> */}
 
-                <Button
-                  variant="outlined"
-                  onClick={handleAddToCart}
-                  sx={{
-                    borderColor: 'red',
-                    color: 'red',
-                    minWidth: 50,
-                    flex: 1,
-                    '&:hover': { backgroundColor: '#ffebeb', borderColor: 'red' }
-                  }}
-                >
-                  <ShoppingCartIcon />
-                </Button>
+                <Grid container justifyContent={'space-between'} alignItems={'center'}>
+                  <Grid container spacing={1}>
+                    {/* Thêm vào giỏ hàng */}
+                    <Grid container spacing={1}>
+                      {/* Thêm vào giỏ hàng */}
+                      <Grid item xs={12} md={6}>
+                        <Button
+                          onClick={handleAddToCart}
+                          fullWidth
+                          variant="outlined"
+                          sx={{
+                            borderColor: BACKGROUND_DEFAULT,
+                            borderWidth: '2px',
+                            color: BACKGROUND_DEFAULT,
+                            borderRadius: '8px',
+                            padding: '10px 0',
+                            '&:hover': {
+                              borderColor: BACKGROUND_DEFAULT, // Giữ màu viền khi hover
+                              borderWidth: '2px', // Fix lỗi viền bị thay đổi khi hover
+                              backgroundColor: 'transparent', // Không đổi màu nền khi hover
+                              color: BACKGROUND_DEFAULT // Giữ nguyên màu chữ
+                            }
+                          }}
+                        >
+                          <ShoppingCartIcon />
+                          <Typography color={BACKGROUND_DEFAULT} gutterBottom mb={0}>
+                            Thêm vào giỏ hàng
+                          </Typography>
+                        </Button>
+                      </Grid>
 
-                <Link to="/cart" style={{ textDecoration: 'none', flex: 3 }}>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: 'red',
-                      color: 'white',
-                      width: '100%',
-                      '&:hover': { backgroundColor: '#c62828' }
-                    }}
-                  >
-                    Mua ngay
-                  </Button>{' '}
-                </Link>
+                      {/* Mua ngay */}
+                      <Grid item xs={12} md={6}>
+                        <Button
+                          fullWidth
+                          onClick={handleAddToCart}
+                          variant="outlined"
+                          sx={{
+                            backgroundColor: BACKGROUND_DEFAULT,
+                            borderColor: BACKGROUND_DEFAULT,
+                            color: 'white',
+                            borderRadius: '8px',
+                            borderWidth: '2px', // Fix lỗi viền bị thay đổi khi hover
+                            padding: '10px 0',
+                            '&:hover': {
+                              borderColor: BACKGROUND_DEFAULT, // Giữ màu viền khi hover
+                              borderWidth: '2px', // Fix lỗi viền bị thay đổi khi hover
+                              backgroundColor: 'transparent', // Không đổi màu nền khi hover
+                              color: BACKGROUND_DEFAULT // Giữ nguyên màu chữ
+                            }
+                          }}
+                        >
+                          Mua ngay
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Stack>
             </Item>
           </Box>
@@ -294,6 +317,6 @@ export default function ProductDetailLayout() {
           )}
         </Grid>
       </Grid>
-    </Container>
+    </Grid>
   );
 }
