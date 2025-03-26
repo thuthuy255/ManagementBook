@@ -5,6 +5,9 @@ import { lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AuthRoutes } from './AuthRoutes';
+import UserProvider from '../pages/client/Provider/UserProvider';
+import UserLayouts from '../pages/client/layout';
+import ContentPage from '../pages/client/pages/product/ContentPage';
 
 const ProtectedRoute = ({ children }) => {
   const getToken = useSelector(getTokenState);
@@ -27,7 +30,11 @@ const MainRoutes = [
       },
       {
         path: '/ListProducts',
-        element: <PageProducts />
+        element: (
+          <UserProvider>
+            <ContentPage />
+          </UserProvider>
+        )
       },
       {
         path: '/Cart',
