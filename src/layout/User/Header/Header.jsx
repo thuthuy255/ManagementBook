@@ -8,7 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CategoryHeader from './CategoryHeader';
 import ButtonFullScreen from 'components/button/ButtonFullScreen';
 import AccountMenu from './AccountMenu';

@@ -16,6 +16,9 @@ const ProtectedRoute = ({ children }) => {
 const Page404 = Loadable(lazy(() => import('pages/client/404/NotFoundPage')));
 const PageHome = Loadable(lazy(() => import('pages/client/home/HomeProducts')));
 const PageCart = Loadable(lazy(() => import('pages/client/cart/CartProducts')));
+const PagePrivacy = Loadable(lazy(() => import('pages/client/privacy/Privacy_policy')));
+const PageClause = Loadable(lazy(() => import('pages/client/privacy/Clause')));
+const PageInfo_support = Loadable(lazy(() => import('pages/client/privacy/Info_support')));
 const PageDetail = Loadable(lazy(() => import('pages/client/product-detail/Product-detail-layout')));
 const PageDetailNews = Loadable(lazy(() => import('pages/client/news/DetailNews')));
 const PageListNews = Loadable(lazy(() => import('pages/client/news/ListNews')));
@@ -38,6 +41,22 @@ const MainRoutes = [
       },
       {
         path: '/Cart',
+        element: <PageCart />
+      },
+      {
+        path: '/PagePrivacy',
+        element: <PagePrivacy />
+      },
+      {
+        path: '/PageClause',
+        element: <PageClause />
+      },
+      {
+        path: '/PageInfo_support',
+        element: <PageInfo_support />
+      },
+      {
+
         element: (
           <ProtectedRoute>
             <PageCart />
