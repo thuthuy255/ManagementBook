@@ -41,7 +41,7 @@ function RowCartTable({ data, handleSetCountMinus, handleSetCountPlus }) {
               color: '#777',
               ':hover': { color: 'black' }
             }}
-            onClick={handleSetCountMinus}
+            onClick={() => handleSetCountMinus(id, 1)}
           >
             <RemoveIcon sx={{ width: '15px' }} />
           </Box>
@@ -56,7 +56,7 @@ function RowCartTable({ data, handleSetCountMinus, handleSetCountPlus }) {
               color: '#777',
               ':hover': { color: 'black' }
             }}
-            onClick={() => handleSetCountPlus(id)}
+            onClick={() => handleSetCountMinus(id, -1)}
           >
             <AddIcon sx={{ width: '15px' }} />
           </Box>

@@ -20,6 +20,11 @@ export const addCategory = (payload = {}) => {
   return axiosClient.post(url, payload);
 };
 
+export const updateCart = (body) => {
+  const url = '/order/decrease';
+  return axiosClient.post(url, body);
+};
+
 // export const addCategory = (payload = {}) => {
 //     const url = `/order/add`;
 //     return axiosClient.post(url, payload);

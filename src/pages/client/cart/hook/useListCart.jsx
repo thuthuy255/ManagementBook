@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getListCartQuery } from '../services/cart.query';
-import { addCategory } from 'services/clients/product';
+import { addCategory, updateCart } from 'services/clients/product';
 import { showToast } from 'components/notification/CustomToast';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
@@ -36,13 +36,13 @@ const useListCart = () => {
       });
   };
 
-  const handleSetCountMinus = (idProduct) => {
+  const handleSetCountMinus = (idProduct, qty) => {
     const body = {
       productID: idProduct,
-      qty: 1
+      qty: qty
     };
     dispatch(showLoading());
-    addCategory(body)
+    updateCart(body)
       .then((res) => {
         if (res?.err == 0) {
           refetch();
