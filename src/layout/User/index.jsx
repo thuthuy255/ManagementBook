@@ -21,7 +21,11 @@ export default function UserLayout() {
     <Box sx={{ width: '100%' }}>
       <Header />
 
-      <Box component="main" style={{ backgroundColor: BACKGROUND_PRIMARY }} sx={{ flexGrow: 1, pb: { xs: 2, sm: 3 } }}>
+      <Box
+        component="main"
+        style={{ backgroundColor: BACKGROUND_PRIMARY, minHeight: 'calc(100vh - 100px)' }}
+        sx={{ flexGrow: 1, pb: { xs: 2, sm: 3 } }}
+      >
         {/* <Toolbar /> */}
         {/* <Box>
           <Breadcrumbs navigation={navigation} title />

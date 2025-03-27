@@ -2,6 +2,7 @@
   background-image: url('../../assets/images/icons/logo_admin.webp');
   background-size: cover;
   background-repeat: no-repeat;
-  width: 216px;
-  height: 38px;
+  /* width: 216px; */
+  height: 80px;
+  width: 80px;
 }

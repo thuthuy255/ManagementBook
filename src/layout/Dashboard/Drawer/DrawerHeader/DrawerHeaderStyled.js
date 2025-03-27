@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 
 const DrawerHeaderStyled = styled(Box, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   ...theme.mixins.toolbar,
+  paddingTop: '20px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: open ? 'flex-start' : 'center',

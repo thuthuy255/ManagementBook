@@ -126,7 +126,21 @@ const usePostList = () => {
       flex: 1,
       headerAlign: 'center',
       align: 'center',
-      renderCell: (params) => <span>{params.value || 'Không có'}</span>
+      renderCell: (params) => (
+        <div
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'normal',
+            maxHeight: '4.5em' /* Tùy chỉnh theo font-size */
+          }}
+        >
+          {params.value}
+        </div>
+      )
     },
     {
       field: 'type',

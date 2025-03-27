@@ -16,7 +16,7 @@ export default function DrawerHeader({ open }) {
   return (
     <DrawerHeaderStyled theme={theme} open={!!open}>
       {/* <Logo isIcon={!open} sx={{ width: open ? 'auto' : 35, height: 35 }} /> */}
-      <img src={logoAdmin} width={200} />
+      <img src={logoAdmin} width={150} height={150} style={{ margin: '0 auto' }} />
     </DrawerHeaderStyled>
   );
 }

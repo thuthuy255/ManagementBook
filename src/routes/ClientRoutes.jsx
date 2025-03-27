@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AuthRoutes } from './AuthRoutes';
 import UserProvider from '../pages/client/Provider/UserProvider';
-import UserLayouts from '../pages/client/layout';
 import ContentPage from '../pages/client/pages/product/ContentPage';
 
 const ProtectedRoute = ({ children }) => {
@@ -16,9 +15,10 @@ const ProtectedRoute = ({ children }) => {
 };
 const Page404 = Loadable(lazy(() => import('pages/client/404/NotFoundPage')));
 const PageHome = Loadable(lazy(() => import('pages/client/home/HomeProducts')));
-const PageProducts = Loadable(lazy(() => import('pages/client/pages/product/ContentPage')));
 const PageCart = Loadable(lazy(() => import('pages/client/cart/CartProducts')));
 const PageDetail = Loadable(lazy(() => import('pages/client/product-detail/Product-detail-layout')));
+const PageDetailNews = Loadable(lazy(() => import('pages/client/news/DetailNews')));
+const PageListNews = Loadable(lazy(() => import('pages/client/news/ListNews')));
 const MainRoutes = [
   {
     path: '/',
@@ -47,6 +47,14 @@ const MainRoutes = [
       {
         path: '/DetailProducts/:slug',
         element: <PageDetail />
+      },
+      {
+        path: '/list-news',
+        element: <PageListNews />
+      },
+      {
+        path: '/detail-news/:title',
+        element: <PageDetailNews />
       }
     ]
   },

@@ -31,9 +31,9 @@ function Header() {
       px={3}
       style={{ height: '100px', position: 'sticky', top: 0, zIndex: 999 }}
     >
-      <Grid item>
+      <Grid item md={2}>
         <Link to="/">
-          <Logo />
+          <Logo width={'90px'} height={'90px'} />
         </Link>
       </Grid>
 

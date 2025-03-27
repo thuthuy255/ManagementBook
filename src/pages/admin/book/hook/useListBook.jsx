@@ -94,17 +94,13 @@ const useBookList = () => {
     }
   };
   const handleRemoveMultipleItems = useCallback(() => {
-    console.log(selectedBook)
+    console.log(selectedBook);
     if (selectedBook?.length <= 0) {
       showToast('Bạn cần chọn ít nhất một mục để tiếp tục', 'warning');
       return;
     }
     handleToggleModalDelete();
   }, [navigate, selectedBook]);
-
-
-
-
 
   const handleNavigateUpdate = (slug) => {
     if (!slug) {
@@ -113,10 +109,6 @@ const useBookList = () => {
     }
     navigate(`/update-book/${slug}`);
   };
-
-
-
-
 
   const handleSelectedIds = (selectedIds) => {
     setSelectedBook(selectedIds);
@@ -138,9 +130,8 @@ const useBookList = () => {
       flex: 1,
       headerAlign: 'center',
       width: '100px',
-      align: 'center',
+      align: 'center'
       // renderCell: (params) => <span>{params.value?.toUpperCase() || 'Không có'}</span>
-
     },
     {
       field: 'price',
@@ -180,16 +171,15 @@ const useBookList = () => {
       headerName: 'Tác giả',
       flex: 1,
       headerAlign: 'center',
-      align: 'center',
+      align: 'center'
       // renderCell: (params) => <span>{params.value?.toUpperCase() || 'Không có'}</span>
-
     },
     {
       field: 'publisher',
       headerName: 'Nhà xuất bản',
       flex: 1,
       headerAlign: 'center',
-      align: 'center',
+      align: 'center'
       // renderCell: (params) => <span>{params.value?.toUpperCase() || 'Không có'}</span>
     },
     {
@@ -198,7 +188,7 @@ const useBookList = () => {
       type: 'number',
       flex: 1,
       headerAlign: 'center',
-      align: 'center',
+      align: 'center'
       // renderCell: (params) => <span>{params.value?.toUpperCase() || 'Không có'}</span>
     },
     {
@@ -226,7 +216,7 @@ const useBookList = () => {
       align: 'center',
       renderCell: (params) => (
         <>
-          <IconButton color="primary" size="small" onClick={() => handleNavigateUpdate(params.row.slug)}          >
+          <IconButton color="primary" size="small" onClick={() => handleNavigateUpdate(params.row.slug)}>
             <EditIcon />
           </IconButton>
           <IconButton color="error" size="small" onClick={() => handleDeleteConfirm(params.row)}>
@@ -259,7 +249,7 @@ const useBookList = () => {
     handleRemoveMultipleItems,
     handleSearchTable,
     searchProducts,
-    handlePaginationChange,
+    handlePaginationChange
   };
 };
 

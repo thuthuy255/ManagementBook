@@ -53,10 +53,10 @@ export default function AddPost() {
         <Grid item xs={12} md={6} px={4}>
           <Grid item xs={12} md={12}>
             <ImageUploader
-              images={[]}
-              setImages={(newImages) => formik.setFieldValue('avatar', newImages)}
+              images={formik.values.img_src || []}
+              setImages={(newImages) => formik.setFieldValue('img_src', newImages)}
               multiple={true}
-              error={formik.errors.avatar}
+              error={formik.errors.img_src}
             />
           </Grid>
         </Grid>
