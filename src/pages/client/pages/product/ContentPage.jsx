@@ -22,6 +22,8 @@ import { useProduct } from './context/ProductContext';
 import { formatPrice } from 'utils/format';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import ListProducts from 'pages/client/home/components/ListProducts';
+import { BACKGROUND_DEFAULT } from 'constants/Color';
 
 export default function ContentPage() {
   const { products, totalPage, addToCart, fetchProducts, loading } = useProduct();
@@ -120,32 +122,79 @@ export default function ContentPage() {
 
   return (
     <Box sx={{ px: 4, py: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button variant="outlined" startIcon={<FilterList />} onClick={() => setOpenDrawer(true)}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Typography variant="h5" color={BACKGROUND_DEFAULT} gutterBottom mb={0}>
+          Trang chủ / Danh sách sản phẩm
+        </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<FilterList />}
+          onClick={() => setOpenDrawer(true)}
+          sx={{
+            color: BACKGROUND_DEFAULT,
+            borderColor: BACKGROUND_DEFAULT,
+            '&:hover': {
+              backgroundColor: BACKGROUND_DEFAULT,
+              color: 'white',
+              borderColor: BACKGROUND_DEFAULT
+            }
+          }}
+        >
           Bộ lọc
         </Button>
       </Box>
 
       <Drawer anchor="right" open={openDrawer} onClose={() => setOpenDrawer(false)}>
         <Box sx={{ width: 300, p: 3 }}>
-          <Typography variant="h6">Bộ lọc sản phẩm</Typography>
+          <Typography variant="h6" sx={{ color: BACKGROUND_DEFAULT, fontWeight: 'bold' }}>
+            Bộ lọc sản phẩm
+          </Typography>
 
           <TextField label="Tìm kiếm" fullWidth margin="normal" value={filters.search} onChange={handleSearchChange} />
 
-          <Typography gutterBottom sx={{ mt: 2 }}>
+          <Typography gutterBottom sx={{ mt: 2, color: BACKGROUND_DEFAULT, fontWeight: 'bold' }}>
             Khoảng giá
           </Typography>
-          <Slider value={filters.priceRange} onChange={handleSliderChange} min={0} max={1000000} step={10000} valueLabelDisplay="auto" />
+          <Slider
+            value={filters.priceRange}
+            onChange={handleSliderChange}
+            min={0}
+            max={1000000}
+            step={10000}
+            valueLabelDisplay="auto"
+            sx={{
+              color: BACKGROUND_DEFAULT
+            }}
+          />
 
           <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel>Giá</InputLabel>
-            <Select value={filters.sort} onChange={handleSortChange} label="Giá">
+            <InputLabel sx={{ color: BACKGROUND_DEFAULT }}>Giá</InputLabel>
+            <Select
+              value={filters.sort}
+              onChange={handleSortChange}
+              label="Giá"
+              sx={{
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: BACKGROUND_DEFAULT },
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#a81e28' },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: BACKGROUND_DEFAULT }
+              }}
+            >
               <MenuItem value="asc">Tăng dần</MenuItem>
               <MenuItem value="desc">Giảm dần</MenuItem>
             </Select>
           </FormControl>
 
-          <Button variant="contained" fullWidth sx={{ mt: 3 }} onClick={handleFilterSubmit}>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{
+              mt: 3,
+              backgroundColor: BACKGROUND_DEFAULT,
+              color: 'white',
+              '&:hover': { backgroundColor: '#a81e28' }
+            }}
+            onClick={handleFilterSubmit}
+          >
             Áp dụng
           </Button>
         </Box>
@@ -170,8 +219,28 @@ export default function ContentPage() {
           {allProducts.map((product, index) => {
             const isLast = index === allProducts.length - 1;
             return (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={product.id} ref={isLast ? lastProductRef : null}>
-                <Card>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={3}
+                lg={2}
+                key={product.id}
+                ref={isLast ? lastProductRef : null}
+                className="Button_Hover btn-boxshadown custom-padding"
+              >
+                <ListProducts
+                  slug={product?.slug}
+                  image={getImage(product)}
+                  title={product?.name}
+                  price={formatPrice(product.price || 0)}
+                  sale={'-35%'}
+                  oldPrice={formatPrice(product.price || 0)}
+                  star={5}
+                  sold={231}
+                />
+
+                {/* <Card>
                   <CardMedia component="img" height="200" image={getImage(product)} alt={product.name} />
                   <CardContent>
                     <Typography gutterBottom variant="h6" noWrap>
@@ -189,7 +258,7 @@ export default function ContentPage() {
                       </IconButton>
                     </Box>
                   </CardContent>
-                </Card>
+                </Card> */}
               </Grid>
             );
           })}

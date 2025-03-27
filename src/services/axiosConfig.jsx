@@ -35,14 +35,14 @@ const handleResponseError = async (error) => {
     dispatch(resetLogin());
     showToast('Vui lòng đăng nhập', 'warning');
     // Điều hướng về trang đăng nhập
-    // const navigate = getNavigate();
+    const navigate = getNavigate();
     // // console.log('🚀 ~ handleResponseError ~ navigate:', navigate);
 
     // if (navigate) {
     //   navigate('/login', { replace: true }); // Chuyển trang không reload
     //   console.log('Current path:', window.location.pathname);
     // } else {
-    //   window.location.href = '/login'; // Fallback nếu navigate bị lỗi
+    window.location.href = '/login';
     // }
 
     // Xóa token khỏi localStorage

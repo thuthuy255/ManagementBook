@@ -7,7 +7,7 @@ import RowCartTable from './components/RowCartTable';
 
 export default function CartProducts() {
   const { count, handleSetCountPlus, handleSetCountMinus, listCart, isLoading } = useListCart();
-  console.log('🚀 ~ CartProducts ~ listCart:', listCart);
+
   return (
     <Grid container pt={3} display={'flex'} style={{ minHeight: 'calc(100vh - 100px)', margin: '0 auto', width: '80vw' }}>
       {isLoading ? (
@@ -49,9 +49,11 @@ export default function CartProducts() {
               <LeftPayCart count={listCart?.data?.alltotal} />
             </Grid>
           ) : (
-            <Typography variant="h6" sx={{ fontSize: '18px' }} pb={2}>
-              CHƯA CÓ SẢN PHẨM
-            </Typography>
+            <Grid item md={12} display={'flex'} justifyContent={'center'} style={{ paddingTop: '10%' }} height={'calc(100vh - 100px)'}>
+              <Typography variant="h6" sx={{ mt: 2, color: '#C12530', fontWeight: 'bold' }} pb={2}>
+                KHÔNG CÓ SẢN PHẨM NÀO!!
+              </Typography>
+            </Grid>
           )}
         </Grid>
       )}
