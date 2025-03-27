@@ -6,15 +6,13 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { useSelector } from 'react-redux';
-import { getCategories } from 'features/slices/category.slice';
+import Loading from 'components/loading/Loading';
+import ListProducts from './ListProducts';
+import { formatPrice } from 'utils/format';
+import '../css/Home.css';
+import useListProductsTopTrend from '../hook/useListProductsTopTrend';
 function ListProductsTopTrend() {
-  const getListCategary = useSelector(getCategories);
-  const [value, setValue] = React.useState(getListCategary[0].id);
-  console.log('🚀 ~ ListProductsTopTrend ~ getListCategary:', getListCategary);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const { value, getListCategary, isLoadingBook, books, View, handleChange, getImage } = useListProductsTopTrend();
 
   return (
     <Grid container item md={10} xs={12} sx={{ backgroundColor: BACKGROUND_WHITE }} borderRadius={'8px'}>
@@ -31,30 +29,64 @@ function ListProductsTopTrend() {
           Xu hướng mua sắm
         </Typography>
       </Grid>
-      <Grid item container>
-        <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: 'primary.main' }}>
-            <TabList
-              onChange={handleChange}
-              aria-label="lab API tabs example"
-              sx={{
-                '& .MuiTabs-indicator': { backgroundColor: 'red' },
-                '& .MuiTab-root': { color: 'gray' },
-                '&:hover': { color: `${BACKGROUND_DEFAULT} !important` }, // Màu khi hover
-                '& .Mui-selected': { color: `${BACKGROUND_DEFAULT} !important` },
-                '& .root-MuiTab-root.Mui-selected': { color: `${BACKGROUND_DEFAULT} !important` }
-              }}
-            >
-              {getListCategary?.slice(0, 3)?.map((item) => (
-                <Tab label={item.type} value={item.id} />
-              ))}
-            </TabList>
-          </Box>
 
-          <TabPanel value="1">Item One</TabPanel>
-          <TabPanel value="2">Item Two</TabPanel>
-          <TabPanel value="3">Item Three</TabPanel>
-        </TabContext>
+      <Grid item container>
+        {value ? (
+          <TabContext value={value}>
+            <Box sx={{ borderBottom: 1, borderColor: 'primary.main' }}>
+              <TabList
+                onChange={handleChange}
+                aria-label="lab API tabs example"
+                sx={{
+                  '& .MuiTabs-indicator': { backgroundColor: 'red' },
+                  '& .MuiTab-root': { color: 'gray' },
+                  '&:hover': { color: `${BACKGROUND_DEFAULT} !important` },
+                  '& .Mui-selected': { color: `${BACKGROUND_DEFAULT} !important` },
+                  '& .root-MuiTab-root.Mui-selected': { color: `${BACKGROUND_DEFAULT} !important` }
+                }}
+              >
+                {getListCategary?.slice(0, 3)?.map((item) => (
+                  <Tab key={item?.id} label={item.type} value={item.id} />
+                ))}
+              </TabList>
+            </Box>
+            {isLoadingBook ? (
+              <Grid container minHeight={382} justifyContent="center" alignItems="center">
+                <Loading />
+              </Grid>
+            ) : (
+              getListCategary?.slice(0, 3)?.map((item) => (
+                <TabPanel key={item?.id} value={item?.id} style={{ width: '100%' }}>
+                  <Grid container spacing={2} mt={2} justifyContent="center">
+                    {books?.data?.rows?.length > 0 ? (
+                      books?.data?.rows?.map((book) => (
+                        <Grid key={book?.id} item xs={6} sm={4} md={2.5} className="Button_Hover btn-boxshadown custom-padding" p={0}>
+                          <ListProducts
+                            image={getImage(book)}
+                            title={'Thay Đổi Một Suy Nghĩ Thay Đổi Cả Cuộc Đời'}
+                            price={formatPrice(book.price || 0)}
+                            sale={'-35%'}
+                            oldPrice={formatPrice(book.price || 0)}
+                            star={5}
+                            sold={231}
+                          />
+                        </Grid>
+                      ))
+                    ) : (
+                      <Grid minHeight={382} display={'flex'} justifyContent={'center'} pt={5}>
+                        <Typography variant="h4" gutterBottom mb={0}>
+                          Sản phẩm đang được cập nhật
+                        </Typography>
+                      </Grid>
+                    )}
+                  </Grid>
+                </TabPanel>
+              ))
+            )}
+          </TabContext>
+        ) : (
+          <Loading />
+        )}
       </Grid>
     </Grid>
   );

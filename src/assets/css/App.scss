@@ -37,8 +37,15 @@ $default-color: #c12530;
   cursor: pointer;
   transform: scale(1.05); /* Phóng to lên 1.5 lần */
   transition: transform 0.35s ease-in-out; /* Hiệu ứng mượt mà */
-  // box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
 }
+.btn-boxshadown:hover {
+  box-shadow:
+    0px 10px 25px rgba(0, 0, 0, 0.1),
+    0px -10px 25px rgba(0, 0, 0, 0.1),
+    10px 0px 25px rgba(0, 0, 0, 0.1),
+    -10px 0px 25px rgba(0, 0, 0, 0.1);
+}
+
 .css-1e4exq2 {
   border: none !important;
 }
