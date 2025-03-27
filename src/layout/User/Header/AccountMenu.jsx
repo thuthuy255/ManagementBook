@@ -25,7 +25,15 @@ function AccountMenu() {
     navigate('/login');
     localStorage.removeItem('access_token');
   }, [dispatch]);
-
+  const handleClauseNavigation = () => {
+    navigate('/PageClause')
+  }
+  const handlePrivacyNavigation = () => {
+    navigate('/PagePrivacy')
+  }
+  const handleInfoNavigation = () => {
+    navigate('/PageInfo_support')
+  }
   return (
     <>
       <Tooltip title="Tài khoản" placement="top">
@@ -43,9 +51,9 @@ function AccountMenu() {
             <MenuItem onClick={handleNavigateLogin}>Đăng nhập tài khoản</MenuItem>
           </Box>
         )}
-        <MenuItem onClick={handleClose}>Thông tin hỗ trợ</MenuItem>
-        <MenuItem onClick={handleClose}>Chính sách bảo mật</MenuItem>
-        <MenuItem onClick={handleClose}>Điều khoản sử dụng</MenuItem>
+        <MenuItem onClick={handleInfoNavigation}>Thông tin hỗ trợ</MenuItem>
+        <MenuItem onClick={handlePrivacyNavigation}>Chính sách bảo mật</MenuItem>
+        <MenuItem onClick={handleClauseNavigation}>Điều khoản sử dụng</MenuItem>
         {infoUser?.name && <MenuItem onClick={handleConfirmLogout}>Đăng xuất</MenuItem>}
       </Menu>
     </>

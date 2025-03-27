@@ -110,6 +110,8 @@ const useCategoryManagement = () => {
       if (values.images.length > 0) {
         formData.append('img', values.images[0]); // Lấy ảnh đầu tiên
       }
+      dispatch(showLoading());
+
       const response = await createCategory(formData);
       if (response?.err !== 0) {
         showToast('Đã có lỗi xảy ra ' + response?.mess, 'warning');
@@ -117,6 +119,8 @@ const useCategoryManagement = () => {
       }
       await refetchCategory();
       showToast('Thêm thành công danh mục', 'success');
+      dispatch(hideLoading());
+
 
       handleToggleModalAdd();
     } catch (error) {
