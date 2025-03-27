@@ -62,8 +62,9 @@ function ListProductsTopTrend() {
                       books?.data?.rows?.map((book) => (
                         <Grid key={book?.id} item xs={6} sm={4} md={2.5} className="Button_Hover btn-boxshadown custom-padding" p={0}>
                           <ListProducts
+                            slug={book?.slug}
                             image={getImage(book)}
-                            title={'Thay Đổi Một Suy Nghĩ Thay Đổi Cả Cuộc Đời'}
+                            title={book?.name}
                             price={formatPrice(book.price || 0)}
                             sale={'-35%'}
                             oldPrice={formatPrice(book.price || 0)}

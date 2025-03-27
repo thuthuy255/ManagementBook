@@ -10,7 +10,7 @@ export default function useListProductsTopTrend() {
     loop: true
   };
   const { View } = useLottie(options);
-  console.log('🚀 ~ useListProductsTopTrend ~ View:', View);
+
   const getListCategary = useSelector(getCategories);
   const [value, setValue] = useState();
   const [searchProducts, setSearchProducts] = useState({
@@ -33,12 +33,16 @@ export default function useListProductsTopTrend() {
   };
 
   useEffect(() => {
-    if (getListCategary) {
-      setValue(getListCategary[0].id);
-      setSearchProducts((prev) => ({
-        ...prev,
-        type: getListCategary[0]?.type
-      }));
+    if (Array.isArray(getListCategary) && getListCategary.length > 0) {
+      const firstItem = getListCategary[0];
+
+      if (firstItem?.id) {
+        setValue(firstItem.id);
+        setSearchProducts((prev) => ({
+          ...prev,
+          type: firstItem.type
+        }));
+      }
     }
   }, [getListCategary]);
 

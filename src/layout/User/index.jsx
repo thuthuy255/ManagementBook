@@ -9,6 +9,7 @@ import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import Header from './Header/Header';
 import { useGetMenuMaster } from 'api/menu';
 import Footer from './Footer/Footer';
+import { BACKGROUND_DEFAULT, BACKGROUND_PRIMARY } from 'constants/Color';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
@@ -20,7 +21,7 @@ export default function UserLayout() {
     <Box sx={{ width: '100%' }}>
       <Header />
 
-      <Box component="main" sx={{ flexGrow: 1, pb: { xs: 2, sm: 3 } }}>
+      <Box component="main" style={{ backgroundColor: BACKGROUND_PRIMARY }} sx={{ flexGrow: 1, pb: { xs: 2, sm: 3 } }}>
         {/* <Toolbar /> */}
         {/* <Box>
           <Breadcrumbs navigation={navigation} title />

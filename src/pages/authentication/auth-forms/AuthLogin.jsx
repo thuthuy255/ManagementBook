@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -38,6 +38,7 @@ export default function AuthLogin({ isDemo = false }) {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const navigate = useNavigate();
 
   const handleLoginSubmit = useCallback(async (values, { setSubmitting }) => {
     dispath(showLoading());
@@ -54,6 +55,7 @@ export default function AuthLogin({ isDemo = false }) {
             dispath(setAppState(currentToken));
             localStorage.setItem('access_token', response?.access_token);
             showToast('Đăng nhập thành công', 'success');
+            navigate('/');
           }
         } else {
           showToast(response?.mess, 'warning');

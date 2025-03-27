@@ -19,10 +19,11 @@ const userSlice = createSlice({
   reducers: {
     setUserState: (state, action) => {
       return { ...state, ...action.payload }; // ✅ Cập nhật đúng
-    }
+    },
+    resetUserState: () => initialState
   }
 });
 
-export const { setUserState } = userSlice.actions;
+export const { setUserState, resetUserState } = userSlice.actions;
 export const InfoUserState = (state) => state.user;
 export default userSlice.reducer;

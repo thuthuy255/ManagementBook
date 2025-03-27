@@ -1,10 +1,13 @@
 import Loadable from 'components/Loadable';
 import { getTokenState } from 'features/slices/app.slice';
 import UserLayout from 'layout/User';
-import { lazy, Suspense } from 'react';
+import { lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AuthRoutes } from './AuthRoutes';
+import UserProvider from '../pages/client/Provider/UserProvider';
+import UserLayouts from '../pages/client/layout';
+import ContentPage from '../pages/client/pages/product/ContentPage';
 
 const ProtectedRoute = ({ children }) => {
   const getToken = useSelector(getTokenState);
@@ -18,6 +21,7 @@ const PageCart = Loadable(lazy(() => import('pages/client/cart/CartProducts')));
 const PagePrivacy = Loadable(lazy(() => import('pages/client/privacy/Privacy_policy')));
 const PageClause = Loadable(lazy(() => import('pages/client/privacy/Clause')));
 const PageInfo_support = Loadable(lazy(() => import('pages/client/privacy/Info_support')));
+const PageDetail = Loadable(lazy(() => import('pages/client/product-detail/Product-detail-layout')));
 const MainRoutes = [
   {
     path: '/',
@@ -29,7 +33,11 @@ const MainRoutes = [
       },
       {
         path: '/ListProducts',
-        element: <PageProducts />
+        element: (
+          <UserProvider>
+            <ContentPage />
+          </UserProvider>
+        )
       },
       {
         path: '/Cart',
@@ -46,6 +54,18 @@ const MainRoutes = [
       {
         path: '/PageInfo_support',
         element: <PageInfo_support />
+      },
+      {
+
+        element: (
+          <ProtectedRoute>
+            <PageCart />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/DetailProducts/:slug',
+        element: <PageDetail />
       }
     ]
   },

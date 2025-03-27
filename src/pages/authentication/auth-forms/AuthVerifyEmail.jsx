@@ -40,7 +40,7 @@ export default function AuthVerifyEmail({ onSubmit }) {
           .then((response) => {
             if (response.err === 0) {
               showToast('Xác minh thành công', 'success');
-              navigate(`/`, { replace: true });
+              navigate(`/login`, { replace: true });
             } else {
               showToast(response.mess, 'warning');
             }

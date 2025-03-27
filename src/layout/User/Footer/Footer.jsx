@@ -22,7 +22,7 @@ import Logo_zalopay from '../../../assets/images/icons/logo_zalopay_2.png';
 function Footer() {
   return (
     <div>
-      <Grid container sx={{ display: 'flex', alignItems: 'center' }} px={3}>
+      <Grid container sx={{ display: 'flex', alignItems: 'center' }} px={3} pt={10}>
         <Grid item md={3}>
           <Logo />
           <Box mb={1} mt={5}>
@@ -165,7 +165,11 @@ function Footer() {
           </Grid>
         </Grid>
       </Grid>
-      <Typography sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: '#BFB1AD' }} mt={3}>
+      <Typography
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: '#BFB1AD' }}
+        mt={3}
+        pb={10}
+      >
         Giấy chứng nhận Đăng ký Kinh doanh số 0304132047 do Sở Kế hoạch và Đầu tư Thành phố Hồ Chí Minh cấp ngày 20/12/2005, đăng ký thay
         đổi lần thứ 10, ngày 20/05/2022.
       </Typography>
