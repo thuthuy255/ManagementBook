@@ -1,27 +1,27 @@
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-
+import BackgroundAuth from '../../../assets/images/auth/backgroundauth.webp'
 // ==============================|| AUTH BLUR BACK SVG ||============================== //
 
 export default function AuthBackground() {
   const theme = useTheme();
-  const url = 'https://cdn.hostingviet.vn/data/tinymce/2023/hinh-nen-may-tinh-4k-1.jpg';
   return (
     <div
       style={{
         position: 'absolute',
-        filter: 'blur(5px)',
+        // filter: 'blur(5px)',
         zIndex: -1,
         bottom: 0,
         transform: 'inherit',
         width: '100vw',
-        height: '100vh'
+        height: '100vh',
+
         // backgroundColor: 'red'
       }}
     >
       <div
-        style={{ backgroundImage: `url(${url})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '100vh', width: '100vw' }}
+        style={{ backgroundImage: `url(${BackgroundAuth})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '100vh', width: '100vw' }}
       />
       {/* <svg width="100%" height="calc(100vh - 175px)" viewBox="0 0 405 809" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
