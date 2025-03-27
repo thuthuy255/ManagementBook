@@ -7,7 +7,7 @@ import { getImage } from 'utils/getImage';
 import { formatPrice } from 'utils/format';
 
 function RowCartTable({ data, handleSetCountMinus, handleSetCountPlus }) {
-  const { id, price, name } = data.product;
+  const { id, price, name } = data?.product;
   const { total, qty } = data;
 
   return (

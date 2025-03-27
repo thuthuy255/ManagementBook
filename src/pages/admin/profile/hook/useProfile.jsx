@@ -1,4 +1,4 @@
-import { InfoUserState } from 'features/slices/user.slice';
+import { InfoUserState, setUserState } from 'features/slices/user.slice';
 import { useFormik } from 'formik';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,31 +6,50 @@ import * as Yup from 'yup';
 import { updateUser } from '../services/profile.api';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
 import { showToast } from 'components/notification/CustomToast';
+import { GetInfoUser } from 'services/user.api';
 const useProfiles = () => {
   const infoUser = useSelector(InfoUserState);
   const dispatch = useDispatch();
   const [avatar, setAvatar] = useState(infoUser.avatar);
-  const handleSubmitForm = useCallback(async (values) => {
-    const formData = new FormData();
-    formData.append('avatar', values.avatar);
-    formData.append('userID', values.userID);
-    formData.append('name', values.name);
-    formData.append('address', values.address);
-    dispatch(showLoading());
-    try {
-      const response = await updateUser(formData);
-      if (response?.err === 0) {
-        showToast('Cập nhật thành công', 'success');
-      } else {
-        showToast(response?.mess, 'warning');
+
+  const handleSubmitForm = useCallback(
+    async (values) => {
+      const formData = new FormData();
+      formData.append('avatar', values.avatar);
+      formData.append('userID', values.userID);
+      formData.append('name', values.name);
+      formData.append('address', values.address);
+      dispatch(showLoading());
+      try {
+        const response = await updateUser(formData);
+        if (response?.err === 0) {
+          showToast('Cập nhật thành công', 'success');
+          await handleGetInfoUser();
+        } else {
+          showToast(response?.mess, 'warning');
+        }
+      } catch (error) {
+        console.log('🚀 ~ handleSubmitForm ~ error:', error);
+        showToast(error, 'error');
+      } finally {
+        dispatch(hideLoading());
       }
+    },
+    [dispatch]
+  );
+
+  const handleGetInfoUser = useCallback(async () => {
+    try {
+      const response = await GetInfoUser();
+      if (!response?.data || response?.err !== 0) {
+        showToast(response?.mess, 'error');
+        return;
+      }
+      dispatch(setUserState(response.data));
     } catch (error) {
-      console.log('🚀 ~ handleSubmitForm ~ error:', error);
-      showToast(error, 'error');
-    } finally {
-      dispatch(hideLoading());
+      showToast(`Có lỗi xảy ra ${error}`, 'error');
     }
-  }, []);
+  }, [dispatch]);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
