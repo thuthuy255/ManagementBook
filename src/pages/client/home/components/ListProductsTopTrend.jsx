@@ -66,7 +66,7 @@ function ListProductsTopTrend() {
                             image={getImage(book)}
                             title={book?.name}
                             price={formatPrice(book.price || 0)}
-                            sale={'-35%'}
+                            sale={'0%'}
                             oldPrice={formatPrice(book.price || 0)}
                             star={5}
                             sold={231}

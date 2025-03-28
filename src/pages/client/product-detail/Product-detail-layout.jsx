@@ -29,6 +29,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { showToast } from 'components/notification/CustomToast';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { BACKGROUND_DEFAULT } from 'constants/Color';
+import { useQueryClient } from 'react-query';
 const Item = styled(Box)(({ theme }) => ({
   backgroundColor: '#fff',
   padding: theme.spacing(2),
@@ -42,6 +43,7 @@ export default function ProductDetailLayout() {
   const [selectedImage, setSelectedImage] = useState('');
   const [open, setOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const queryClient = useQueryClient();
   useEffect(() => {
     async function fetchBook() {
       const response = await getProducts({ slug });
@@ -79,7 +81,9 @@ export default function ProductDetailLayout() {
 
     const response = await addCategory(payload);
     if (response?.err === 0) {
+      await queryClient.invalidateQueries(['getListCartQuery']);
       navigate('/Cart');
+
       showToast(response?.mess, 'success');
     } else {
       showToast(response?.mess, 'warning');

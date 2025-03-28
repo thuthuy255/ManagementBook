@@ -58,24 +58,21 @@ const management = {
       title: 'Quản lý banner',
       type: 'item',
       url: '/banner-management',
-      icon: icons.SwitcherOutlined,
-      requiredRole: ADMIN
+      icon: icons.SwitcherOutlined
     },
     {
       id: 'order-management',
       title: 'Quản lý đơn hàng',
       type: 'item',
       url: '/order-management',
-      icon: icons.ShoppingOutlined,
-      requiredRole: ADMIN
+      icon: icons.ShoppingOutlined
     },
     {
       id: 'category-management',
       title: 'Quản lý danh mục',
       type: 'item',
       url: '/category-management',
-      icon: icons.TagOutlined,
-      requiredRole: ADMIN
+      icon: icons.TagOutlined
     }
   ]
 };

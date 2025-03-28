@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import React from 'react';
 
 import { BACKGROUND_PRIMARY } from 'constants/Color';
@@ -10,7 +10,9 @@ import ListProducts from './components/ListProducts';
 import imgProduct from '../../../assets/images/cart_img/Book1.jpg';
 import MyListProducts from './components/MyListProducts';
 import NewsHome from './components/NewsHome';
+import { useNavigate } from 'react-router';
 export default function HomeProducts() {
+  const navigate = useNavigate();
   return (
     <Grid container style={{ backgroundColor: BACKGROUND_PRIMARY, minHeight: 'calc(100vh - 100px)' }} pt={3} pb={'60px'}>
       <Grid display={'flex'} alignItems={'center'} justifyContent={'center'} item container px={2}>
@@ -25,10 +27,49 @@ export default function HomeProducts() {
 
       <Grid py={3} mt={2} display={'flex'} alignItems={'center'} justifyContent={'center'} item container>
         <MyListProducts />
+        <Grid container pt={3} display={'flex'} justifyContent={'center'}>
+          <Button
+            onClick={() => navigate('/ListProducts')}
+            variant="contained"
+            sx={{
+              backgroundColor: '#C12530',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              '&:hover': {
+                backgroundColor: '#a81e28' // Màu tối hơn khi hover
+              }
+            }}
+          >
+            <Typography variant="h4" gutterBottom mb={0}>
+              Xem thêm
+            </Typography>
+          </Button>
+        </Grid>
       </Grid>
       <Grid py={3} mt={2} display={'flex'} alignItems={'center'} justifyContent={'center'} item container>
         <NewsHome />
+        <Grid container pt={3} display={'flex'} justifyContent={'center'}>
+          <Button
+            onClick={() => navigate('/list-news')}
+            variant="contained"
+            sx={{
+              backgroundColor: '#C12530',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              '&:hover': {
+                backgroundColor: '#a81e28' // Màu tối hơn khi hover
+              }
+            }}
+          >
+            <Typography variant="h4" gutterBottom mb={0}>
+              Xem thêm
+            </Typography>
+          </Button>
+        </Grid>
       </Grid>
+
       {/* <Grid container spacing={2} mt={2} justifyContent="center">
         <Grid item xs={6} sm={4} md={2}>
           <ListProducts
