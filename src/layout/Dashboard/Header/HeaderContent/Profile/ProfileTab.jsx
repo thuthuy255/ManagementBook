@@ -13,10 +13,12 @@ import ProfileOutlined from '@ant-design/icons/ProfileOutlined';
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import WalletOutlined from '@ant-design/icons/WalletOutlined';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useNavigation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { resetLogin } from 'features/slices/app.slice';
 import ModalConfirm from 'components/modal/ModalConfirm';
+import useMenu from 'hook/useMenu';
+import { resetUserState } from 'features/slices/user.slice';
 
 // ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
 
@@ -24,11 +26,15 @@ export default function ProfileTab() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleToggleModal = useCallback(() => {
     setOpenModal((prev) => !prev);
   }, [openModal]);
+  const { handleClose } = useMenu();
   const handleConfirmLogout = useCallback(() => {
     dispatch(resetLogin());
+    dispatch(resetUserState());
+    handleClose();
     localStorage.removeItem('access_token');
   }, [dispatch]);
   return (
@@ -45,7 +51,7 @@ export default function ProfileTab() {
         </ListItemIcon>
         <ListItemText primary="Logout" />
       </ListItemButton>
-      <ModalConfirm open={openModal} onClose={handleToggleModal} onConfirm={handleConfirmLogout} loading={false} />
+      <ModalConfirm open={openModal} onClose={handleConfirmLogout} onConfirm={handleConfirmLogout} loading={false} />
     </List>
   );
 }
