@@ -36,6 +36,7 @@ export default function ProfileTab() {
     dispatch(resetUserState());
     handleClose();
     localStorage.removeItem('access_token');
+    navigate('/', { replace: true });
   }, [dispatch]);
   return (
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
