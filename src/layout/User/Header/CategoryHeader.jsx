@@ -4,6 +4,7 @@ import { setCategories } from 'features/slices/category.slice';
 import { getAllCategoryQuery } from 'pages/admin/category/services/category.query';
 import React, { memo, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 function CategoryHeader({ anchorEl, open, handleClose }) {
   const dispatch = useDispatch();
@@ -33,21 +34,23 @@ function CategoryHeader({ anchorEl, open, handleClose }) {
         <Box sx={{ maxHeight: 300, overflowY: 'auto' }}>
           {dataCategory?.data?.rows?.map((item) => (
             <MenuItem key={item?.id} onClick={handleClose}>
-              <Box display={'flex'} gap={1} width="250px">
-                <img src={item.img} width={30} height={30} />
-                <Tooltip title={item.type} placement="top">
-                  <Box
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      flex: 1
-                    }}
-                  >
-                    {item?.type}
-                  </Box>
-                </Tooltip>
-              </Box>
+              <Link to={`/ListProducts?type=${item?.type}`}>
+                <Box display={'flex'} gap={1} width="250px">
+                  <img src={item.img} width={30} height={30} />
+                  <Tooltip title={item.type} placement="top">
+                    <Box
+                      sx={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        flex: 1
+                      }}
+                    >
+                      {item?.type}
+                    </Box>
+                  </Tooltip>
+                </Box>
+              </Link>
             </MenuItem>
           ))}
         </Box>
