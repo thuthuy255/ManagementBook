@@ -242,11 +242,11 @@ const useListUser = () => {
             </Tooltip>
           )}
 
-          <Tooltip title="Xóa tài khoản" placement="top">
+          {/* <Tooltip title="Xóa tài khoản" placement="top">
             <IconButton color="error" size="small" onClick={() => handleDelete(params.row.id)}>
               <DeleteIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
         </>
       )
     }

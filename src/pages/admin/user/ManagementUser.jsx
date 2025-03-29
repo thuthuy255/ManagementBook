@@ -23,11 +23,11 @@ export default function ManagementUser() {
     handleLockUser,
     handleUpdateState
   } = useListUser();
-  console.log('🚀 ~ ManagementUser ~ dataListUser:', dataListUser);
+
   return (
     <>
       <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
-        <HeaderTable onAdd={handleNavigateAdd} onRemove={handleRemoveMultipleItems} searchTable={handleSearchTable} />
+        <HeaderTable onAdd={handleNavigateAdd} statusRemoveMultipleItems={false} searchTable={handleSearchTable} />
       </Grid>
       {isFetchingPost ? (
         <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
