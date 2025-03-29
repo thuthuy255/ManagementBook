@@ -1,4 +1,7 @@
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+
 // material-ui
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -13,101 +16,24 @@ import Box from '@mui/material/Box';
 
 // third-party
 import { NumericFormat } from 'react-number-format';
-
-// project import
-import Dot from 'components/@extended/Dot';
 import { formatPrice } from 'utils/format';
-
-function createData(tracking_no, name, fat, carbs, protein) {
-  return { tracking_no, name, fat, carbs, protein };
-}
-
-const rows = [
-  createData(84564564, 'Camera Lens', 40, 2, 40570),
-  createData(98764564, 'Laptop', 300, 0, 180139),
-  createData(98756325, 'Mobile', 355, 1, 90989),
-  createData(98652366, 'Handset', 50, 1, 10239),
-  createData(13286564, 'Computer Accessories', 100, 1, 83348),
-  createData(86739658, 'TV', 99, 0, 410780),
-  createData(13256498, 'Keyboard', 125, 2, 70999),
-  createData(98753263, 'Mouse', 89, 2, 10570),
-  createData(98753275, 'Desktop', 185, 1, 98063),
-  createData(98753291, 'Chair', 100, 0, 14001)
-];
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
+import Dot from 'components/@extended/Dot';
+import { getAllOrdersAdmin } from 'services/clients/product';
 
 const headCells = [
-  {
-    id: 'tracking_no',
-    align: 'left',
-    disablePadding: false,
-    label: 'Mã Sản Phẩm'
-  },
-  {
-    id: 'name',
-    align: 'left',
-    disablePadding: true,
-    label: 'Tên Sản Phẩm'
-  },
-  {
-    id: 'fat',
-    align: 'right',
-    disablePadding: false,
-    label: 'Số Lượng'
-  },
-  {
-    id: 'carbs',
-    align: 'left',
-    disablePadding: false,
-
-    label: 'Trạng Thái'
-  },
-  {
-    id: 'protein',
-    align: 'right',
-    disablePadding: false,
-    label: 'Tổng Số Tiền'
-  }
+  { id: 'tracking_no', align: 'left', label: 'STT' },
+  { id: 'name', align: 'left', label: 'Tên Sản Phẩm' },
+  { id: 'quantity', align: 'right', label: 'Số Lượng' },
+  { id: 'status', align: 'left', label: 'Trạng Thái' },
+  { id: 'total_price', align: 'right', label: 'Tổng Số Tiền' }
 ];
-
-// ==============================|| ORDER TABLE - HEADER ||============================== //
 
 function OrderTableHead({ order, orderBy }) {
   return (
     <TableHead>
       <TableRow>
         {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.align}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
+          <TableCell key={headCell.id} align={headCell.align}>
             {headCell.label}
           </TableCell>
         ))}
@@ -116,27 +42,16 @@ function OrderTableHead({ order, orderBy }) {
   );
 }
 
-function OrderStatus({ status }) {
-  let color;
-  let title;
+OrderTableHead.propTypes = { order: PropTypes.string, orderBy: PropTypes.string };
 
-  switch (status) {
-    case 0:
-      color = 'warning';
-      title = 'Đang Chờ Xử Lý';
-      break;
-    case 1:
-      color = 'success';
-      title = 'Đã thanh toán';
-      break;
-    case 2:
-      color = 'error';
-      title = 'Đã Hủy';
-      break;
-    default:
-      color = 'primary';
-      title = 'None';
-  }
+function OrderStatus({ status }) {
+  const statusMap = {
+    0: { color: 'warning', title: 'Đang Chờ Xử Lý' },
+    1: { color: 'success', title: 'Đã thanh toán' },
+    2: { color: 'error', title: 'Đã Hủy' }
+  };
+
+  const { color, title } = statusMap[status] || { color: 'primary', title: 'Không xác định' };
 
   return (
     <Stack direction="row" spacing={1} alignItems="center">
@@ -146,57 +61,49 @@ function OrderStatus({ status }) {
   );
 }
 
-// ==============================|| ORDER TABLE ||============================== //
+OrderStatus.propTypes = { status: PropTypes.number };
 
 export default function OrderTable() {
+  const [orders, setOrders] = useState([]);
   const order = 'asc';
   const orderBy = 'tracking_no';
 
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await getAllOrdersAdmin();
+        console.log(response);
+        setOrders(response.data);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách đơn hàng:', error);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+  console.log(orders);
   return (
     <Box>
-      <TableContainer
-        sx={{
-          width: '100%',
-          overflowX: 'auto',
-          position: 'relative',
-          display: 'block',
-          maxWidth: '100%',
-          '& td, & th': { whiteSpace: 'nowrap' }
-        }}
-      >
-        <Table aria-labelledby="tableTitle">
+      <TableContainer sx={{ width: '100%', overflowX: 'auto' }}>
+        <Table>
           <OrderTableHead order={order} orderBy={orderBy} />
           <TableBody>
-            {stableSort(rows, getComparator(order, orderBy)).map((row, index) => {
-              const labelId = `enhanced-table-checkbox-${index}`;
-
-              return (
-                <TableRow
-                  hover
-                  role="checkbox"
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  tabIndex={-1}
-                  key={row.tracking_no}
-                >
-                  <TableCell component="th" id={labelId} scope="row">
-                    <Link color="secondary"> {row?.tracking_no}</Link>
-                  </TableCell>
-                  <TableCell>{row?.name}</TableCell>
-                  <TableCell align="right">{row?.fat}</TableCell>
-                  <TableCell>
-                    <OrderStatus status={row?.carbs} />
-                  </TableCell>
-                  <TableCell align="right">{formatPrice(row?.protein)}</TableCell>
-                </TableRow>
-              );
-            })}
+            {orders?.map((row, index) => (
+              <TableRow hover key={index}>
+                <TableCell>
+                  <Link color="secondary">{index + 1}</Link>
+                </TableCell>
+                <TableCell>{row.products[0].name}</TableCell>
+                <TableCell align="right">{row.qty}</TableCell>
+                <TableCell>
+                  <OrderStatus status='0' />
+                </TableCell>
+                <TableCell align="right">{formatPrice(row.total || 0)}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
     </Box>
   );
 }
-
-OrderTableHead.propTypes = { order: PropTypes.any, orderBy: PropTypes.string };
-
-OrderStatus.propTypes = { status: PropTypes.number };
