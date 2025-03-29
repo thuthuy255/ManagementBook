@@ -23,8 +23,8 @@ export default function UserLayout() {
 
       <Box
         component="main"
-        style={{ backgroundColor: BACKGROUND_PRIMARY, minHeight: 'calc(100vh - 100px)' }}
-        sx={{ flexGrow: 1, pb: { xs: 2, sm: 3 } }}
+        style={{ backgroundColor: BACKGROUND_PRIMARY }}
+        sx={{ flexGrow: 1, pb: { xs: 2, sm: 3 }, pt: { xs: 2, sm: 3 } }}
       >
         {/* <Toolbar /> */}
         {/* <Box>

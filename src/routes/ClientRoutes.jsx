@@ -22,6 +22,9 @@ const PageInfo_support = Loadable(lazy(() => import('pages/client/privacy/Info_s
 const PageDetail = Loadable(lazy(() => import('pages/client/product-detail/Product-detail-layout')));
 const PageDetailNews = Loadable(lazy(() => import('pages/client/news/DetailNews')));
 const PageListNews = Loadable(lazy(() => import('pages/client/news/ListNews')));
+const Pageprofile = Loadable(lazy(() => import('pages/client/profile/Profile')));
+
+
 const MainRoutes = [
   {
     path: '/',
@@ -74,6 +77,10 @@ const MainRoutes = [
       {
         path: '/detail-news/:title',
         element: <PageDetailNews />
+      },
+      {
+        path: '/Pageprofile',
+        element: <Pageprofile />
       }
     ]
   },

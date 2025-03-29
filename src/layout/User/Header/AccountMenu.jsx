@@ -34,6 +34,9 @@ function AccountMenu() {
   const handleInfoNavigation = () => {
     navigate('/PageInfo_support')
   }
+  const handleProfileNavigation = () => {
+    navigate('/Pageprofile')
+  }
   return (
     <>
       <Tooltip title="Tài khoản" placement="top">
@@ -44,7 +47,7 @@ function AccountMenu() {
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         {infoUser?.name ? (
           <Box>
-            <MenuItem onClick={handleClose}>Thông tin cá nhân</MenuItem>
+            <MenuItem onClick={handleProfileNavigation}>Thông tin cá nhân</MenuItem>
           </Box>
         ) : (
           <Box>

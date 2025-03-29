@@ -25,6 +25,11 @@ const PageUpdateUser = Loadable(lazy(() => import('pages/admin/user/updateUser/U
 const PageCategory = Loadable(lazy(() => import('pages/admin/category/CategoryManagement')));
 const PageProfile = Loadable(lazy(() => import('pages/admin/profile/Profile')));
 const PageUpdatePost = Loadable(lazy(() => import('pages/admin/postManagement/updatePost/UpdatePost')));
+const PageCustomer = Loadable(lazy(() => import('pages/admin/customer/ManagementCustomer')));
+const PagePromotion = Loadable(lazy(() => import('pages/admin/promotion/ManagementPromotion')));
+const PageCustomercare = Loadable(lazy(() => import('pages/admin/customer-care/ManagementCustomercare')));
+
+
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/admin/extra-pages/sample-page')));
 
@@ -134,7 +139,19 @@ const MainRoutes = {
     {
       path: 'update-post/:title',
       element: <PageUpdatePost />
-    }
+    },
+    {
+      path: 'customer-management',
+      element: <PageCustomer />
+    },
+    {
+      path: 'promotion-management',
+      element: <PagePromotion />
+    },
+    {
+      path: 'customercare-management',
+      element: <PageCustomercare />
+    },
   ]
 };
 // ✅ Tạo một route riêng cho "profile" để nó không nằm trong Dashboard
