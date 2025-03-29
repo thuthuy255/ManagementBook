@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, FormControl, Grid, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import React from 'react';
 import useOrderList from './hook/useOrderList';
@@ -17,16 +17,25 @@ export default function OrderManagement() {
     handlePaginationChange,
     columns,
     searchOrder,
-    handleSearchTable,
+    setSearchOrder,
     updateStateComponent,
-    handleConfirmOrder,
-    handleCancelOrder
+    handleConfirmOrder
   } = useOrderList();
 
   return (
     <div>
       <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
-        <HeaderTable statusAdd={false} searchTable={handleSearchTable} />
+        <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
+          {/* Dropdown filter */}
+          <FormControl sx={{ minWidth: 150 }}>
+            <InputLabel>Trạng thái</InputLabel>
+            <Select value={searchOrder.status} onChange={(e) => setSearchOrder((prev) => ({ ...prev, status: e.target.value }))}>
+              <MenuItem value="order">Chờ xử lý</MenuItem>
+              <MenuItem value="canceled">Đã hủy</MenuItem>
+              <MenuItem value="completed">Hoàn thành</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
       </Grid>
       {isFetchingOrder ? (
         <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
@@ -54,12 +63,6 @@ export default function OrderManagement() {
         onConfirm={handleConfirmOrder}
         loading={false}
       />
-      {/* <ModalConfirm
-        open={stateComponent.modalCancel}
-        onClose={() => updateStateComponent('modalCancel', false)}
-        onConfirm={handleCancelOrder}
-        loading={false}
-      /> */}
     </div>
   );
 }

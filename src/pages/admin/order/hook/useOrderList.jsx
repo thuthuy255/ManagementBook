@@ -13,14 +13,9 @@ import { hideLoading, showLoading } from 'features/slices/loading.slice';
 import { showToast } from 'components/notification/CustomToast';
 const useOrderList = () => {
   const [searchOrder, setSearchOrder] = useState({
-    keyword: '',
-    type: '',
-    minPrice: '',
-    maxPrice: '',
-    sortBy: 'price',
-    sort: 'desc',
     page: 1,
-    limit: 5
+    limit: 5,
+    status: ''
   });
   const [stateComponent, setStateComponent] = useState({
     modalConfirm: false,
@@ -114,13 +109,6 @@ const useOrderList = () => {
     }
   }, [listOrder]);
   const columns = [
-    // {
-    //   field: 'id',
-    //   headerName: 'Mã đơn hàng',
-    //   flex: 1,
-    //   headerAlign: 'center',
-    //   align: 'center'
-    // },
     {
       field: 'total',
       headerName: 'Tổng tiền',
@@ -177,6 +165,14 @@ const useOrderList = () => {
       renderCell: (params) => formatDate(params.value)
     },
     {
+      field: 'active',
+      headerName: 'Cập nhật lúc',
+      flex: 1,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => formatDate(params.value)
+    },
+    {
       field: 'actions',
       headerName: 'Hành động',
       sortable: false,
@@ -208,7 +204,8 @@ const useOrderList = () => {
     handleSearchTable,
     updateStateComponent,
     handleConfirmOrder,
-    handleCancelOrder
+    handleCancelOrder,
+    setSearchOrder
   };
 };
 export default useOrderList;

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { getAllUserQuery } from '../services/user.query';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
-import { IconButton, Tooltip } from '@mui/material';
+import { Button, IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
@@ -203,6 +203,18 @@ const useListUser = () => {
       renderCell: (params) => <span>{params?.value ? formatDate(params.value) : 'Không có'}</span>
     },
     {
+      field: 'active',
+      headerName: 'Trạng thái',
+      flex: 1,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => (
+        <Button variant="contained" color={params.value === 1 ? 'success' : 'error'} size="small">
+          {params.value === 1 ? 'Đã kích hoạt' : 'Đang bị khóa'}
+        </Button>
+      )
+    },
+    {
       field: 'actions',
       headerName: 'Hành động',
       sortable: false,
@@ -216,16 +228,20 @@ const useListUser = () => {
               <EditIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Mở khóa tài khoản" placement="top">
-            <IconButton color="waring" size="small" onClick={() => handleUpdateState('modalUnLockUser', true, params.row)}>
-              <NoEncryptionIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Khóa tài khoản" placement="top">
-            <IconButton color="waring" size="small" onClick={() => handleUpdateState('modalLockUser', true, params.row)}>
-              <LockPersonIcon />
-            </IconButton>
-          </Tooltip>
+          {params?.row?.active == 1 ? (
+            <Tooltip title="Khóa tài khoản" placement="top">
+              <IconButton color="waring" size="small" onClick={() => handleUpdateState('modalLockUser', true, params.row)}>
+                <LockPersonIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Mở khóa tài khoản" placement="top">
+              <IconButton color="waring" size="small" onClick={() => handleUpdateState('modalUnLockUser', true, params.row)}>
+                <NoEncryptionIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+
           <Tooltip title="Xóa tài khoản" placement="top">
             <IconButton color="error" size="small" onClick={() => handleDelete(params.row.id)}>
               <DeleteIcon />

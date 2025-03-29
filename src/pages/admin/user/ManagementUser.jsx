@@ -23,6 +23,7 @@ export default function ManagementUser() {
     handleLockUser,
     handleUpdateState
   } = useListUser();
+  console.log('🚀 ~ ManagementUser ~ dataListUser:', dataListUser);
   return (
     <>
       <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
