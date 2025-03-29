@@ -53,6 +53,7 @@ const useOrderList = () => {
       .then((res) => {
         if (res?.err === 0) {
           showToast('Đã xác nhận đơn hàng', 'success');
+
           refetch();
         } else {
           showToast(res?.mess, 'error');
@@ -66,7 +67,7 @@ const useOrderList = () => {
         dispatch(hideLoading());
         updateStateComponent('modalConfirm', false);
       });
-  }, []);
+  }, [selectItem]);
 
   const handleCancelOrder = useCallback(() => {
     const body = {
@@ -191,7 +192,6 @@ const useOrderList = () => {
           </Tooltip>
           <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
             <MenuItem onClick={() => handleOpenModalConfirm('modalConfirm', 'true', params.row)}>Xác nhận đơn hàng</MenuItem>
-            <MenuItem onClick={() => handleOpenModalConfirm('modalCancel', 'true', params.row)}>Hủy đơn hàng</MenuItem>
           </Menu>
         </>
       )
