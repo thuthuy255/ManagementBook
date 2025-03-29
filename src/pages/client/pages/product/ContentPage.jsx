@@ -33,7 +33,7 @@ export default function ContentPage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const observer = useRef(null);
   const [searchParams] = useSearchParams();
-
+  const keyword = searchParams.get('keyword');
   const [filters, setFilters] = useState({
     search: '',
     priceRange: [0, 999999999],
@@ -45,7 +45,8 @@ export default function ContentPage() {
 
   useEffect(() => {
     const urlType = searchParams.get('type') || '';
-    const updatedFilters = { ...filters, type: urlType };
+    const urlKeyword = searchParams.get('keyword') || '';
+    const updatedFilters = { ...filters, type: urlType, search: urlKeyword };
     setFilters(updatedFilters);
     setPage(1);
     setHasMore(true);

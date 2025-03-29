@@ -14,6 +14,7 @@ import ButtonFullScreen from 'components/button/ButtonFullScreen';
 import AccountMenu from './AccountMenu';
 
 function Header() {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -21,6 +22,9 @@ function Header() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleDebouncedInput = (value) => {
+    navigate(`/ListProducts?keyword=${value}`);
   };
 
   return (
@@ -60,12 +64,11 @@ function Header() {
               <ArrowDropDownIcon />
             </Box>
           </Button>
-          <Button className="btnSearch">
-            <Grid style={{ width: '100%' }}>
-              <TypingEffectText text="Tìm kiếm cuốn sách yêu thích của bạn" speed={100} delay={1500} />
-            </Grid>
-            <SearchIcon />
-          </Button>
+          {/* <Button className="btnSearch"> */}
+          <Grid style={{ width: '100%' }}>
+            <TypingEffectText text="Tìm Kiếm Cuốn Sách Yêu Thích Của Bạn..." onDebouncedInput={handleDebouncedInput} />
+          </Grid>
+          {/* </Button> */}
         </Grid>
       </Grid>
       <Grid item md={2} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }} className="icon_menu">

@@ -10,7 +10,8 @@ export default function StyledDataGrid({
   onPaginationChange,
   rowCount = 0,
   paginationMode = 'server',
-  onSelectedIdsChange
+  onSelectedIdsChange,
+  getRowId = (row) => row.id || row.name
 }) {
   return (
     <Paper
@@ -29,6 +30,7 @@ export default function StyledDataGrid({
           ...col,
           headerClassName: 'custom-header' // Tạo class tùy chỉnh cho header
         }))}
+        getRowId={getRowId}
         getRowHeight={() => 'auto'}
         pageSizeOptions={[5]}
         paginationModel={paginationModel}

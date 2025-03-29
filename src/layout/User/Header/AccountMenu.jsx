@@ -26,14 +26,14 @@ function AccountMenu() {
     localStorage.removeItem('access_token');
   }, [dispatch]);
   const handleClauseNavigation = () => {
-    navigate('/PageClause')
-  }
+    navigate('/PageClause');
+  };
   const handlePrivacyNavigation = () => {
-    navigate('/PagePrivacy')
-  }
+    navigate('/PagePrivacy');
+  };
   const handleInfoNavigation = () => {
-    navigate('/PageInfo_support')
-  }
+    navigate('/PageInfo_support');
+  };
   return (
     <>
       <Tooltip title="Tài khoản" placement="top">
@@ -45,6 +45,7 @@ function AccountMenu() {
         {infoUser?.name ? (
           <Box>
             <MenuItem onClick={handleClose}>Thông tin cá nhân</MenuItem>
+            <MenuItem onClick={handleClose}>Theo dõi đơn hàng</MenuItem>
           </Box>
         ) : (
           <Box>

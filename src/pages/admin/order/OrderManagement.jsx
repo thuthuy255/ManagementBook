@@ -1,35 +1,65 @@
-// import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
-// import { DataGrid } from '@mui/x-data-grid';
-// import React from 'react';
+import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import React from 'react';
+import useOrderList from './hook/useOrderList';
+import HeaderTable from 'components/table/headerTable/HeaderTable';
+import StyledDataGrid from 'components/table/StyledDataGrid';
+import Loading from 'components/loading/Loading';
+import ModalConfirm from 'components/modal/ModalConfirm';
 
-// export default function OrderManagement() {
-//   return <div>
-//     <Grid container spacing={2}>
-//       <Grid item xs={12} md={6}>
-//         <Box bgcolor="lightcoral" p={2}>Cột 1 (6/12)</Box>
-//       </Grid>
-//       <Grid item xs={12} md={6}>
-//         <Box bgcolor="lightseagreen" p={2}>Cột 2 (6/12)</Box>
-//       </Grid>
-//       <Grid item xs={4}>
-//         <Box bgcolor="gold" p={2}>Cột 3 (4/12)</Box>
-//       </Grid>
-//       <Grid item xs={8}>
-//         <Box bgcolor="lightgray" p={2}>Cột 4 (8/12)</Box>
-//       </Grid>
-//     </Grid>
-//     <Container maxWidth="md">
-//       <Typography variant="h4" gutterBottom>
-//         Đây là Container
-//       </Typography>
-//       <Typography>
-//         Container giúp giữ nội dung ở giữa với độ rộng tối đa là "md" (medium).
-//       </Typography>
-//     </Container>
-//     <Stack spacing={2} direction="row">
-//       <Button variant="contained">Nút 1</Button>
-//       <Button variant="outlined">Nút 2</Button>
-//       <Button variant="text">Nút 3</Button>
-//     </Stack>
-//   </div>;
-// }
+export default function OrderManagement() {
+  const {
+    stateComponent,
+    listOrder,
+    isFetchingOrder,
+    error,
+    refetch,
+    handlePaginationChange,
+    columns,
+    searchOrder,
+    handleSearchTable,
+    updateStateComponent,
+    handleConfirmOrder,
+    handleCancelOrder
+  } = useOrderList();
+
+  return (
+    <div>
+      <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
+        <HeaderTable statusAdd={false} searchTable={handleSearchTable} />
+      </Grid>
+      {isFetchingOrder ? (
+        <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
+          <Loading />
+        </Grid>
+      ) : (
+        <div>
+          <StyledDataGrid
+            rows={listOrder?.data || []}
+            columns={columns}
+            onPaginationChange={handlePaginationChange}
+            paginationModel={{
+              page: searchOrder.page - 1,
+              pageSize: searchOrder.limit
+            }}
+            rowCount={stateComponent.quantity}
+            paginationMode="server"
+            getRowId={(row) => row.updatedAt}
+          />
+        </div>
+      )}
+      <ModalConfirm
+        open={stateComponent.modalConfirm}
+        onClose={() => updateStateComponent('modalConfirm', false)}
+        onConfirm={handleConfirmOrder}
+        loading={false}
+      />
+      {/* <ModalConfirm
+        open={stateComponent.modalCancel}
+        onClose={() => updateStateComponent('modalCancel', false)}
+        onConfirm={handleCancelOrder}
+        loading={false}
+      /> */}
+    </div>
+  );
+}

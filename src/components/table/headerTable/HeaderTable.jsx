@@ -3,7 +3,7 @@ import React, { memo, useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import useDebounce from 'hook/useDebounce';
-function HeaderTable({ searchTable, onAdd, onRemove, statusRemoveMultipleItems = true }) {
+function HeaderTable({ searchTable, onAdd, onRemove, statusRemoveMultipleItems = true, statusAdd = true }) {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
   useEffect(() => {
@@ -23,16 +23,18 @@ function HeaderTable({ searchTable, onAdd, onRemove, statusRemoveMultipleItems =
       </Grid>
       <Grid item xs={12} md={8} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
         <Box display={'flex'} gap={2}>
-          <Button
-            size="small"
-            variant="contained"
-            color="primary"
-            sx={{ display: 'flex', alignItems: 'center', gap: 0.5, height: '35px' }}
-            onClick={onAdd}
-          >
-            <AddIcon />
-            <span>Thêm mới</span>
-          </Button>
+          {statusAdd && (
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              sx={{ display: 'flex', alignItems: 'center', gap: 0.5, height: '35px' }}
+              onClick={onAdd}
+            >
+              <AddIcon />
+              <span>Thêm mới</span>
+            </Button>
+          )}
           {statusRemoveMultipleItems && (
             <Button
               size="small"

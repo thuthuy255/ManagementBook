@@ -22,7 +22,7 @@ function ListPageBook() {
     handleSearchTable,
     searchProducts,
     isFetchingBook,
-    handlePaginationChange,
+    handlePaginationChange
   } = useBookList();
 
   return (
@@ -52,7 +52,6 @@ function ListPageBook() {
       )}
 
       <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeleteProducts} loading={false} />
-
     </div>
   );
 }

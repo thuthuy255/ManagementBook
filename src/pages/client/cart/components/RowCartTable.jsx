@@ -1,4 +1,4 @@
-import { Box, Checkbox, TableCell, TableRow, Typography } from '@mui/material';
+import { Box, Button, Checkbox, TableCell, TableRow, Typography } from '@mui/material';
 import React, { memo } from 'react';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
@@ -12,9 +12,10 @@ function RowCartTable({ data, handleSetCountMinus, handleSetCountPlus }) {
 
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-      <TableCell component="th" scope="row">
+      {/* <TableCell component="th" scope="row">
         <Checkbox />
-      </TableCell>
+      </TableCell> */}
+
       <TableCell sx={{ display: 'flex' }}>
         <img src={getImage(data?.product)} width={100} />
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '7px' }}>
@@ -63,9 +64,9 @@ function RowCartTable({ data, handleSetCountMinus, handleSetCountPlus }) {
         </Box>
       </TableCell>
       <TableCell sx={{ color: '#C92127', fontWeight: 'bold' }}>{formatPrice(total)}</TableCell>
-      <TableCell>
+      {/* <TableCell>
         <DeleteIcon />
-      </TableCell>
+      </TableCell> */}
     </TableRow>
   );
 }
