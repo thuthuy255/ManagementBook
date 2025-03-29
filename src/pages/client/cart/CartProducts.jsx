@@ -1,15 +1,28 @@
 import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import LeftPayCart from './components/LeftPayCart';
 import useListCart from './hook/useListCart';
 import Loading from 'components/loading/Loading';
 import RowCartTable from './components/RowCartTable';
 import ModalConfirm from 'components/modal/ModalConfirm';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { showToast } from 'components/notification/CustomToast';
 
 export default function CartProducts() {
   const { count, handleSetCountPlus, handleSetCountMinus, listCart, isLoading, statusModal, handleToggleModal, handleDeleteCart } =
     useListCart();
-
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const success = searchParams.get('success');
+  useEffect(() => {
+    if (success === 'true') {
+      showToast('Thanh toán thành công!', 'success');
+      navigate('/oder-info', { replace: true });
+    }
+    if (success === 'false') {
+      showToast('Thanh toán thất bại!', 'error');
+    }
+  }, [success, navigate]);
   return (
     <Grid container pt={3} display={'flex'} style={{ minHeight: 'calc(100vh - 100px)', margin: '0 auto', width: '80vw' }}>
       {isLoading ? (
