@@ -7,7 +7,10 @@ import {
   SwitcherOutlined,
   ShoppingCartOutlined,
   ShoppingOutlined,
-  TagOutlined
+  TagOutlined,
+  CustomerServiceOutlined,
+  UserSwitchOutlined,
+  BarcodeOutlined
 } from '@ant-design/icons';
 import { ADMIN } from 'constants/Role';
 
@@ -21,7 +24,10 @@ const icons = {
   SwitcherOutlined,
   ShoppingCartOutlined,
   ShoppingOutlined,
-  TagOutlined
+  TagOutlined,
+  CustomerServiceOutlined,
+  UserSwitchOutlined,
+  BarcodeOutlined
 };
 
 // ==============================|| MENU ITEMS - SAMPLE PAGE & DOCUMENTATION ||============================== //
@@ -73,7 +79,28 @@ const management = {
       type: 'item',
       url: '/category-management',
       icon: icons.TagOutlined
-    }
+    },
+    {
+      id: 'customer-management',
+      title: 'Quản lý khách hàng',
+      type: 'item',
+      url: '/customer-management',
+      icon: icons.UserSwitchOutlined
+    },
+    {
+      id: 'promotion-management',
+      title: 'Quản lý khuyến mại',
+      type: 'item',
+      url: '/promotion-management',
+      icon: icons.BarcodeOutlined
+    },
+    {
+      id: 'customercare-management',
+      title: 'Chăm sóc khách hàng',
+      type: 'item',
+      url: '/customercare-management',
+      icon: icons.CustomerServiceOutlined
+    },
   ]
 };
 
