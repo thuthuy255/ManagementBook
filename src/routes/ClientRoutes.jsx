@@ -24,7 +24,6 @@ const PageDetailNews = Loadable(lazy(() => import('pages/client/news/DetailNews'
 const PageListNews = Loadable(lazy(() => import('pages/client/news/ListNews')));
 const Pageprofile = Loadable(lazy(() => import('pages/client/profile/Profile')));
 
-
 const MainRoutes = [
   {
     path: '/',
@@ -59,7 +58,6 @@ const MainRoutes = [
         element: <PageInfo_support />
       },
       {
-
         element: (
           <ProtectedRoute>
             <PageCart />
