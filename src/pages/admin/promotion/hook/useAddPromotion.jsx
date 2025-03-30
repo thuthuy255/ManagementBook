@@ -4,31 +4,23 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
+import { createDiscount } from '../services/promotion.api';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
+import { useQueryClient } from 'react-query';
 export default function useAddPromotion() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const handleSubmitForm = useCallback(
     async (values) => {
-      const formData = new FormData();
-      formData.append('author', values.author);
-      formData.append('name', values.name);
-      formData.append('price', values.price);
-      formData.append('description', values.description);
-      formData.append('publisher', values.publisher);
-      formData.append('qty', values.qty);
-      formData.append('type', values.type);
-      if (Array.isArray(values.img_src) && values.img_src.length > 0) {
-        values.img_src.forEach((file) => {
-          formData.append('img_src', file);
-        });
-      }
       dispatch(showLoading());
       try {
-        const response = await CreateBook(formData);
+        const response = await createDiscount(values);
         if (response && response?.err === 0) {
           showToast('Thêm thành công sách', 'success');
-          await queryClient.invalidateQueries(['getAllBookQuery']);
-          navigate('/book-management');
+          await queryClient.invalidateQueries(['getAllDiscount']);
+          console.log('chim cuýt');
+          navigate('/promotion-management');
         } else {
           showToast(response?.mess, 'warning');
         }

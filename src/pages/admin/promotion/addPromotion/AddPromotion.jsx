@@ -2,6 +2,7 @@ import { Button, Container, Grid, Typography, MenuItem, Select, FormControl, Inp
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import React from 'react';
 import useAddPromotion from '../hook/useAddPromotion';
 import CustomTextField from 'components/input/CustomTextField';
@@ -52,9 +53,16 @@ export default function AddPromotion() {
                 <Grid item xs={12} md={6}>
                   <DatePicker
                     label="Ngày hết hạn"
-                    value={formik.values.expirationDate}
-                    onChange={(newValue) => formik.setFieldValue('expirationDate', newValue)}
-                    renderInput={(params) => <TextField {...params} fullWidth />}
+                    value={formik.values.expirationDate ? dayjs(formik.values.expirationDate) : null}
+                    onChange={(newValue) => formik.setFieldValue('expirationDate', newValue ? newValue.toISOString() : null)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        fullWidth
+                        error={formik.touched.expirationDate && Boolean(formik.errors.expirationDate)}
+                        helperText={formik.touched.expirationDate && formik.errors.expirationDate}
+                      />
+                    )}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
