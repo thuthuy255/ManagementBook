@@ -11,3 +11,8 @@ export const updateOrderCompleted = (body) => {
   const url = `/admin/order-completed`;
   return axiosClient.post(url, body);
 };
+
+export const updateOrderCanceled = (body) => {
+  const url = `/order/cancel`;
+  return axiosClient.post(url, body);
+};

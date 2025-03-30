@@ -37,6 +37,10 @@ function AccountMenu() {
   const handleProfileNavigation = () => {
     navigate('/Pageprofile');
   };
+
+  const handleOrderNavigation = () => {
+    navigate('/PageOrder');
+  };
   return (
     <>
       <Tooltip title="Tài khoản" placement="top">
@@ -48,7 +52,7 @@ function AccountMenu() {
         {infoUser?.name ? (
           <Box>
             <MenuItem onClick={handleProfileNavigation}>Thông tin cá nhân</MenuItem>
-            <MenuItem onClick={handleClose}>Theo dõi đơn hàng</MenuItem>
+            <MenuItem onClick={handleOrderNavigation}>Theo dõi đơn hàng</MenuItem>
           </Box>
         ) : (
           <Box>

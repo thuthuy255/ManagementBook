@@ -23,7 +23,7 @@ const PageDetail = Loadable(lazy(() => import('pages/client/product-detail/Produ
 const PageDetailNews = Loadable(lazy(() => import('pages/client/news/DetailNews')));
 const PageListNews = Loadable(lazy(() => import('pages/client/news/ListNews')));
 const Pageprofile = Loadable(lazy(() => import('pages/client/profile/Profile')));
-
+const PageproOrder = Loadable(lazy(() => import('pages/client/order/Order')));
 const MainRoutes = [
   {
     path: '/',
@@ -79,6 +79,10 @@ const MainRoutes = [
       {
         path: '/Pageprofile',
         element: <Pageprofile />
+      },
+      {
+        path: '/PageOrder',
+        element: <PageproOrder />
       }
     ]
   },
