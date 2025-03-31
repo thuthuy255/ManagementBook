@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getAllUserQuery } from '../services/user.query';
+import { getAllStaffQuery } from '../services/user.query';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { Button, IconButton, Tooltip } from '@mui/material';
@@ -19,8 +19,8 @@ const useListUser = () => {
     keyword: '',
     sort: 'asc'
   });
-  const { data: dataListUser, isFetching: isFetchingPost, error, refetch: refetchPost } = getAllUserQuery({ params: searchBody });
-  console.log('🚀 ~ useListUser ~ dataListUser:', dataListUser);
+  const { data: dataListUser, isFetching: isFetchingPost, error, refetch: refetchPost } = getAllStaffQuery({ params: searchBody });
+
   const [stateComponent, setStateComponent] = useState({
     modal: false,
     modalDelete: false,

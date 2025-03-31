@@ -7,6 +7,12 @@ export const GetAllUser = (params) => {
   return axiosClient.get(url);
 };
 
+export const GetAllStaff = (params) => {
+  const query = stringtifyQuery(params);
+  const url = `/admin/staff?${query}`;
+  return axiosClient.get(url);
+};
+
 export const CreateStaff = (body) => {
   const url = `/admin/staff`;
   return axiosClient.post(url, body);
@@ -14,7 +20,7 @@ export const CreateStaff = (body) => {
 
 export const getDetailUser = (params) => {
   const query = stringtifyQuery(params);
-  const url = `/user/current?${query}`;
+  const url = `/admin/staff?${query}`;
   return axiosClient.get(url);
 };
 

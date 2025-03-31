@@ -30,7 +30,7 @@ const PagePromotion = Loadable(lazy(() => import('pages/admin/promotion/Manageme
 const UpdatePromotion = Loadable(lazy(() => import('pages/admin/promotion/updatePromotion/updatePromotion')));
 const AddPromotion = Loadable(lazy(() => import('pages/admin/promotion/addPromotion/AddPromotion')));
 const PageCustomercare = Loadable(lazy(() => import('pages/admin/customer-care/ManagementCustomercare')));
-
+const UpdateStaff = Loadable(lazy(() => import('pages/admin/customer/updateUser/UpdateUser')));
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('pages/admin/extra-pages/sample-page')));
 
@@ -136,6 +136,10 @@ const MainRoutes = {
     {
       path: 'update-user',
       element: <PageUpdateUser />
+    },
+    {
+      path: 'update-staff',
+      element: <UpdateStaff />
     },
     {
       path: 'update-post/:title',

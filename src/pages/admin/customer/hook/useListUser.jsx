@@ -20,7 +20,7 @@ const useListUser = () => {
     sort: 'asc'
   });
   const { data: dataListUser, isFetching: isFetchingPost, error, refetch: refetchPost } = getAllUserQuery({ params: searchBody });
-  console.log('🚀 ~ useListUser ~ dataListUser:', dataListUser);
+
   const [stateComponent, setStateComponent] = useState({
     modal: false,
     modalDelete: false,
@@ -123,7 +123,7 @@ const useListUser = () => {
   }, []);
 
   const handleEdit = useCallback((value) => {
-    navigate(`/update-user?id=${value?.id}`);
+    navigate(`/update-staff?id=${value?.id}`);
   }, []);
 
   const handleLockUser = useCallback(

@@ -15,7 +15,7 @@ export default function UpdateUser() {
     <Container maxWidth={false} disableGutters style={{ height: 'calc(100vh - 200px)' }}>
       <Grid container display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
         <Typography variant="h4" gutterBottom mb={0}>
-          Thông tin nhân viên
+          Thông tin khách hàng
         </Typography>
 
         <Button type="submit" variant="contained" color="primary" onClick={formik.handleSubmit}>

@@ -19,6 +19,7 @@ export default function useUpdateUser(userId) {
       id: userId
     }
   });
+  console.log('🚀 ~ useUpdateUser ~ dataDetailUser:', dataDetailUser);
 
   const handleSubmitForm = useCallback(
     async (values) => {
@@ -36,7 +37,7 @@ export default function useUpdateUser(userId) {
         const response = await updateStaff(formData);
         if (response && response?.err === 0) {
           showToast('Cập nhật thông tin thành công', 'success');
-          await queryClient.invalidateQueries(['GetAllUser']);
+          await queryClient.invalidateQueries(['getAllStaffQuery']);
           navigate('/user-management');
         } else {
           showToast(response?.mess, 'warning');
@@ -54,12 +55,12 @@ export default function useUpdateUser(userId) {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      userID: dataDetailUser?.data?.id || '',
-      name: dataDetailUser?.data?.name || '',
-      email: dataDetailUser?.data?.email || '',
+      userID: dataDetailUser?.data?.rows[0]?.id || '',
+      name: dataDetailUser?.data?.rows[0]?.name || '',
+      email: dataDetailUser?.data?.rows[0]?.email || '',
       password: '',
-      phoneNumber: dataDetailUser?.data?.phoneNumber || '',
-      address: dataDetailUser?.data?.address || '',
+      phoneNumber: dataDetailUser?.data?.rows[0]?.phoneNumber || '',
+      address: dataDetailUser?.data?.rows[0]?.address || '',
       avatar: []
     },
     validationSchema: Yup.object({
@@ -81,7 +82,7 @@ export default function useUpdateUser(userId) {
   });
 
   const convertFiles = useCallback(async () => {
-    const banner = dataDetailUser?.data?.avatar;
+    const banner = dataDetailUser?.data?.rows[0].avatar;
     const imageFiles = banner ? await convertUrlsToFiles([banner]) : [];
     formik.setFieldValue('avatar', imageFiles);
   }, [dataDetailUser]);

@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { getDetailUserQuery } from '../services/user.query';
+import { getDetailCustomerQuery, getDetailUserQuery } from '../services/user.query';
 import { useNavigate } from 'react-router';
 import { useQueryClient } from 'react-query';
 import { useFormik } from 'formik';
@@ -14,7 +14,7 @@ export default function useUpdateUser(userId) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: dataDetailUser, isLoading: loading } = getDetailUserQuery({
+  const { data: dataDetailUser, isLoading: loading } = getDetailCustomerQuery({
     params: {
       id: userId
     }
@@ -37,7 +37,7 @@ export default function useUpdateUser(userId) {
         if (response && response?.err === 0) {
           showToast('Cập nhật thông tin thành công', 'success');
           await queryClient.invalidateQueries(['GetAllUser']);
-          navigate('/user-management');
+          navigate('/customer-management');
         } else {
           showToast(response?.mess, 'warning');
         }
@@ -54,12 +54,12 @@ export default function useUpdateUser(userId) {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      userID: dataDetailUser?.data?.id || '',
-      name: dataDetailUser?.data?.name || '',
-      email: dataDetailUser?.data?.email || '',
+      userID: dataDetailUser?.data?.rows[0]?.id || '',
+      name: dataDetailUser?.data?.rows[0]?.name || '',
+      email: dataDetailUser?.data?.rows[0]?.email || '',
       password: '',
-      phoneNumber: dataDetailUser?.data?.phoneNumber || '',
-      address: dataDetailUser?.data?.address || '',
+      phoneNumber: dataDetailUser?.data?.rows[0]?.phoneNumber || '',
+      address: dataDetailUser?.data?.rows[0]?.address || '',
       avatar: []
     },
     validationSchema: Yup.object({
@@ -81,7 +81,7 @@ export default function useUpdateUser(userId) {
   });
 
   const convertFiles = useCallback(async () => {
-    const banner = dataDetailUser?.data?.avatar;
+    const banner = dataDetailUser?.data?.rows[0]?.avatar;
     const imageFiles = banner ? await convertUrlsToFiles([banner]) : [];
     formik.setFieldValue('avatar', imageFiles);
   }, [dataDetailUser]);

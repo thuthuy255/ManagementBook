@@ -21,7 +21,7 @@ const useAddUser = () => {
         const response = await CreateStaff(values);
         if (response && response?.err === 0) {
           showToast('Thêm thành công nhân viên', 'success');
-          await queryClient.invalidateQueries(['GetAllUser']);
+          await queryClient.invalidateQueries(['getAllStaffQuery']);
           navigate('/user-management');
         } else {
           showToast(response?.mess, 'warning');

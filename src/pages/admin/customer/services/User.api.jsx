@@ -18,6 +18,12 @@ export const getDetailUser = (params) => {
   return axiosClient.get(url);
 };
 
+export const getDetailCustomer = (params) => {
+  const query = stringtifyQuery(params);
+  const url = `/admin/info?${query}`;
+  return axiosClientFile.get(url);
+};
+
 export const updateStaff = (body) => {
   const url = `/admin/update`;
   return axiosClientFile.post(url, body);

@@ -1,11 +1,23 @@
 import { useQuery } from 'react-query';
-import { GetAllUser, getDetailUser } from './User.api';
+import { GetAllStaff, GetAllUser, getDetailUser } from './User.api';
 
 export const getAllUserQuery = ({ params }) => {
   const queryKey = params ? ['GetAllUser', params] : ['GetAllUser'];
   const _options = {
     queryKey: queryKey,
     queryFn: () => GetAllUser(params),
+    staleTime: 3 * 60 * 1000,
+    cacheTime: 3 * 60 * 1000,
+    enabled: true
+  };
+  return useQuery(_options);
+};
+
+export const getAllStaffQuery = ({ params }) => {
+  const queryKey = params ? ['getAllStaffQuery', params] : ['getAllStaffQuery'];
+  const _options = {
+    queryKey: queryKey,
+    queryFn: () => GetAllStaff(params),
     staleTime: 3 * 60 * 1000,
     cacheTime: 3 * 60 * 1000,
     enabled: true
