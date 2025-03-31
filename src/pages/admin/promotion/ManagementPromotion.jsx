@@ -12,7 +12,7 @@ export default function ManagementPromotion() {
     stateComponent,
     columns,
     handleToggleModalDelete,
-    handleDeleteProducts,
+    handleDeletePromotion,
     handleSelectedIds,
     handleNavigateAdd,
     handleSearchTable,
@@ -46,7 +46,7 @@ export default function ManagementPromotion() {
         </div>
       )}
 
-      <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeleteProducts} loading={false} />
+      <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeletePromotion} loading={false} />
     </div>
   );
 }

@@ -6,6 +6,10 @@ import { getAllDiscountQuery } from '../services/promotion.query';
 import { formatDate } from 'utils/format/FormatDate';
 import { formatPrice } from 'utils/format';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { hideLoading, showLoading } from 'features/slices/loading.slice';
+import { deleteDiscount } from '../services/promotion.api';
+import { showToast } from 'components/notification/CustomToast';
 export default function useListManagementPromotion() {
   const navigate = useNavigate();
   const [searchPromotion, setSearchPromotion] = useState({
@@ -25,6 +29,19 @@ export default function useListManagementPromotion() {
     quantity: 0,
     modalWarring: false
   });
+  const [selectedItem, setSelectedItem] = useState();
+  const dispatch = useDispatch();
+  const handleToggleModalDelete = useCallback((item) => {
+    console.log('🚀 ~ handleToggleModalDelete ~ item:', item);
+    setStateComponent((prev) => ({
+      ...prev,
+      modalDelete: !prev.modalDelete
+    }));
+    if (item) {
+      setSelectedItem(item);
+    }
+  }, []);
+
   const { data: listPromotion, isLoading: isFetchingPromotion, error, refetch } = getAllDiscountQuery({ params: searchPromotion });
   const handleSearchTable = useCallback((value) => {
     setSearchPromotion((prev) => {
@@ -35,6 +52,30 @@ export default function useListManagementPromotion() {
       };
     });
   }, []);
+
+  const handleDeletePromotion = useCallback(() => {
+    dispatch(showLoading());
+    const body = {
+      id: selectedItem?.id
+    };
+    deleteDiscount(body)
+      .then((res) => {
+        if (res?.err === 0) {
+          showToast('Xóa thành công khuyến mãi', 'success');
+          refetch();
+        } else {
+          showToast(res?.mess, 'warning');
+        }
+      })
+      .catch((e) => {
+        console.error('Có lỗi xảy ra', e);
+        showToast('Có lỗi xảy ra', 'error');
+      })
+      .finally(() => {
+        dispatch(hideLoading());
+        handleToggleModalDelete();
+      });
+  }, [selectedItem]);
 
   const handleNavigateAdd = useCallback(() => {
     navigate('/add-promotion');
@@ -125,7 +166,7 @@ export default function useListManagementPromotion() {
           <IconButton color="primary" size="small" onClick={() => handleNavigateUpdate(params.row.id)}>
             <EditIcon />
           </IconButton>
-          <IconButton color="error" size="small" onClick={() => handleDeleteConfirm(params.row)}>
+          <IconButton color="error" size="small" onClick={() => handleToggleModalDelete(params.row)}>
             <DeleteIcon />
           </IconButton>
         </>
@@ -157,6 +198,8 @@ export default function useListManagementPromotion() {
     listPromotion,
     stateComponent,
     handlePaginationChange,
-    handleNavigateAdd
+    handleNavigateAdd,
+    handleToggleModalDelete,
+    handleDeletePromotion
   };
 }
