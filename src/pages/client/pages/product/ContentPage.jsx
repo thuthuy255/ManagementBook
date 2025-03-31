@@ -63,7 +63,7 @@ export default function ContentPage() {
       setHasMore(page < totalPage);
       setLoadingMore(false);
     }
-  }, [products, loading, page, totalPage]);
+  }, [products, loading, page, totalPage, searchParams]);
 
   const fetchWithFilters = (targetPage, append = false, customFilters = null) => {
     const usedFilters = customFilters || filters;
