@@ -30,9 +30,9 @@ export default function useListManagementPromotion() {
     modalWarring: false
   });
   const [selectedItem, setSelectedItem] = useState();
+
   const dispatch = useDispatch();
   const handleToggleModalDelete = useCallback((item) => {
-    console.log('🚀 ~ handleToggleModalDelete ~ item:', item);
     setStateComponent((prev) => ({
       ...prev,
       modalDelete: !prev.modalDelete
@@ -45,7 +45,7 @@ export default function useListManagementPromotion() {
   const { data: listPromotion, isLoading: isFetchingPromotion, error, refetch } = getAllDiscountQuery({ params: searchPromotion });
   const handleSearchTable = useCallback((value) => {
     setSearchPromotion((prev) => {
-      if (prev.keyword === value) return prev; // Tránh cập nhật không cần thiết
+      if (prev.keyword === value) return prev;
       return {
         ...prev,
         keyword: value
@@ -62,6 +62,7 @@ export default function useListManagementPromotion() {
       .then((res) => {
         if (res?.err === 0) {
           showToast('Xóa thành công khuyến mãi', 'success');
+          setSelectedItem(undefined);
           refetch();
         } else {
           showToast(res?.mess, 'warning');

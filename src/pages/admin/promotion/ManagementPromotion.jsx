@@ -5,6 +5,7 @@ import useListManagementPromotion from './hook/useListManagementPromotion';
 import Loading from 'components/loading/Loading';
 import StyledDataGrid from 'components/table/StyledDataGrid';
 import ModalConfirm from 'components/modal/ModalConfirm';
+import ModalPromotionUpdate from './components/ModalPromotionUpdate';
 
 export default function ManagementPromotion() {
   const {
@@ -47,6 +48,7 @@ export default function ManagementPromotion() {
       )}
 
       <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeletePromotion} loading={false} />
+      <ModalPromotionUpdate />
     </div>
   );
 }
