@@ -9,7 +9,7 @@ function CategaryHome() {
   const listCategory = useSelector(getCategories);
   const naivgate = useNavigate();
   const handleNavigateList = useCallback((type) => {
-    naivgate(`/list-product?type=${type}`);
+    naivgate(`/ListProducts?type=${type}`);
   }, []);
   return (
     <Grid container item borderRadius={'10px'} sx={{ backgroundColor: BACKGROUND_WHITE }} md={10} xs={12} mt={3} pb={1}>
@@ -36,26 +36,24 @@ function CategaryHome() {
         }}
       >
         {listCategory?.map((item) => (
-          <Link to={`/ListProducts?type=${item?.type}`}>
-            <Grid
-              item
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleNavigateList(item.type)}
-              display={'flex'}
-              flexDirection={'column'}
-              alignItems={'center'}
-              className="Button_Hover"
-              key={item?.id}
-              md={2}
-            >
-              <Grid pb={1}>
-                <img src={item.img} height={100} width={100} style={{ objectFit: 'contain' }} />
-              </Grid>
-              <Typography gutterBottom mb={0} textAlign={'center'}>
-                {item.type}
-              </Typography>
+          <Grid
+            item
+            style={{ cursor: 'pointer' }}
+            onClick={() => handleNavigateList(item.type)}
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            className="Button_Hover"
+            key={item?.id}
+            md={2}
+          >
+            <Grid pb={1}>
+              <img src={item.img} height={100} width={100} style={{ objectFit: 'contain' }} />
             </Grid>
-          </Link>
+            <Typography gutterBottom mb={0} textAlign={'center'}>
+              {item.type}
+            </Typography>
+          </Grid>
         ))}
       </Grid>
     </Grid>
