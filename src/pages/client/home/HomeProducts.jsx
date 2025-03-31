@@ -69,64 +69,6 @@ export default function HomeProducts() {
           </Button>
         </Grid>
       </Grid>
-
-      {/* <Grid container spacing={2} mt={2} justifyContent="center">
-        <Grid item xs={6} sm={4} md={2}>
-          <ListProducts
-            image={imgProduct}
-            title={'Thay Đổi Một Suy Nghĩ Thay Đổi Cả Cuộc Đời'}
-            price={'104.000đ'}
-            sale={'-35%'}
-            oldPrice={'160.000 đ'}
-            star={5}
-            sold={231}
-          />
-        </Grid>
-        <Grid item xs={6} sm={4} md={2}>
-          <ListProducts
-            image={imgProduct}
-            title={'Thay Đổi Một Suy Nghĩ Thay Đổi Cả Cuộc Đời'}
-            price={'104.000đ'}
-            sale={'-35%'}
-            oldPrice={'160.000 đ'}
-            star={5}
-            sold={231}
-          />
-        </Grid>
-        <Grid item xs={6} sm={4} md={2}>
-          <ListProducts
-            image={imgProduct}
-            title={'Thay Đổi Một Suy Nghĩ Thay Đổi Cả Cuộc Đời'}
-            price={'104.000đ'}
-            sale={'-35%'}
-            oldPrice={'160.000 đ'}
-            star={5}
-            sold={231}
-          />
-        </Grid>
-        <Grid item xs={6} sm={4} md={2}>
-          <ListProducts
-            image={imgProduct}
-            title={'Thay Đổi Một Suy Nghĩ Thay Đổi Cả Cuộc Đời'}
-            price={'104.000đ'}
-            sale={'-35%'}
-            oldPrice={'160.000 đ'}
-            star={5}
-            sold={231}
-          />
-        </Grid>
-        <Grid item xs={6} sm={4} md={2}>
-          <ListProducts
-            image={imgProduct}
-            title={'Thay Đổi Một Suy Nghĩ Thay Đổi Cả Cuộc Đời'}
-            price={'104.000đ'}
-            sale={'-35%'}
-            oldPrice={'160.000 đ'}
-            star={5}
-            sold={231}
-          />
-        </Grid>
-      </Grid> */}
     </Grid>
   );
 }

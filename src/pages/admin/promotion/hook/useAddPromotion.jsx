@@ -17,9 +17,9 @@ export default function useAddPromotion() {
       try {
         const response = await createDiscount(values);
         if (response && response?.err === 0) {
-          showToast('Thêm thành công sách', 'success');
+          showToast('Thêm thành công khuyến mãi', 'success');
           await queryClient.invalidateQueries(['getAllDiscount']);
-          console.log('chim cuýt');
+
           navigate('/promotion-management');
         } else {
           showToast(response?.mess, 'warning');

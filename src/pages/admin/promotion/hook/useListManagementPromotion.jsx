@@ -39,6 +39,10 @@ export default function useListManagementPromotion() {
   const handleNavigateAdd = useCallback(() => {
     navigate('/add-promotion');
   }, [navigate]);
+
+  const handleNavigateUpdate = useCallback(() => {
+    navigate('/update-promotion');
+  }, [navigate]);
   const columns = [
     {
       field: 'code',

@@ -36,24 +36,26 @@ function CategaryHome() {
         }}
       >
         {listCategory?.map((item) => (
-          <Grid
-            item
-            style={{ cursor: 'pointer' }}
-            onClick={() => handleNavigateList(item.type)}
-            display={'flex'}
-            flexDirection={'column'}
-            alignItems={'center'}
-            className="Button_Hover"
-            key={item?.id}
-            md={2}
-          >
-            <Grid pb={1}>
-              <img src={item.img} height={100} width={100} style={{ objectFit: 'contain' }} />
+          <Link to={`/ListProducts?type=${item?.type}`}>
+            <Grid
+              item
+              style={{ cursor: 'pointer' }}
+              onClick={() => handleNavigateList(item.type)}
+              display={'flex'}
+              flexDirection={'column'}
+              alignItems={'center'}
+              className="Button_Hover"
+              key={item?.id}
+              md={2}
+            >
+              <Grid pb={1}>
+                <img src={item.img} height={100} width={100} style={{ objectFit: 'contain' }} />
+              </Grid>
+              <Typography gutterBottom mb={0} textAlign={'center'}>
+                {item.type}
+              </Typography>
             </Grid>
-            <Typography gutterBottom mb={0} textAlign={'center'}>
-              {item.type}
-            </Typography>
-          </Grid>
+          </Link>
         ))}
       </Grid>
     </Grid>

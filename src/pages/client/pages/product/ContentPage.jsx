@@ -33,7 +33,9 @@ export default function ContentPage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const observer = useRef(null);
   const [searchParams] = useSearchParams();
-  const keyword = searchParams.get('keyword');
+  // const keyword = searchParams.get('keyword');
+  const urlType = searchParams.get('type') || '';
+  const urlKeyword = searchParams.get('keyword') || '';
   const [filters, setFilters] = useState({
     search: '',
     priceRange: [0, 999999999],
@@ -44,14 +46,11 @@ export default function ContentPage() {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   useEffect(() => {
-    const urlType = searchParams.get('type') || '';
-    const urlKeyword = searchParams.get('keyword') || '';
     const updatedFilters = { ...filters, type: urlType, search: urlKeyword };
     setFilters(updatedFilters);
     setPage(1);
     setHasMore(true);
     fetchWithFilters(1, false, updatedFilters);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   useEffect(() => {
