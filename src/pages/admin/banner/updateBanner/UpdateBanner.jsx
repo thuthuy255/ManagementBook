@@ -46,8 +46,8 @@ export default function UpdateBanner() {
                     value={formik.values.active || ''} // Đảm bảo có giá trị
                     onChange={formik.handleChange}
                   >
-                    <MenuItem value="0">Hiển thị</MenuItem>
-                    <MenuItem value="1">Không hiển thị</MenuItem>
+                    <MenuItem value={'1'}>Hiển thị</MenuItem>
+                    <MenuItem value={'0'}>Không hiển thị</MenuItem>
                   </TextField>
                 </Grid>
               </Grid>

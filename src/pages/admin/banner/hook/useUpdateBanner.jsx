@@ -9,13 +9,17 @@ import { getDetailBannerQuery } from '../services/banner.query';
 import { convertUrlsToFiles } from 'utils/fileUtils';
 import { updateBanner } from '../services/banner.api';
 import { useQueryClient } from 'react-query';
+import { useSearchParams } from 'react-router-dom';
 
 export default function useUpdateBanner() {
-  const { name } = useParams();
+  // const { name } = useParams();
+  const [searchParams] = useSearchParams();
+  const name = searchParams.get('name');
+  const active = searchParams.get('active');
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const { data: dataBanner, isLoading: isFetchingBanner } = getDetailBannerQuery({ params: { name } });
+  const { data: dataBanner, isLoading: isFetchingBanner } = getDetailBannerQuery({ params: { name, active: active } });
 
   const convertFiles = useCallback(async () => {
     const banner = dataBanner?.data?.rows[0]?.img;
@@ -41,7 +45,7 @@ export default function useUpdateBanner() {
       dispatch(showLoading());
       try {
         const response = await updateBanner(formData);
-        console.log('🚀 ~ response:', response);
+
         if (response?.err === 0) {
           showToast(response.mess, 'success');
           queryClient.invalidateQueries({ queryKey: ['getAllBannerQuery'] });

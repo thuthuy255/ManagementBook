@@ -83,6 +83,10 @@ const MainRoutes = [
       {
         path: '/PageOrder',
         element: <PageproOrder />
+      },
+      {
+        path: '/Order-info',
+        element: <PageproOrder />
       }
     ]
   },

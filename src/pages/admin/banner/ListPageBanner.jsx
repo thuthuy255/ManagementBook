@@ -18,12 +18,24 @@ function ListPageBanner() {
     dataBanner,
     handlePaginationChange,
     searchParams,
-    handleSelectedIds
+    handleSelectedIds,
+    handleFilterBanner
   } = useListBanner();
   return (
     <div>
       <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
-        <HeaderTable onAdd={handleNavigateAdd} statusRemoveMultipleItems={false} searchTable={handleSearchTable} />
+        <HeaderTable
+          onAdd={handleNavigateAdd}
+          statusRemoveMultipleItems={false}
+          searchTable={handleSearchTable}
+          showDropdown={true}
+          dataDropdown={[
+            { label: 'Đang hoạt động', value: 1 },
+            { label: 'Ngừng hoạt động', value: 0 }
+          ]}
+          dropdownValue={searchParams.active}
+          onChangeDropdown={handleFilterBanner}
+        />
       </Grid>
       {isFetchingBanner ? (
         <Grid container minHeight="50vh" justifyContent="center" alignItems="center">

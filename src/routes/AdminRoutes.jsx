@@ -118,7 +118,7 @@ const MainRoutes = {
       element: <AddBanner />
     },
     {
-      path: 'update-banner/:name',
+      path: 'update-banner',
       element: <UpdateBanner />
     },
     {

@@ -37,6 +37,13 @@ const useListBanner = () => {
     }));
   }, []);
 
+  const handleFilterBanner = useCallback((status) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      active: status
+    }));
+  }, []);
+
   const handleNavigateAdd = useCallback(() => {
     navigate('/add-banner');
   }, [navigate]);
@@ -50,7 +57,7 @@ const useListBanner = () => {
   }, []);
 
   const handleNavigate = (name) => {
-    navigate(`/update-banner/${name}`);
+    navigate(`/update-banner?name=${name}&active=${searchParams.active}`);
   };
 
   const handleToggleModalDelete = useCallback(() => {
@@ -186,7 +193,8 @@ const useListBanner = () => {
     isFetchingBanner,
     dataBanner,
     searchParams,
-    handlePaginationChange
+    handlePaginationChange,
+    handleFilterBanner
   };
 };
 
