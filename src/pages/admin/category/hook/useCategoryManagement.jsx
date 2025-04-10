@@ -121,7 +121,6 @@ const useCategoryManagement = () => {
       showToast('Thêm thành công danh mục', 'success');
       dispatch(hideLoading());
 
-
       handleToggleModalAdd();
     } catch (error) {
       console.error('Lỗi khi tạo danh mục:', error);

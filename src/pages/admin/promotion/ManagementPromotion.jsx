@@ -19,8 +19,12 @@ export default function ManagementPromotion() {
     handleSearchTable,
     searchPromotion,
     isFetchingBook,
-    handlePaginationChange
+    handlePaginationChange,
+    selectUpdate,
+    handleUpdatePromotion,
+    handleToggleModalUpdate
   } = useListManagementPromotion();
+
   return (
     <div>
       <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
@@ -48,7 +52,12 @@ export default function ManagementPromotion() {
       )}
 
       <ModalConfirm open={stateComponent.modalDelete} onClose={handleToggleModalDelete} onConfirm={handleDeletePromotion} loading={false} />
-      <ModalPromotionUpdate />
+      <ModalPromotionUpdate
+        open={stateComponent.modalUpdate}
+        onClose={handleToggleModalUpdate}
+        onSave={handleUpdatePromotion}
+        promotion={selectUpdate}
+      />
     </div>
   );
 }

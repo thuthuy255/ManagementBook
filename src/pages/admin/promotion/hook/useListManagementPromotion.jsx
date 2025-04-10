@@ -8,7 +8,7 @@ import { formatPrice } from 'utils/format';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from 'features/slices/loading.slice';
-import { deleteDiscount } from '../services/promotion.api';
+import { deleteDiscount, updateDiscount } from '../services/promotion.api';
 import { showToast } from 'components/notification/CustomToast';
 export default function useListManagementPromotion() {
   const navigate = useNavigate();
@@ -27,9 +27,21 @@ export default function useListManagementPromotion() {
     modalDelete: false,
     total: 0,
     quantity: 0,
-    modalWarring: false
+    modalWarring: false,
+    modalUpdate: false
   });
   const [selectedItem, setSelectedItem] = useState();
+  const [selectUpdate, setSelectUpdate] = useState();
+
+  const handleToggleModalUpdate = useCallback((item) => {
+    if (item) {
+      setSelectUpdate(item);
+    }
+    setStateComponent((prev) => ({
+      ...prev,
+      modalUpdate: !prev.modalUpdate
+    }));
+  }, []);
 
   const dispatch = useDispatch();
   const handleToggleModalDelete = useCallback((item) => {
@@ -82,9 +94,6 @@ export default function useListManagementPromotion() {
     navigate('/add-promotion');
   }, [navigate]);
 
-  const handleNavigateUpdate = useCallback(() => {
-    navigate('/update-promotion');
-  }, [navigate]);
   const columns = [
     {
       field: 'code',
@@ -164,7 +173,7 @@ export default function useListManagementPromotion() {
       align: 'center',
       renderCell: (params) => (
         <>
-          <IconButton color="primary" size="small" onClick={() => handleNavigateUpdate(params.row.id)}>
+          <IconButton color="primary" size="small" onClick={handleToggleModalUpdate.bind(null, params.row)}>
             <EditIcon />
           </IconButton>
           <IconButton color="error" size="small" onClick={() => handleToggleModalDelete(params.row)}>
@@ -180,6 +189,28 @@ export default function useListManagementPromotion() {
       page: model.page + 1,
       limit: model.pageSize
     }));
+  }, []);
+
+  const handleUpdatePromotion = useCallback((item) => {
+    console.log('Công sức mình làm ra', item);
+    dispatch(showLoading());
+    updateDiscount(item)
+      .then((res) => {
+        if (res?.err === 0) {
+          showToast('Cập nhật thành công', 'success');
+          refetch();
+          handleToggleModalUpdate();
+        } else {
+          showToast(res?.mess, 'warning');
+        }
+      })
+      .catch((e) => {
+        console.error('Có lỗi xảy ra', e);
+        showToast('Có lỗi xảy ra', 'error');
+      })
+      .finally(() => {
+        dispatch(hideLoading());
+      });
   }, []);
 
   useEffect(() => {
@@ -201,6 +232,9 @@ export default function useListManagementPromotion() {
     handlePaginationChange,
     handleNavigateAdd,
     handleToggleModalDelete,
-    handleDeletePromotion
+    handleDeletePromotion,
+    selectUpdate,
+    handleUpdatePromotion,
+    handleToggleModalUpdate
   };
 }
