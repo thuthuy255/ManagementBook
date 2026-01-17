@@ -18,7 +18,7 @@ export default function ManagementPromotion() {
     handleNavigateAdd,
     handleSearchTable,
     searchPromotion,
-    isFetchingBook,
+    isFetchingPromotion,
     handlePaginationChange,
     selectUpdate,
     handleUpdatePromotion,
@@ -30,14 +30,14 @@ export default function ManagementPromotion() {
       <Grid container alignItems="center" justifyContent="space-between" sx={{ padding: 1 }}>
         <HeaderTable onAdd={handleNavigateAdd} statusRemoveMultipleItems={false} searchTable={handleSearchTable} />
       </Grid>
-      {isFetchingBook ? (
+      {isFetchingPromotion ? (
         <Grid container minHeight="50vh" justifyContent="center" alignItems="center">
           <Loading />
         </Grid>
       ) : (
         <div>
           <StyledDataGrid
-            rows={listPromotion?.data || []}
+            rows={listPromotion?.data?.rows || []}
             columns={columns}
             onPaginationChange={handlePaginationChange}
             paginationModel={{

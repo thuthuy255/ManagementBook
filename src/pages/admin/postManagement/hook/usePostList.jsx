@@ -148,7 +148,7 @@ const usePostList = () => {
       flex: 1,
       headerAlign: 'center',
       align: 'center',
-      renderCell: (params) => <span>{params.value === 'news' ? 'Tin tức' : 'Không có thể loại'}</span>
+      renderCell: (params) => <span>{params.value || 'Không có thể loại'}</span>
     },
     {
       field: 'img_src',

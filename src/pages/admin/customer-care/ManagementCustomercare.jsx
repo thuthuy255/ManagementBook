@@ -153,7 +153,7 @@ export default function ManagementCustomercare() {
               </Typography>
               <Grid container spacing={2}>
                 {products.map((product) => {
-                  const images = JSON.parse(product.img_src || '[]');
+                  const images = typeof product.img_src === 'string' ? JSON.parse(product.img_src || '[]') : (product.img_src || []);
                   const imageUrl = images.length > 0 ? images[0] : 'https://via.placeholder.com/200';
                   return (
                     <Grid item xs={12} key={product.id}>

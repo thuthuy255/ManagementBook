@@ -1,0 +1,20 @@
+name: mistik_fe
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fe_mistik
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "proxy"
+      traefik.http.routers.svc_mistik_fe.rule: "Host(`mistik.cntt.tech`)"
+      traefik.http.routers.svc_mistik_fe.entrypoints: "web"
+      traefik.http.services.svc_mistik_fe.loadbalancer.server.port: "80"
+
+networks:
+  proxy:
+    external: true

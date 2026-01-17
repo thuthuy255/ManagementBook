@@ -209,8 +209,8 @@ const useListUser = () => {
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
-        <Button variant="contained" color={params.value === 1 ? 'success' : 'error'} size="small">
-          {params.value === 1 ? 'Đã kích hoạt' : 'Đang bị khóa'}
+        <Button variant="contained" color={params.value ? 'success' : 'error'} size="small">
+          {params.value ? 'Đã kích hoạt' : 'Đang bị khóa'}
         </Button>
       )
     },
@@ -228,15 +228,15 @@ const useListUser = () => {
               <EditIcon />
             </IconButton>
           </Tooltip>
-          {params?.row?.active == 1 ? (
+          {params?.row?.active ? (
             <Tooltip title="Khóa tài khoản" placement="top">
-              <IconButton color="waring" size="small" onClick={() => handleUpdateState('modalLockUser', true, params.row)}>
+              <IconButton color="warning" size="small" onClick={() => handleUpdateState('modalLockUser', true, params.row)}>
                 <LockPersonIcon />
               </IconButton>
             </Tooltip>
           ) : (
             <Tooltip title="Mở khóa tài khoản" placement="top">
-              <IconButton color="waring" size="small" onClick={() => handleUpdateState('modalUnLockUser', true, params.row)}>
+              <IconButton color="warning" size="small" onClick={() => handleUpdateState('modalUnLockUser', true, params.row)}>
                 <NoEncryptionIcon />
               </IconButton>
             </Tooltip>

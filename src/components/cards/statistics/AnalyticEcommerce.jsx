@@ -1,48 +1,62 @@
 import PropTypes from 'prop-types';
 
 // material-ui
-import Chip from '@mui/material/Chip';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import { Grid, Stack, Typography, Box, Avatar } from '@mui/material';
 
 // project import
 import MainCard from 'components/MainCard';
 
-// assets
-import RiseOutlined from '@ant-design/icons/RiseOutlined';
-import FallOutlined from '@ant-design/icons/FallOutlined';
-import { formatPrice } from 'utils/format';
-
-const iconSX = { fontSize: '0.75rem', color: 'inherit', marginLeft: 0, marginRight: 0 };
-
-export default function AnalyticEcommerce({ color = 'primary', title, count, percentage, isLoss, extra, description }) {
+export default function AnalyticEcommerce({
+  color = 'primary',
+  title,
+  count,
+  icon,
+  percentage,
+  isLoss
+}) {
   return (
-    <MainCard contentSX={{ p: 2.25 }}>
-      <Stack spacing={0.5}>
-        <Typography variant="h6" color="text.secondary">
-          {title}
-        </Typography>
-        <Grid container alignItems="center">
-          <Grid item>
-            <Typography variant="h4" color="inherit">
-              {count}
-            </Typography>
-          </Grid>
-          {percentage && (
-            <Grid item>
-              <Chip
-                variant="combined"
-                color={color}
-                icon={isLoss ? <FallOutlined style={iconSX} /> : <RiseOutlined style={iconSX} />}
-                label={`${percentage}%`}
-                sx={{ ml: 1.25, pl: 1 }}
-                size="small"
-              />
-            </Grid>
+    <MainCard
+      contentSX={{ p: 2.25 }}
+      sx={{
+        position: 'relative',
+        overflow: 'hidden',
+        borderTop: (theme) => `4px solid ${theme.palette[color]?.main || color}`,
+        transition: 'transform 0.2s',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: (theme) => theme.customShadows?.z1 || theme.shadows[3]
+        }
+      }}
+    >
+      <Stack spacing={1.5}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6" color="text.secondary" fontWeight="500">
+            {title}
+          </Typography>
+          {icon && (
+            <Avatar
+              sx={{
+                bgcolor: (theme) => theme.palette[color]?.lighter || 'grey.100',
+                color: (theme) => theme.palette[color]?.main || 'grey.700',
+                width: 40,
+                height: 40
+              }}
+            >
+              {icon}
+            </Avatar>
           )}
-        </Grid>
+        </Stack>
+
+        <Box>
+          <Typography variant="h4" color="inherit" fontWeight="bold">
+            {count}
+          </Typography>
+          {percentage && (
+            <Typography variant="caption" color={isLoss ? 'error.main' : 'success.main'} sx={{ fontWeight: 'bold' }}>
+              {isLoss ? '-' : '+'}{percentage}% <Typography component="span" variant="caption" color="text.secondary">so với tháng trước</Typography>
+            </Typography>
+          )}
+        </Box>
       </Stack>
     </MainCard>
   );
@@ -52,7 +66,7 @@ AnalyticEcommerce.propTypes = {
   color: PropTypes.string,
   title: PropTypes.string,
   count: PropTypes.string,
+  icon: PropTypes.node,
   percentage: PropTypes.number,
-  isLoss: PropTypes.bool,
-  extra: PropTypes.string
+  isLoss: PropTypes.bool
 };

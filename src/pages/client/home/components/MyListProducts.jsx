@@ -1,11 +1,11 @@
 import { Grid, Typography } from '@mui/material';
 import { BACKGROUND_DEFAULT, BACKGROUND_WHITE } from 'constants/Color';
-import { getAllBookQuery } from 'pages/admin/book/services/book.query';
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import BookIcon from '@mui/icons-material/Book';
 import ListProducts from './ListProducts';
 import Loading from 'components/loading/Loading';
 import { formatPrice } from 'utils/format';
+import { getSuggestProduct } from 'services/clients/product';
 function MyListProducts() {
   const [searchProducts, setSearchProducts] = useState({
     keyword: '',
@@ -17,11 +17,32 @@ function MyListProducts() {
     page: 1,
     limit: 20
   });
-  const { data: books, isLoading: isLoadingBook, error } = getAllBookQuery({ params: searchProducts });
+
+  const [books, setBooks] = useState([]);
+  const [isLoadingBook, setIsLoadingBook] = useState(true);
+
+  useEffect(() => {
+    async function fetchSuggestedProducts() {
+      setIsLoadingBook(true);
+      try {
+        const response = await getSuggestProduct(searchProducts);
+        if (response?.err === 0) {
+          setBooks(response?.data?.rows || []);
+        }
+      } catch (error) {
+        console.error('Error fetching suggested products:', error);
+      } finally {
+        setIsLoadingBook(false);
+      }
+    }
+    fetchSuggestedProducts();
+  }, [searchProducts]);
 
   const getImage = (product) => {
     if (product.img_src) {
-      const images = JSON.parse(product.img_src);
+      const images = typeof product.img_src === 'string'
+        ? JSON.parse(product.img_src)
+        : product.img_src;
       return images?.length ? images[0] : '';
     }
     return '';
@@ -47,7 +68,7 @@ function MyListProducts() {
         <Loading />
       ) : (
         <Grid container mt={2}>
-          {books?.data?.rows?.map((item) => (
+          {books?.map((item) => (
             <Grid key={item?.id} item xs={6} sm={4} md={2} className="Button_Hover btn-boxshadown custom-padding" p={0}>
               <ListProducts
                 slug={item?.slug}
@@ -61,7 +82,7 @@ function MyListProducts() {
               />
             </Grid>
           ))}
-          {books?.data?.rows?.map((item) => (
+          {books?.map((item) => (
             <Grid key={item?.id} item xs={6} sm={4} md={2} className="Button_Hover btn-boxshadown custom-padding" p={0}>
               <ListProducts
                 slug={item?.slug}

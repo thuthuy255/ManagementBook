@@ -46,12 +46,16 @@ export default function ContentPage() {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   useEffect(() => {
-    const updatedFilters = { ...filters, type: urlType, search: urlKeyword };
-    setFilters(updatedFilters);
+    setFilters((prev) => {
+      const updatedFilters = { ...prev, type: urlType, search: urlKeyword };
+      setTimeout(() => fetchWithFilters(1, false, updatedFilters), 100); // Delay 100ms trước khi fetch
+      return updatedFilters;
+    });
+
     setPage(1);
     setHasMore(true);
-    fetchWithFilters(1, false, updatedFilters);
   }, [searchParams]);
+
 
   useEffect(() => {
     if (!loading) {
@@ -114,7 +118,9 @@ export default function ContentPage() {
 
   const getImage = (product) => {
     if (product.img_src) {
-      const images = JSON.parse(product.img_src);
+      const images = typeof product.img_src === 'string'
+        ? JSON.parse(product.img_src)
+        : product.img_src;
       return images?.length ? images[0] : '';
     }
     return '';
@@ -239,26 +245,6 @@ export default function ContentPage() {
                   star={5}
                   sold={231}
                 />
-
-                {/* <Card>
-                  <CardMedia component="img" height="200" image={getImage(product)} alt={product.name} />
-                  <CardContent>
-                    <Typography gutterBottom variant="h6" noWrap>
-                      {product.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      {formatPrice(product.price)}
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <IconButton onClick={() => addToCart(product)}>
-                        <ShoppingCart />
-                      </IconButton>
-                      <IconButton component={Link} to={`/product/${product.slug}`}>
-                        <Visibility />
-                      </IconButton>
-                    </Box>
-                  </CardContent>
-                </Card> */}
               </Grid>
             );
           })}

@@ -1,0 +1,47 @@
+version: 20
+jobs:
+  - name: CI
+    jobExecutor: synology-docker
+    steps:
+      - !CheckoutStep
+        name: Checkout source
+        cloneCredential: !DefaultCredential {}
+        withLfs: false
+        withSubmodules: false
+        condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+      - !CommandStep
+        name: Stop and remove old container
+        runInContainer: true
+        image: docker:24-cli
+        interpreter: !DefaultInterpreter
+          commands:
+            - docker stop fe_mistik || true
+            - docker rm -f mistik_fe-web || true
+        useTTY: false
+        condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+      - !CommandStep
+        name: Compose build & up app
+        runInContainer: true
+        image: docker:24-cli
+        interpreter: !DefaultInterpreter
+          commands:
+            - docker-compose -f docker-compose.yml build --no-cache --pull web
+            - docker-compose -f docker-compose.yml up -d --force-recreate --no-deps web
+        useTTY: false
+        condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+      - !CommandStep
+        name: Docker cleanup (optional)
+        runInContainer: true
+        image: docker:24-cli
+        interpreter: !DefaultInterpreter
+          commands:
+            - docker image prune -f || true
+            - docker builder prune -f || true
+        useTTY: false
+        condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+    triggers:
+      - !BranchUpdateTrigger {}
+    retryCondition: never
+    maxRetries: 3
+    retryDelay: 30
+    timeout: 3600

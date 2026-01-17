@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { addCategory, getProducts } from 'services/clients/product';
+import { addCategory, getProducts, getRatesByProduct, createRate } from 'services/clients/product';
 import 'yet-another-react-lightbox/styles.css';
 import Lightbox from 'yet-another-react-lightbox';
 import slugPram from 'slug';
@@ -44,19 +44,30 @@ export default function ProductDetailLayout() {
   const [open, setOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const queryClient = useQueryClient();
+  const [ratings, setRatings] = useState([]);
+  const [ratingValue, setRatingValue] = useState(5);
+  const [comment, setComment] = useState('');
   useEffect(() => {
     async function fetchBook() {
       const response = await getProducts({ slug });
       if (response?.data?.rows?.length) {
         const bookData = response.data.rows[0];
-        const images = JSON.parse(bookData.img_src);
+        const images = typeof bookData.img_src === 'string'
+          ? JSON.parse(bookData.img_src)
+          : bookData.img_src;
         setBook(bookData);
         setSelectedImage(images[0]);
+
+        // Fetch ratings for the product
+        const ratingResponse = await getRatesByProduct({ productID: bookData.id });
+        if (ratingResponse?.err === 0) {
+          setRatings(ratingResponse?.data?.rows || []);
+        }
       }
     }
     fetchBook();
   }, [slug]);
-  const images = book ? JSON.parse(book.img_src) : [];
+  const images = book ? (typeof book.img_src === 'string' ? JSON.parse(book.img_src) : book.img_src) : [];
   const details = [
     { label: 'Mã hàng', value: book?.id },
     {
@@ -87,6 +98,34 @@ export default function ProductDetailLayout() {
       showToast(response?.mess, 'success');
     } else {
       showToast(response?.mess, 'warning');
+    }
+  };
+
+  const handleSubmitRate = async () => {
+    if (!localStorage.getItem('token')) {
+      showToast('Vui lòng đăng nhập để đánh giá', 'warning');
+      return;
+    }
+
+    const payload = {
+      productID: book?.id,
+      score: ratingValue,
+      content: comment
+    };
+
+    const response = await createRate(payload);
+    if (response?.err === 0) {
+      showToast('Đánh giá của bạn đã được gửi', 'success');
+      setComment('');
+      setRatingValue(5);
+
+      // Refresh ratings
+      const ratingResponse = await getRatesByProduct({ productID: book.id });
+      if (ratingResponse?.err === 0) {
+        setRatings(ratingResponse?.data?.rows || []);
+      }
+    } else {
+      showToast(response?.mess || 'Có lỗi xảy ra', 'warning');
     }
   };
   return (
@@ -129,27 +168,27 @@ export default function ProductDetailLayout() {
               >
                 {book
                   ? images.map((img, index) => (
-                      <CardMedia
-                        key={index}
-                        component="img"
-                        image={img}
-                        alt={`Thumbnail ${index}`}
-                        sx={{
-                          width: { xs: 60, sm: 100, md: 120 },
-                          height: { xs: 60, sm: 100, md: 120 },
-                          cursor: 'pointer',
-                          borderRadius: 1,
-                          objectFit: 'contain',
-                          boxShadow: img === selectedImage ? '0 0 4px blue' : 'none',
-                          transition: 'all 0.3s',
-                          '&:hover': { transform: 'scale(1.1)' }
-                        }}
-                        onClick={() => {
-                          setSelectedImage(img);
-                          setLightboxIndex(index);
-                        }}
-                      />
-                    ))
+                    <CardMedia
+                      key={index}
+                      component="img"
+                      image={img}
+                      alt={`Thumbnail ${index}`}
+                      sx={{
+                        width: { xs: 60, sm: 100, md: 120 },
+                        height: { xs: 60, sm: 100, md: 120 },
+                        cursor: 'pointer',
+                        borderRadius: 1,
+                        objectFit: 'contain',
+                        boxShadow: img === selectedImage ? '0 0 4px blue' : 'none',
+                        transition: 'all 0.3s',
+                        '&:hover': { transform: 'scale(1.1)' }
+                      }}
+                      onClick={() => {
+                        setSelectedImage(img);
+                        setLightboxIndex(index);
+                      }}
+                    />
+                  ))
                   : [...Array(4)].map((_, index) => <Skeleton key={index} variant="circular" width={60} height={60} />)}
               </Stack>
             </Card>
@@ -269,12 +308,17 @@ export default function ProductDetailLayout() {
                   </Grid>
 
                   <Stack direction="row" alignItems="center" spacing={1} mt={1}>
-                    <Rating value={0} readOnly size="small" />
+                    <Rating
+                      value={ratings.length > 0 ? ratings.reduce((acc, r) => acc + r.score, 0) / ratings.length : 0}
+                      readOnly
+                      size="small"
+                      precision={0.5}
+                    />
                     <Typography variant="body2" color="orange">
-                      (0 đánh giá)
+                      ({ratings.length} đánh giá)
                     </Typography>
                     <Typography variant="body2" color="gray">
-                      | {book?.sold}
+                      | {book?.sold} đã bán
                     </Typography>
                   </Stack>
                 </Box>
@@ -310,6 +354,41 @@ export default function ProductDetailLayout() {
                 >
                   {book.description}
                 </Typography>
+              </Item>
+
+              {/* Ratings Section */}
+              <Item sx={{ marginTop: 4, p: 3 }}>
+                <Typography variant="h5" fontWeight="bold" gutterBottom>
+                  Đánh giá sản phẩm
+                </Typography>
+
+                {/* Display existing ratings */}
+                {ratings.length > 0 ? (
+                  <Box sx={{ mb: 3 }}>
+                    {ratings.map((rating, index) => (
+                      <Box key={index} sx={{ mb: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+                        <Stack direction="row" alignItems="center" spacing={1} mb={1}>
+                          <Typography variant="subtitle2" fontWeight="bold">
+                            {rating.user?.name || 'Người dùng'}
+                          </Typography>
+                          <Rating value={rating.score} readOnly size="small" />
+                        </Stack>
+                        <Typography variant="body2" color="textSecondary">
+                          {rating.content}
+                        </Typography>
+                        <Typography variant="caption" color="gray" sx={{ mt: 0.5, display: 'block' }}>
+                          {new Date(rating.createdAt).toLocaleDateString('vi-VN')}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                ) : (
+                  <Typography variant="body2" color="gray" mb={2}>
+                    Chưa có đánh giá nào.
+                  </Typography>
+                )}
+
+
               </Item>
             </>
           ) : (

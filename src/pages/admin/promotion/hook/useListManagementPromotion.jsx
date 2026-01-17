@@ -117,7 +117,9 @@ export default function useListManagementPromotion() {
       flex: 1,
       headerAlign: 'center',
       align: 'center',
-      renderCell: (params) => <div>{params.value}%</div> // Giả sử luôn là phần trăm
+      renderCell: (params) => (
+        <div>{params.value}{params.row.discountType === 'percent' ? '%' : ' VNĐ'}</div>
+      )
     },
     {
       field: 'minOrderAmount',
@@ -143,8 +145,8 @@ export default function useListManagementPromotion() {
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
-        <Button variant="contained" color={params.value === 1 ? 'success' : 'error'} size="small">
-          {params.value === 1 ? 'Đã kích hoạt' : 'Đang bị khóa'}
+        <Button variant="contained" color={params.value ? 'success' : 'error'} size="small">
+          {params.value ? 'Đã kích hoạt' : 'Đang bị khóa'}
         </Button>
       )
     },
